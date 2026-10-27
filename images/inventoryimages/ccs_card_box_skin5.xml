@@ -1,0 +1,7 @@
+<Atlas>
+    <Texture filename="ccs_card_box_skin5.tex"/>
+    <Elements>
+        <Element name="ccs_card_box_skin5.tex" u1="0.00390625" u2="0.41015625" v1="0.1171875" v2="0.9921875"/>
+        <Element name="ccs_card_box_skin5_open.tex" u1="0.41796875" u2="0.82421875" v1="0.1171875" v2="0.9921875"/>
+    </Elements>
+</Atlas>

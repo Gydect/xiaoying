@@ -1,0 +1,11 @@
+<Atlas>
+    <Texture filename="ccs_bunny_fluorescen2.tex"/>
+    <Elements>
+        <Element name="ccs_bunny_fluorescen2_0.tex" u1="0.45117188" u2="0.66601562" v1="0.50390625" v2="0.99609375"/>
+        <Element name="ccs_bunny_fluorescen2_1.tex" u1="0.66992188" u2="0.88476562" v1="0.50390625" v2="0.99609375"/>
+        <Element name="ccs_bunny_fluorescen2_2.tex" u1="0.001953125" u2="0.22460938" v1="0.50390625" v2="0.99609375"/>
+        <Element name="ccs_bunny_fluorescen2_3.tex" u1="0.22851562" u2="0.44726562" v1="0.50390625" v2="0.99609375"/>
+        <Element name="ccs_bunny_fluorescen2_4.tex" u1="0.001953125" u2="0.21679688" v1="0.00390625" v2="0.49609375"/>
+        <Element name="ccs_bunny_fluorescen2_5.tex" u1="0.22070312" u2="0.43554688" v1="0.00390625" v2="0.49609375"/>
+    </Elements>
+</Atlas>
