@@ -6,9 +6,16 @@ local function ccs_isfly(self, isfly)  --最大值
 	end
 end
 
+local function ccs_skin(self, skin)
+	if self.inst.replica.ccs_flying then
+		self.inst.replica.ccs_flying.skin:set(skin or "")
+	end
+end
+
 local Ccs_Flying = Class(function(self, inst)
     self.inst = inst
 	self.isfly = false 	--是否正在飞行
+	self.skin = nil 	--使用的飞牌皮肤名，nil 为原皮
 	self.action = {
 		"death",
 		"run",
@@ -30,6 +37,7 @@ end,
 nil,
 {
 	isfly = ccs_isfly,
+	skin = ccs_skin,
 })
 
 function Ccs_Flying:IsFly()
@@ -41,8 +49,9 @@ local function onunequipped(inst,data)
 	owner.components.ccs_flying:Land()
 end
 
-function Ccs_Flying:Fly()
-	self.isfly = true	 
+function Ccs_Flying:Fly(skin)
+	self.skin = skin
+	self.isfly = true
 	self.inst.AnimState:Hide("ARM_carry")
 	self.inst.AnimState:Show("ARM_normal")
     if self.inst.Physics then
@@ -90,6 +99,9 @@ function Ccs_Flying:Land()
 	end
 	self.inst:RemoveTag("ccs_isfly")
 	self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "ccs_fly")
+	CCSAPI.CcsFlyApplySymbols(self.inst, false)
+	self.skin = nil
+	CCSAPI.CcsFlyEndAnim(self.inst)
 
 
 	if self.inst and (self.inst.ccs_no_drown or self.inst:HasTag('css_nodrown') or self.inst:HasTag('css_nodrown_box') ) then
@@ -102,14 +114,15 @@ function Ccs_Flying:OnSave()
 	return 
 	{ 
 		isfly = self:IsFly(),
+		skin = self.skin,
 	}
 end
 
 
-function Ccs_Flying:OnLoad(data)   
+function Ccs_Flying:OnLoad(data)
     if data then
 		if data.isfly ~= nil and data.isfly == true then
-			self:Fly()
+			self:Fly(data.skin)
 		end
 	end
 end

@@ -291,7 +291,7 @@ end
 
 local function ccs_cards_usefn26(inst, owner)
     if owner.components.inventory:EquipHasTag("ccs_magic_wand3") or owner.components.inventory:EquipHasTag("ccs_starstaff") then
-        owner.components.ccs_flying:Fly()
+        owner.components.ccs_flying:Fly(inst:GetSkinBuild()) --飞牌皮肤决定飞行动画，见 CCS_FLY_SKINS
     else
         owner.components.talker:Say("需要手持魔杖")
     end
@@ -1208,6 +1208,7 @@ local ccs_cards = {
         cost = 5,
         maxlevel = 1,
 		column = "ccs_tab2",
+        skin = true
     },
     ccs_cards_27 = {
         chname = "浮牌",

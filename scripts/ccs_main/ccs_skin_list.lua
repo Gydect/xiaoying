@@ -3066,6 +3066,22 @@ CcsItemSkin("ccs_cards_21", "ccs_cards_21_skins3", {
     basebuild = "ccs_cards",
     basebank = "ccs_cards",
 })
+--飞牌：地面动画循环播放 ccs_cards_26；飞行时改播 ccs_fly_zhimeng（见 ccs_api.lua 的 CCS_FLY_SKINS）
+CCSAPI.CcsItemAssets(Assets, "ccs_cards_26_skin_zhimeng", true, true, {Asset("ANIM", "anim/ccs_fly_zhimeng.zip")})
+CCSAPI.MakeItemSkinDefaultImage('ccs_cards_26', 'images/inventoryimages/ccs_cards/ccs_cards_26.xml', 'ccs_cards_26')
+CcsItemSkin("ccs_cards_26", "ccs_cards_26_skin_zhimeng", { --TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+    name = "定制：织梦",
+    atlas = "images/inventoryimages/ccs_cards_26_skin_zhimeng.xml",
+    image = "ccs_cards_26_skin_zhimeng",
+    build = "ccs_cards_26_skin_zhimeng",
+    bank = "ccs_cards_26_skin_zhimeng",
+    anim = "ccs_cards_26",
+    animloop = true,
+    basebuild = "ccs_cards",
+    basebank = "ccs_cards",
+    baseanim = "ccs_cards_26",
+    baseanimloop = true,
+})
 --
 CcsItemSkin("ccs_sb_item", "ccs_sb_item_sxz_skins1", {
     name = "吉依",

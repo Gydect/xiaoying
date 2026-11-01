@@ -27,6 +27,13 @@ local function Jt_Task(inst)
 			v.components.witherable:Protect(60)
 		end
 	end
+	--秒杀保护范围内的致命亮茄，走官方死亡流程（正常掉落战利品、清除藤蔓、解除寄生）
+	local thralls = TheSim:FindEntities(pos.x, pos.y, pos.z,40,{"lunarthrall_plant"})
+	for i, v in ipairs(thralls) do
+		if v.components.health ~= nil and not v.components.health:IsDead() then
+			v.components.health:Kill()
+		end
+	end
 	local x,y,z = inst:GetPosition():Get()
 	local ents = TheSim:FindEntities(x,y,z,30,nil,{"FX"})
 	for k,v in pairs(ents) do

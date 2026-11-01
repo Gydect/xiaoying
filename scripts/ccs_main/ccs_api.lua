@@ -316,6 +316,60 @@ AddComponentPostInit("lootdropper", function(self)
 	end
 end)
 
+--飞牌皮肤：卡牌皮肤名 -> 飞行动画、build、飞行时需要额外显示的图层
+CCS_FLY_SKINS = {
+	default = {anim = "ccs_fly", build = "ccs_fly", symbols = {"hand2"}},
+	ccs_cards_26_skin_zhimeng = {anim = "ccs_fly_zhimeng", build = "ccs_fly_zhimeng", symbols = {"yue", "yun", "diao", "yy"}},
+}
+
+function GetCcsFlySkinData(skin)
+	return CCS_FLY_SKINS[skin] or CCS_FLY_SKINS.default
+end
+
+--先清掉所有飞牌皮肤的图层覆盖，再按当前皮肤覆盖；skin 为 false 时只清除（降落）
+function CcsFlyApplySymbols(inst, skin)
+	for _, v in pairs(CCS_FLY_SKINS) do
+		for _, sym in ipairs(v.symbols) do
+			inst.AnimState:ClearOverrideSymbol(sym)
+		end
+	end
+	if skin ~= false then
+		local data = GetCcsFlySkinData(skin)
+		for _, sym in ipairs(data.symbols) do
+			inst.AnimState:OverrideSymbol(sym, data.build, sym)
+		end
+	end
+end
+
+--降落时若还在播放飞行动画，立即切回正常动画
+--（飞行动画是循环的，官方 idle 用 PushAnimation 排队时永远轮不到；服务端由 Land 调用，客户端由 isfly 同步时调用）
+function CcsFlyEndAnim(inst)
+	if inst.sg == nil or inst.sg:HasStateTag("dead") then
+		return
+	end
+	local playing = false
+	for _, v in pairs(CCS_FLY_SKINS) do
+		if inst.AnimState:IsCurrentAnimation(v.anim) then
+			playing = true
+			break
+		end
+	end
+	if not playing then
+		return
+	end
+	if inst.sg:HasStateTag("moving") then
+		inst.sg:GoToState("run")
+	elseif inst.sg:HasStateTag("idle") then
+		inst.sg:GoToState("idle")
+	else
+		inst.AnimState:PlayAnimation("idle_loop", true)
+	end
+end
+
+local function GetFlySkin(inst)
+	return inst.replica.ccs_flying and inst.replica.ccs_flying:GetSkin() or nil
+end
+
 AddStategraphPostInit("wilson", function(self)
     local run = self.states.run
     if run then
@@ -326,8 +380,9 @@ AddStategraphPostInit("wilson", function(self)
             end
             if inst.components.ccs_flying then
 				if inst.components.ccs_flying.isfly then
-					inst.AnimState:OverrideSymbol("hand2", "ccs_fly", "hand2")
-					inst.AnimState:PlayAnimation("ccs_fly", true)
+					local skin = GetFlySkin(inst)
+					CcsFlyApplySymbols(inst, skin)
+					inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
 					inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
 				end
             end
@@ -343,7 +398,7 @@ AddStategraphPostInit("wilson", function(self)
             end
             if inst.components.ccs_flying then
 				if inst.components.ccs_flying.isfly then
-					inst.AnimState:PlayAnimation("ccs_fly")
+					inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
 				end
             end
         end
@@ -358,12 +413,12 @@ AddStategraphPostInit("wilson", function(self)
             end
 			if inst.components.ccs_flying then
 				if inst.components.ccs_flying.isfly then
-					inst.AnimState:PlayAnimation("ccs_fly")
+					inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
 				end
             end
         end
     end
-	
+
 	local old_idle = self.states.idle
     if old_idle then
         local old_idle_enter = old_idle.onenter
@@ -373,10 +428,27 @@ AddStategraphPostInit("wilson", function(self)
             end
 			if inst.components.ccs_flying then
 				if inst.components.ccs_flying.isfly then
-					inst.AnimState:OverrideSymbol("hand2", "ccs_fly", "hand2")
-					inst.AnimState:PlayAnimation("ccs_fly",true)
+					local skin = GetFlySkin(inst)
+					CcsFlyApplySymbols(inst, skin)
+					inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim,true)
 				end
             end
+        end
+    end
+
+	--飞行时采集/拾取：省略 pickup 动作，保持飞行动画（状态 10 帧后超时回到 idle）
+	local doshortaction = self.states.doshortaction
+    if doshortaction then
+        local old_enter = doshortaction.onenter
+        function doshortaction.onenter(inst, ...)
+            if old_enter then
+                old_enter(inst, ...)
+            end
+			if inst.components.ccs_flying and inst.components.ccs_flying.isfly then
+				local skin = GetFlySkin(inst)
+				CcsFlyApplySymbols(inst, skin)
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+			end
         end
     end
 end)
@@ -390,8 +462,9 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:OverrideSymbol("hand2", "ccs_fly", "hand2")
-				inst.AnimState:PlayAnimation("ccs_fly", true)
+				local skin = GetFlySkin(inst)
+				CcsFlyApplySymbols(inst, skin)
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
             end
         end
@@ -405,7 +478,7 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
 			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:PlayAnimation("ccs_fly")
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
             end
         end
     end
@@ -418,11 +491,11 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
 			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:PlayAnimation("ccs_fly")
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
             end
         end
     end
-	
+
 	local old_idle = self.states.idle
     if old_idle then
         local old_idle_enter = old_idle.onenter
@@ -431,9 +504,26 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_idle_enter(inst, ...)
             end
 			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:OverrideSymbol("hand2", "ccs_fly", "hand2")
-				inst.AnimState:PlayAnimation("ccs_fly",true)
+				local skin = GetFlySkin(inst)
+				CcsFlyApplySymbols(inst, skin)
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim,true)
             end
+        end
+    end
+
+	--飞行时采集/拾取（客户端预测）：同样保持飞行动画；退出时官方会进 idle，由上面的 idle 钩子接回飞行动画
+	local doshortaction = self.states.doshortaction
+    if doshortaction then
+        local old_enter = doshortaction.onenter
+        function doshortaction.onenter(inst, ...)
+            if old_enter then
+                old_enter(inst, ...)
+            end
+			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
+				local skin = GetFlySkin(inst)
+				CcsFlyApplySymbols(inst, skin)
+				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+			end
         end
     end
 end)
