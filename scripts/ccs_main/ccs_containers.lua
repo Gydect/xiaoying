@@ -1612,6 +1612,71 @@ function params.ui_ccs_cookpot2_skin_xiaoke.itemtestfn(container, item, slot)
     return true
 end
 
+params.ui_ccs_cookpot2_skin_xingmian =
+{
+    widget =
+    {
+        slotpos = {
+            Vector3(-32, 180, 0),
+            Vector3(40, 180, 0),
+            Vector3(-32, 108, 0),
+            Vector3(40, 108, 0),
+
+            Vector3(-32, 4, 0),
+            Vector3(40, 4, 0),
+            Vector3(-32, -68, 0),
+            Vector3(40, -68, 0),
+            Vector3(-32, -140, 0),
+            Vector3(40, -140, 0),
+            Vector3(-32, -212, 0),
+            Vector3(40, -212, 0),
+        },
+        slotbg = {},
+        animbank = "ui_ccs_cookpot2_skin_xingmian",
+        animbuild = "ui_ccs_cookpot2_skin_xingmian",
+        pos = Vector3(150, 0, 0),
+        side_align_tip = 160,
+        buttoninfo =
+        {
+            text = "魔法烹饪",
+            position = Vector3(4, 56, 0),
+        },
+    },
+    type = "ccs_cookpot2",
+}
+
+for i = 0, 11 do
+    table.insert(
+        params.ui_ccs_cookpot2_skin_xingmian.widget.slotbg,
+        { image = 'ccs_cookpot2_skin_xingmian_slot.tex', atlas = 'images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.xml' }
+    )
+end
+
+function params.ui_ccs_cookpot2_skin_xingmian.widget.buttoninfo.fn(inst, doer)
+    if CCSAPI.Cookpot2MagicCook ~= nil then
+        CCSAPI.Cookpot2MagicCook(inst, doer)
+    end
+end
+
+function params.ui_ccs_cookpot2_skin_xingmian.widget.buttoninfo.validfn(inst)
+    if inst.replica.container == nil then
+        return false
+    end
+    for i = 1, 4 do
+        if inst.replica.container:GetItemInSlot(i) == nil then
+            return false
+        end
+    end
+    return true
+end
+
+function params.ui_ccs_cookpot2_skin_xingmian.itemtestfn(container, item, slot)
+    if item.replica and item.replica.container then
+        return false
+    end
+    return true
+end
+
 params.ccs_homesign =
 {
     widget =

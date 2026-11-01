@@ -141,16 +141,48 @@ params["ccs_cookpot2"]["itemtestfn"] = function(container, item, slot)
     return true
 end
 
+--_state 对应的容器界面，1 或未列出的为默认界面
+local STATE_WIDGETS = {
+    [2] = "ui_ccs_cookpot2_skin_xiaoke",
+    [3] = "ui_ccs_cookpot2_skin_xingmian",
+}
+
 local function oncontainer_change(inst)
     if not inst._state or not inst.replica or not inst.replica.container then
         return
     end
-    if inst._state:value() == 2 then
-        inst.replica.container:WidgetSetup("ui_ccs_cookpot2_skin_xiaoke")
+    inst.replica.container:WidgetSetup(STATE_WIDGETS[inst._state:value()] or "ccs_cookpot2")
+end
+
+--靠近动画（星冕皮肤）：玩家靠近播放 proximity_pre 再循环 proximity_loop，远离播放 proximity_pst 再循环 idle
+local function onplayernear(inst)
+    inst.AnimState:PlayAnimation("proximity_pre")
+    inst.AnimState:PushAnimation("proximity_loop", true)
+end
+
+local function onplayerfar(inst)
+    inst.AnimState:PlayAnimation("proximity_pst")
+    inst.AnimState:PushAnimation("idle", true)
+end
+
+local function Cookpot2SetProximity(inst, enable)
+    if enable then
+        inst.ccs_nohitanim = true
+        if inst.components.playerprox == nil then
+            inst:AddComponent("playerprox")
+            inst.components.playerprox:SetDist(4, 6)
+            inst.components.playerprox:SetOnPlayerNear(onplayernear)
+            inst.components.playerprox:SetOnPlayerFar(onplayerfar)
+        end
     else
-        inst.replica.container:WidgetSetup("ccs_cookpot2")
+        inst.ccs_nohitanim = nil
+        if inst.components.playerprox ~= nil then
+            inst:RemoveComponent("playerprox")
+        end
     end
 end
+
+CCSAPI.Cookpot2SetProximity = Cookpot2SetProximity
 
 
 
@@ -183,8 +215,10 @@ local function onhit(inst)
         else
             inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_close")
         end
-        inst.AnimState:PlayAnimation("hit")
-        inst.AnimState:PushAnimation("idle", true)
+        if not inst.ccs_nohitanim then --星冕皮肤没有受击动画，被敲时保持当前动画
+            inst.AnimState:PlayAnimation("hit")
+            inst.AnimState:PushAnimation("idle", true)
+        end
     end
 end
 

@@ -4347,6 +4347,46 @@ CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xiaoke", {
         end
     end,
 })
+CCSAPI.CcsItemAssets(Assets, "ccs_cookpot2_skin_xingmian", true, true, {
+    Asset("ANIM", "anim/ui_ccs_cookpot2_skin_xingmian.zip"),
+    Asset("IMAGE", "images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.tex"),
+    Asset("ATLAS", "images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.xml"),
+})
+CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { --TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+    name = "定制：星冕",
+    atlas = "images/inventoryimages/ccs_cookpot2_skin_xingmian.xml",
+    image = "ccs_cookpot2_skin_xingmian",
+    build = "ccs_cookpot2_skin_xingmian",
+    bank = "ccs_cookpot2_skin_xingmian",
+    basebuild = "ccs_cookpot2",
+    basebank = "ccs_cookpot2",
+    init_fn = function(inst)
+        --制作时的虚影（placer）也会调用，没有容器，跳过
+        if inst._state and inst.components.container then
+            inst._state:set(3)
+            inst.components.container:WidgetSetup("ui_ccs_cookpot2_skin_xingmian")
+            inst.components.container:Close()
+            inst.AnimState:PlayAnimation("idle", true)
+            if CCSAPI.Cookpot2SetProximity ~= nil then
+                CCSAPI.Cookpot2SetProximity(inst, true)
+            end
+        end
+    end,
+    clear_fn = function(inst)
+        if inst._state then
+            inst._state:set(1)
+        end
+        if inst.components.container then
+            inst.components.container:WidgetSetup("ccs_cookpot2")
+            inst.components.container:Close()
+            --原皮没有 proximity 动画，切回时要重新播放 idle
+            inst.AnimState:PlayAnimation("idle", true)
+        end
+        if CCSAPI.Cookpot2SetProximity ~= nil then
+            CCSAPI.Cookpot2SetProximity(inst, false)
+        end
+    end,
+})
 
 CCSAPI.MakeItemSkinDefaultImage('ccs_light2', 'images/inventoryimages/ccs_light.xml', 'ccs_light')
 CCSAPI.MakeItemSkin(
