@@ -1,18 +1,18 @@
-local assets=
+local assets =
 {
-	Asset("ANIM", "anim/ccs_magic_wand2.zip"),  --动画文件
-	Asset("ANIM", "anim/ccs_magic_wand3.zip"),
-	Asset("ANIM", "anim/ccs_magic_wand2_snxopen.zip"),
-	Asset("ANIM", "anim/ccs_magic_wand2_yzyopen.zip"),
-	Asset("IMAGE", "images/inventoryimages/ccs_magic_wand2.tex"), --物品栏贴图
-	Asset("ATLAS", "images/inventoryimages/ccs_magic_wand2.xml"),
+    Asset("ANIM", "anim/ccs_magic_wand2.zip"), -- 动画文件
+    Asset("ANIM", "anim/ccs_magic_wand3.zip"),
+    Asset("ANIM", "anim/ccs_magic_wand2_snxopen.zip"),
+    Asset("ANIM", "anim/ccs_magic_wand2_yzyopen.zip"),
+    Asset("IMAGE", "images/inventoryimages/ccs_magic_wand2.tex"), -- 物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_magic_wand2.xml"),
 }
 
 local CCSUTL = require("utils/ccs_wanly_utils")
 
 
 local dynamicweapon_skin_data = {
-	ccs_magic_wand2_skin_yingcao = true
+    ccs_magic_wand2_skin_yingcao = true
 }
 
 local open_skin_build = {
@@ -36,50 +36,47 @@ local function ApplyWand2Symbol(inst, owner, skin_build, is_open)
 end
 
 local function SetFxOwner(inst, owner, fx)
-	-- if inst.blade1 then
-	-- 	inst.blade1:Remove()
-	-- 	inst.blade1 = nil
-	-- end
-	-- if inst.blade2 then
-	-- 	inst.blade2:Remove()
-	-- 	inst.blade2 = nil
-	-- end
+    -- if inst.blade1 then
+    -- 	inst.blade1:Remove()
+    -- 	inst.blade1 = nil
+    -- end
+    -- if inst.blade2 then
+    -- 	inst.blade2:Remove()
+    -- 	inst.blade2 = nil
+    -- end
     if inst.blade1 == nil and fx then
         inst.blade1 = SpawnPrefab(fx)
     end
-	if inst.blade2 == nil and fx then
+    if inst.blade2 == nil and fx then
         inst.blade2 = SpawnPrefab(fx)
     end
 
     if owner ~= nil then
-		if inst.blade1 and inst.blade2 then
-			inst.blade1.entity:SetParent(owner.entity)
-        	inst.blade2.entity:SetParent(owner.entity)
-        	inst.blade1.Follower:FollowSymbol(owner.GUID, "swap_object", nil, nil, nil, true, nil, 0, 3)
-        	inst.blade2.Follower:FollowSymbol(owner.GUID, "swap_object", nil, nil, nil, true, nil, 5, 8)
-        	inst.blade1.components.highlightchild:SetOwner(owner)
-        	inst.blade2.components.highlightchild:SetOwner(owner)
-		end
-		
-
+        if inst.blade1 and inst.blade2 then
+            inst.blade1.entity:SetParent(owner.entity)
+            inst.blade2.entity:SetParent(owner.entity)
+            inst.blade1.Follower:FollowSymbol(owner.GUID, "swap_object", nil, nil, nil, true, nil, 0, 3)
+            inst.blade2.Follower:FollowSymbol(owner.GUID, "swap_object", nil, nil, nil, true, nil, 5, 8)
+            inst.blade1.components.highlightchild:SetOwner(owner)
+            inst.blade2.components.highlightchild:SetOwner(owner)
+        end
     else
         if inst.blade1 then
             inst.blade1:Remove()
             inst.blade1 = nil
         end
-		if inst.blade2 then
+        if inst.blade2 then
             inst.blade2:Remove()
             inst.blade2 = nil
         end
-
     end
 end
 
-local function onequip(inst, owner) --装备	
-	local skin_build = inst:GetSkinBuild()
-	if skin_build ~= nil then
-		owner:PushEvent("equipskinneditem", inst:GetSkinName())
-	end
+local function onequip(inst, owner) -- 装备	
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner:PushEvent("equipskinneditem", inst:GetSkinName())
+    end
     ApplyWand2Symbol(inst, owner, skin_build, inst:HasTag("enble_spell"))
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
@@ -116,12 +113,12 @@ local function onequip(inst, owner) --装备
         inst._vfx_fx_inst.Follower:FollowSymbol(owner.GUID, 'swap_object', 0, -220, 0)
     end
 end
---ThePlayer.AnimState:OverrideSymbol("card_fx", "ccs_spell_anim", "card_fx") ThePlayer.AnimState:SetDeltaTimeMultiplier(.5) ThePlayer.AnimState:PlayAnimation("ccs_spell_pre")
-local function onunequip(inst, owner) --解除装备
-	local skin_build = inst:GetSkinBuild()
+-- ThePlayer.AnimState:OverrideSymbol("card_fx", "ccs_spell_anim", "card_fx") ThePlayer.AnimState:SetDeltaTimeMultiplier(.5) ThePlayer.AnimState:PlayAnimation("ccs_spell_pre")
+local function onunequip(inst, owner) -- 解除装备
+    local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
         owner:PushEvent("unequipskinneditem", inst:GetSkinName())
-    end	
+    end
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
     SetFxOwner(inst, nil)
@@ -338,7 +335,7 @@ local function BulkPickForCSS(owner, pos, range, double_tag)
         pickable:Pick(owner)
         pickable.SpawnProductLoot = oldSpawn
 
-        owner:PushEvent("picksomething", { object = v,ccsloot = loot_names })
+        owner:PushEvent("picksomething", { object = v, ccsloot = loot_names })
     end
 
     owner:RemoveTag("css_magic_pick")
@@ -365,8 +362,7 @@ local function ccs_spell(staff, target, pos)
     -- 处理剩余实体
     local ents = TheSim:FindEntities(x, y, z, 5)
     for _, v in ipairs(ents) do
-
-        if v:HasTag("player") then 
+        if v:HasTag("player") then
             return
         end
 
@@ -419,137 +415,137 @@ end
 
 
 local function onuse(inst)
-	local owner = inst.components.inventoryitem.owner
-	if owner then
-		if inst:HasTag("enble_spell") then
-			owner.components.talker:Say("关闭采集功能")
-			inst.components.spellcaster.spell = nil
-			inst:RemoveTag("enble_spell") 
-			inst:AddTag("HAMMER_tool")
-			inst:AddTag("DIG_tool")
-			inst:AddComponent("fishingrod")
+    local owner = inst.components.inventoryitem.owner
+    if owner then
+        if inst:HasTag("enble_spell") then
+            owner.components.talker:Say("关闭采集功能")
+            inst.components.spellcaster.spell = nil
+            inst:RemoveTag("enble_spell")
+            inst:AddTag("HAMMER_tool")
+            inst:AddTag("DIG_tool")
+            inst:AddComponent("fishingrod")
             inst.components.fishingrod:SetWaitTimes(1, 2)
             inst.components.fishingrod:SetStrainTimes(10, 20)
             local skin = inst:GetSkinBuild()
             if inst.components.equippable and inst.components.equippable:IsEquipped() then
                 ApplyWand2Symbol(inst, owner, skin, false)
             end
-		else
-			owner.components.talker:Say("启用采集功能")
-			inst:RemoveComponent("fishingrod")
-			inst.components.spellcaster:SetSpellFn(ccs_spell)
-			inst:AddTag("enble_spell")
-			inst:RemoveTag("HAMMER_tool")
-			inst:RemoveTag("DIG_tool")
+        else
+            owner.components.talker:Say("启用采集功能")
+            inst:RemoveComponent("fishingrod")
+            inst.components.spellcaster:SetSpellFn(ccs_spell)
+            inst:AddTag("enble_spell")
+            inst:RemoveTag("HAMMER_tool")
+            inst:RemoveTag("DIG_tool")
             local skin = inst:GetSkinBuild()
             if inst.components.equippable and inst.components.equippable:IsEquipped() then
                 ApplyWand2Symbol(inst, owner, skin, true)
             end
-		end
-	end
-	return false
+        end
+    end
+    return false
 end
 
 local function CastFn(doer, target, pos)
-	local inst = doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if inst and inst:HasTag("ccs_magic_wand2") then
-		if inst:HasTag("enble_spell") then
-			return true
-		end
-	end
+    local inst = doer.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+    if inst and inst:HasTag("ccs_magic_wand2") then
+        if inst:HasTag("enble_spell") then
+            return true
+        end
+    end
 end
 
 local function fn(Sim)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-	--inst.entity:AddSoundEmitter()
+    -- inst.entity:AddSoundEmitter()
 
-    MakeInventoryPhysics(inst)   --物理
-	MakeInventoryFloatable(inst, "med", nil, 0.75)
+    MakeInventoryPhysics(inst) -- 物理
+    MakeInventoryFloatable(inst, "med", nil, 0.75)
 
-    inst.AnimState:SetBank("ccs_magic_wand2")  
+    inst.AnimState:SetBank("ccs_magic_wand2")
     inst.AnimState:SetBuild("ccs_magic_wand2")
     inst.AnimState:PlayAnimation("idle")
-	
-	inst:AddTag("ccs_magic_wand2")
-	inst:AddTag("HAMMER_tool")
-	inst:AddTag("DIG_tool")
-	inst:AddTag("allow_action_on_impassable")
-    	
+
+    inst:AddTag("ccs_magic_wand2")
+    inst:AddTag("HAMMER_tool")
+    inst:AddTag("DIG_tool")
+    inst:AddTag("allow_action_on_impassable")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
-	
+
     CCSAPI.CcsItemInit(inst)
-	inst:AddComponent("equippable") --可装备组件
+    inst:AddComponent("equippable") -- 可装备组件
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-	inst.components.equippable.restrictedtag = "ccs"
+    inst.components.equippable.restrictedtag = "ccs"
     inst.components.equippable.walkspeedmult = 1.25
-	
-    inst:AddComponent("inspectable") --可检查
-		
-    inst:AddComponent("inventoryitem") --物品组件
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_magic_wand2.xml"
-      
-	inst:AddComponent("tool")
-    inst.components.tool:SetAction(ACTIONS.HAMMER)  --锤子
-	inst.components.tool:SetAction(ACTIONS.DIG)     --铲子
-    inst.components.tool:SetAction(ACTIONS.CHOP,5)  --砍树
-    inst.components.tool:SetAction(ACTIONS.MINE,6)   --挖矿
-	inst.components.tool:SetAction(ACTIONS.NET)  --捕虫网
-	inst.components.tool:EnableToughWork(true)
-	
-	inst:AddComponent("useableitem")  	
-	inst.components.useableitem:SetOnUseFn(onuse) 
-	
-	inst:AddComponent("farmtiller")
-	--local Old_Till = inst.components.farmtiller.Till
-	inst.components.farmtiller.Till = function(self,pt,doer,...)
-		local x1, y1, z1 = TheWorld.Map:GetTileCenterPoint(pt.x,pt.y,pt.z)
-		local spacing=4/3
-		for x2 = 0,2 do
-			for y2 = 0,2 do
-				local x3 = x1+spacing * x2-spacing
-				local y3 = z1+spacing * y2-spacing
-				if TheWorld.Map:CanTillSoilAtPoint(x3, 0, y3, false) then
-					TheWorld.Map:CollapseSoilAtPoint(x3, 0, y3)
-					SpawnPrefab("farm_soil").Transform:SetPosition(x3, 0, y3)
-					if doer ~= nil then
-						doer:PushEvent("tilling")
-					end
-				end	
-			end
-		end
-		return true
-	end
-	
-	--钓鱼
-   	inst:AddComponent("fishingrod")
-	inst.components.fishingrod:SetWaitTimes(1, 2)
-	inst.components.fishingrod:SetStrainTimes(10, 20)
-	
-	inst:AddComponent("spellcaster")
-	inst.components.spellcaster.CanCast = function() return true end 
-	--inst.components.spellcaster:SetCanCastFn(CastFn)
+
+    inst:AddComponent("inspectable")   -- 可检查
+
+    inst:AddComponent("inventoryitem") -- 物品组件
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_magic_wand2.xml"
+
+    inst:AddComponent("tool")
+    inst.components.tool:SetAction(ACTIONS.HAMMER)  -- 锤子
+    inst.components.tool:SetAction(ACTIONS.DIG)     -- 铲子
+    inst.components.tool:SetAction(ACTIONS.CHOP, 5) -- 砍树
+    inst.components.tool:SetAction(ACTIONS.MINE, 6) -- 挖矿
+    inst.components.tool:SetAction(ACTIONS.NET)     -- 捕虫网
+    inst.components.tool:EnableToughWork(true)
+
+    inst:AddComponent("useableitem")
+    inst.components.useableitem:SetOnUseFn(onuse)
+
+    inst:AddComponent("farmtiller")
+    -- local Old_Till = inst.components.farmtiller.Till
+    inst.components.farmtiller.Till = function(self, pt, doer, ...)
+        local x1, y1, z1 = TheWorld.Map:GetTileCenterPoint(pt.x, pt.y, pt.z)
+        local spacing = 4 / 3
+        for x2 = 0, 2 do
+            for y2 = 0, 2 do
+                local x3 = x1 + spacing * x2 - spacing
+                local y3 = z1 + spacing * y2 - spacing
+                if TheWorld.Map:CanTillSoilAtPoint(x3, 0, y3, false) then
+                    TheWorld.Map:CollapseSoilAtPoint(x3, 0, y3)
+                    SpawnPrefab("farm_soil").Transform:SetPosition(x3, 0, y3)
+                    if doer ~= nil then
+                        doer:PushEvent("tilling")
+                    end
+                end
+            end
+        end
+        return true
+    end
+
+    -- 钓鱼
+    inst:AddComponent("fishingrod")
+    inst.components.fishingrod:SetWaitTimes(1, 2)
+    inst.components.fishingrod:SetStrainTimes(10, 20)
+
+    inst:AddComponent("spellcaster")
+    inst.components.spellcaster.CanCast = function() return true end
+    -- inst.components.spellcaster:SetCanCastFn(CastFn)
     inst.components.spellcaster.canuseontargets = true
-	inst.components.spellcaster.quickcast = true
+    inst.components.spellcaster.quickcast = true
     inst.components.spellcaster.canuseonpoint = true
     inst.components.spellcaster.canuseonpoint_water = true
     inst.components.spellcaster:SetSpellFn(ccs_spell)
-	
-	inst:AddComponent("weapon") 
+
+    inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(10)
-	
-	--inst.DoWaterExplosionEffect = do_water_explosion_effect
-	
-	MakeHauntableLaunchAndPerish(inst) --作祟相关
+
+    -- inst.DoWaterExplosionEffect = do_water_explosion_effect
+
+    MakeHauntableLaunchAndPerish(inst) -- 作祟相关
     return inst
-end 
-    
-return Prefab( "ccs_magic_wand2", fn, assets)
+end
+
+return Prefab("ccs_magic_wand2", fn, assets)

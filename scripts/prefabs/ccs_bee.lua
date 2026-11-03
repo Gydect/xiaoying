@@ -9,7 +9,8 @@ Default bee type. Flies around to flowers and pollinates them, generally gets sp
 killerbee
 Aggressive version of the bee. Doesn't pollinate anythihng, but attacks anything within range. If it has a home to go to and no target,
 it should head back there. Killer bees come out to defend beehives when they, the hive or worker bees are attacked
-]]--
+]]
+--
 local assets =
 {
     Asset("ANIM", "anim/bee.zip"),
@@ -187,8 +188,8 @@ local function commonfn(build, tags)
 
     inst:AddComponent("stackable")
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "bee"
-	inst.components.inventoryitem.atlasname = GetInventoryItemAtlas("bee.tex")
+    inst.components.inventoryitem.imagename = "bee"
+    inst.components.inventoryitem.atlasname = GetInventoryItemAtlas("bee.tex")
     inst.components.inventoryitem.nobounce = true
     -- inst.components.inventoryitem:SetOnDroppedFn(OnDropped) Done in MakeFeedableSmallLivestock
     -- inst.components.inventoryitem:SetOnPutInInventoryFn(OnPickedUp)
@@ -240,7 +241,7 @@ local function commonfn(build, tags)
     inst:ListenForEvent("attacked", beecommon.OnAttacked)
     inst:ListenForEvent("worked", beecommon.OnWorked)
 
-    MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME*2, OnPickedUp, OnDropped)
+    MakeFeedableSmallLivestock(inst, TUNING.TOTAL_DAY_TIME * 2, OnPickedUp, OnDropped)
 
 
     inst.buzzing = true
@@ -254,8 +255,8 @@ end
 local workerbrain = require("brains/ccsbeebrain")
 
 local function workerbee()
-    --pollinator (from pollinator component) added to pristine state for optimization
-    --for searching: inst:AddTag("pollinator")
+    -- pollinator (from pollinator component) added to pristine state for optimization
+    -- for searching: inst:AddTag("pollinator")
     local inst = commonfn("ccs_bee_build", { "worker", "pollinator" })
 
     if not TheWorld.ismastersim then

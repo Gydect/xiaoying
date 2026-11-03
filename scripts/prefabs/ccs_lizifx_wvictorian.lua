@@ -35,8 +35,8 @@ local function InitEnvelope()
     EnvelopeManager:AddVector2Envelope(
         SCALE_ENVELOPE_NAME,
         {
-            { 0,    { sparkle_max_scale, sparkle_max_scale } },
-            { 1,    { sparkle_max_scale * .5, sparkle_max_scale * .5 } },
+            { 0, { sparkle_max_scale, sparkle_max_scale } },
+            { 1, { sparkle_max_scale * .5, sparkle_max_scale * .5 } },
         }
     )
 
@@ -58,11 +58,11 @@ local function emit_sparkle_fn(effect, sphere_emitter)
 
     effect:AddRotatingParticleUV(
         0,
-        lifetime,           -- lifetime
-        px, py, pz,         -- position
-        vx, vy, vz,         -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,       -- lifetime
+        px, py, pz,     -- position
+        vx, vy, vz,     -- velocity
+        angle, ang_vel, -- angle, angular_velocity
+        uv_offset, 0    -- uv offset
     )
 end
 
@@ -78,7 +78,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -88,7 +88,7 @@ local function fn()
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(1)
 
-    --SPARKLE
+    -- SPARKLE
     effect:SetRenderResources(0, SPARKLE_TEXTURE, ADD_SHADER)
     effect:SetRotationStatus(0, true)
     effect:SetUVFrameSize(0, .25, 1)
@@ -117,7 +117,7 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, function()
         local dist_moved = inst:GetPosition() - inst.last_pos
         local move = dist_moved:Length()
-        move = math.clamp(move*6, 0, 1)
+        move = math.clamp(move * 6, 0, 1)
 
         local per_tick = Lerp(low_per_tick, high_per_tick, move)
 

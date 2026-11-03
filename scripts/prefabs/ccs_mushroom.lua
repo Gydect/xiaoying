@@ -1,9 +1,8 @@
-
 local MUSHROOM_ANIMS =
 {
     { idle = "seed" },
-    { idle = "grow"},
-    { idle = "full"},
+    { idle = "grow" },
+    { idle = "full" },
 }
 
 local function play_idle(inst, stage)
@@ -41,20 +40,26 @@ local growth_stages =
 {
     {
         name = STAGE1,
-        time = function(inst) return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.EMPTY.BASE,
-                TUNING.ROCK_FRUIT_REGROW.EMPTY.VAR) end,
+        time = function(inst)
+            return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.EMPTY.BASE,
+                TUNING.ROCK_FRUIT_REGROW.EMPTY.VAR)
+        end,
         fn = set_stage1,
     },
     {
         name = STAGE2,
-        time = function(inst) return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.PREPICK.BASE,
-                TUNING.ROCK_FRUIT_REGROW.PREPICK.VAR) end,
+        time = function(inst)
+            return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.PREPICK.BASE,
+                TUNING.ROCK_FRUIT_REGROW.PREPICK.VAR)
+        end,
         fn = set_stage2,
     },
     {
         name = STAGE3,
-        time = function(inst) return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.PICK.BASE,
-                TUNING.ROCK_FRUIT_REGROW.PICK.VAR) end,
+        time = function(inst)
+            return GetRandomWithVariance(TUNING.ROCK_FRUIT_REGROW.PICK.BASE,
+                TUNING.ROCK_FRUIT_REGROW.PICK.VAR)
+        end,
         fn = set_stage3,
     },
 }
@@ -82,7 +87,7 @@ local function dig(inst, worker)
 end
 local function makeccsmushroom(name, build, bank, prdouct)
     local assets = {
-        Asset("ANIM", "anim/".. build .. ".zip"),
+        Asset("ANIM", "anim/" .. build .. ".zip"),
         Asset("ATLAS", "images/inventoryimages/" .. build .. ".xml"),
         Asset("IMAGE", "images/inventoryimages/" .. build .. ".tex"),
     }
@@ -97,7 +102,7 @@ local function makeccsmushroom(name, build, bank, prdouct)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("seed")
 
-        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT] / 2) --plantables deployspacing/2
+        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT] / 2) -- plantables deployspacing/2
         MakeSmallObstaclePhysics(inst, .1)
 
         inst:AddTag("plant")
@@ -160,7 +165,7 @@ local function makeccsmushroompicked(name, build, bank)
         inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle")
-        
+
         MakeInventoryPhysics(inst)
         MakeInventoryFloatable(inst)
 
@@ -181,7 +186,7 @@ local function makeccsmushroompicked(name, build, bank)
         inst:AddComponent("stackable")
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-        inst:AddComponent("edible")     -- 可食物组件
+        inst:AddComponent("edible") -- 可食物组件
         inst.components.edible.foodtype = FOODTYPE.GOODIES
         inst.components.edible.hungervalue = 6
         inst.components.edible.healthvalue = 6
@@ -199,7 +204,7 @@ local function ondeploy(inst, pt, deployer)
         tree.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
         if deployer ~= nil and deployer.SoundEmitter ~= nil then
-            --V2C: WHY?!! because many of the plantables don't
+            -- V2C: WHY?!! because many of the plantables don't
             --     have SoundEmitter, and we don't want to add
             --     one just for this sound!
             deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
@@ -242,7 +247,7 @@ local function makeccsmushroomitem(name, build, bank, tree)
         inst.components.inventoryitem.imagename = build
 
         inst:AddComponent("deployable")
-        --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+        -- inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
         inst.components.deployable.ondeploy = ondeploy
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
 
@@ -263,7 +268,7 @@ local function makeccsmushroomstump(name, build, bank)
         Asset("IMAGE", "images/inventoryimages/" .. build .. ".tex"),
     }
     local function onhammered(inst, worker)
-        local fx = SpawnPrefab("collapse_small") --锤烂的特效
+        local fx = SpawnPrefab("collapse_small") -- 锤烂的特效
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
         fx:SetMaterial("metal")
         inst:Remove()
@@ -278,7 +283,7 @@ local function makeccsmushroomstump(name, build, bank)
         inst.AnimState:SetBank(bank)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle")
-        inst:SetPhysicsRadiusOverride(0)  -- 物理碰撞半径
+        inst:SetPhysicsRadiusOverride(0) -- 物理碰撞半径
         inst:SetDeploySmartRadius(0)     -- 与周围物体的最小间距
 
         inst:AddTag("structure")
@@ -290,9 +295,9 @@ local function makeccsmushroomstump(name, build, bank)
         end
 
         inst:AddComponent("workable")
-        inst.components.workable:SetWorkAction(ACTIONS.HAMMER) --动作
+        inst.components.workable:SetWorkAction(ACTIONS.HAMMER)   -- 动作
         inst.components.workable:SetWorkLeft(3)
-        inst.components.workable:SetOnFinishCallback(onhammered) --锤烂的函数
+        inst.components.workable:SetOnFinishCallback(onhammered) -- 锤烂的函数
 
 
         inst:AddComponent("inspectable")
@@ -306,32 +311,31 @@ end
 
 
 return makeccsmushroompicked("ccs_mushroomred_picked", "ccs_mushroomred_picked", "ccs_mushroomred_picked"),
-makeccsmushroom("ccs_mushroomred", "ccs_mushroomred", "ccs_mushroomred", "ccs_mushroomred_picked"),
-MakePlacer("ccs_mushroomred_placer", "ccs_mushroomred", "ccs_mushroomred", "seed"),
-makeccsmushroomstump("ccs_mushroomred_stump", "ccs_mushroomred_stump", "ccs_mushroomred_stump"),
-MakePlacer("ccs_mushroomred_stump_placer", "ccs_mushroomred_stump", "ccs_mushroomred_stump", "idle"),
-makeccsmushroomitem("ccs_mushroomred_item", "ccs_mushroomred_item", "ccs_mushroomred_item", "ccs_mushroomred"),
-MakePlacer("ccs_mushroomred_item_placer", "ccs_mushroomred", "ccs_mushroomred", "seed"),
+    makeccsmushroom("ccs_mushroomred", "ccs_mushroomred", "ccs_mushroomred", "ccs_mushroomred_picked"),
+    MakePlacer("ccs_mushroomred_placer", "ccs_mushroomred", "ccs_mushroomred", "seed"),
+    makeccsmushroomstump("ccs_mushroomred_stump", "ccs_mushroomred_stump", "ccs_mushroomred_stump"),
+    MakePlacer("ccs_mushroomred_stump_placer", "ccs_mushroomred_stump", "ccs_mushroomred_stump", "idle"),
+    makeccsmushroomitem("ccs_mushroomred_item", "ccs_mushroomred_item", "ccs_mushroomred_item", "ccs_mushroomred"),
+    MakePlacer("ccs_mushroomred_item_placer", "ccs_mushroomred", "ccs_mushroomred", "seed"),
 
-makeccsmushroompicked("ccs_mushroomorange_picked", "ccs_mushroomorange_picked", "ccs_mushroomorange_picked"),
-makeccsmushroom("ccs_mushroomorange", "ccs_mushroomorange", "ccs_mushroomorange", "ccs_mushroomorange_picked"),
-MakePlacer("ccs_mushroomorange_placer", "ccs_mushroomorange", "ccs_mushroomorange", "seed"),
-makeccsmushroomitem("ccs_mushroomorange_item", "ccs_mushroomorange_item", "ccs_mushroomorange_item", "ccs_mushroomorange"),
-MakePlacer("ccs_mushroomorange_item_placer", "ccs_mushroomorange", "ccs_mushroomorange", "seed"),
+    makeccsmushroompicked("ccs_mushroomorange_picked", "ccs_mushroomorange_picked", "ccs_mushroomorange_picked"),
+    makeccsmushroom("ccs_mushroomorange", "ccs_mushroomorange", "ccs_mushroomorange", "ccs_mushroomorange_picked"),
+    MakePlacer("ccs_mushroomorange_placer", "ccs_mushroomorange", "ccs_mushroomorange", "seed"),
+    makeccsmushroomitem("ccs_mushroomorange_item", "ccs_mushroomorange_item", "ccs_mushroomorange_item", "ccs_mushroomorange"),
+    MakePlacer("ccs_mushroomorange_item_placer", "ccs_mushroomorange", "ccs_mushroomorange", "seed"),
 
-makeccsmushroompicked("ccs_mushroompurple_picked", "ccs_mushroompurple_picked", "ccs_mushroompurple_picked"),
-makeccsmushroom("ccs_mushroompurple", "ccs_mushroompurple", "ccs_mushroompurple", "ccs_mushroompurple_picked"),
-MakePlacer("ccs_mushroompurple_placer", "ccs_mushroompurple", "ccs_mushroompurple", "seed"),
-makeccsmushroomstump("ccs_mushroompurple_stump", "ccs_mushroompurple_stump", "ccs_mushroompurple_stump"),
-MakePlacer("ccs_mushroompurple_stump_placer", "ccs_mushroompurple_stump", "ccs_mushroompurple_stump", "idle"),
-makeccsmushroomitem("ccs_mushroompurple_item", "ccs_mushroompurple_item", "ccs_mushroompurple_item", "ccs_mushroompurple"),
-MakePlacer("ccs_mushroompurple_item_placer", "ccs_mushroompurple", "ccs_mushroompurple", "seed"),
+    makeccsmushroompicked("ccs_mushroompurple_picked", "ccs_mushroompurple_picked", "ccs_mushroompurple_picked"),
+    makeccsmushroom("ccs_mushroompurple", "ccs_mushroompurple", "ccs_mushroompurple", "ccs_mushroompurple_picked"),
+    MakePlacer("ccs_mushroompurple_placer", "ccs_mushroompurple", "ccs_mushroompurple", "seed"),
+    makeccsmushroomstump("ccs_mushroompurple_stump", "ccs_mushroompurple_stump", "ccs_mushroompurple_stump"),
+    MakePlacer("ccs_mushroompurple_stump_placer", "ccs_mushroompurple_stump", "ccs_mushroompurple_stump", "idle"),
+    makeccsmushroomitem("ccs_mushroompurple_item", "ccs_mushroompurple_item", "ccs_mushroompurple_item", "ccs_mushroompurple"),
+    MakePlacer("ccs_mushroompurple_item_placer", "ccs_mushroompurple", "ccs_mushroompurple", "seed"),
 
-makeccsmushroompicked("ccs_mushroomgreen_picked", "ccs_mushroomgreen_picked", "ccs_mushroomgreen_picked"),
-makeccsmushroom("ccs_mushroomgreen", "ccs_mushroomgreen", "ccs_mushroomgreen", "ccs_mushroomgreen_picked"),
-MakePlacer("ccs_mushroomgreen_placer", "ccs_mushroomgreen", "ccs_mushroomgreen", "seed"),
-makeccsmushroomstump("ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump"),
-MakePlacer("ccs_mushroomgreen_stump_placer", "ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump", "idle"),
-makeccsmushroomitem("ccs_mushroomgreen_item", "ccs_mushroomgreen_item", "ccs_mushroomgreen_item", "ccs_mushroomgreen"),
-MakePlacer("ccs_mushroomgreen_item_placer", "ccs_mushroomgreen", "ccs_mushroomgreen", "seed")
-
+    makeccsmushroompicked("ccs_mushroomgreen_picked", "ccs_mushroomgreen_picked", "ccs_mushroomgreen_picked"),
+    makeccsmushroom("ccs_mushroomgreen", "ccs_mushroomgreen", "ccs_mushroomgreen", "ccs_mushroomgreen_picked"),
+    MakePlacer("ccs_mushroomgreen_placer", "ccs_mushroomgreen", "ccs_mushroomgreen", "seed"),
+    makeccsmushroomstump("ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump"),
+    MakePlacer("ccs_mushroomgreen_stump_placer", "ccs_mushroomgreen_stump", "ccs_mushroomgreen_stump", "idle"),
+    makeccsmushroomitem("ccs_mushroomgreen_item", "ccs_mushroomgreen_item", "ccs_mushroomgreen_item", "ccs_mushroomgreen"),
+    MakePlacer("ccs_mushroomgreen_item_placer", "ccs_mushroomgreen", "ccs_mushroomgreen", "seed")

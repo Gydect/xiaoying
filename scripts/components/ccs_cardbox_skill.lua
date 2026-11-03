@@ -30,8 +30,8 @@ local SKILL_CONFIG = {
         tag = "lock_blood_full",
         effect = "死亡时回复满血并锁血30秒，冷却8分钟",
         requirements = {
-            { prefab = "ccs_cards_8", min_level = 1, max_level = 1 },
-            { prefab = "ccs_cards_1", min_level = 1, max_level = 1 },
+            { prefab = "ccs_cards_8",  min_level = 1, max_level = 1 },
+            { prefab = "ccs_cards_1",  min_level = 1, max_level = 1 },
             { prefab = "ccs_cards_28", min_level = 3, max_level = 3 },
         },
     },
@@ -58,7 +58,7 @@ local SKILL_CONFIG = {
         effect = "被攻击时35%概率闪避伤害",
         requirements = {
             { prefab = "ccs_cards_25", min_level = 2, max_level = 2 },
-            { prefab = "ccs_cards_1", min_level = 1, max_level = 1 },
+            { prefab = "ccs_cards_1",  min_level = 1, max_level = 1 },
         },
     },
     {
@@ -76,7 +76,7 @@ local SKILL_CONFIG = {
         effect = "攻击时触发暗影牢笼",
         requirements = {
             { prefab = "ccs_cards_21", min_level = 2, max_level = 2 },
-            { prefab = "ccs_cards_1", min_level = 1, max_level = 1 },
+            { prefab = "ccs_cards_1",  min_level = 1, max_level = 1 },
         },
     },
 }
@@ -245,22 +245,22 @@ function Ccs_CardBox_Skill:UnlockSkillHint(skill)
     if CCSWHISPER then
         CCSWHISPER(owner, {
             sender_name = "卡牌盒",
-            s_colour = {1, 0.8, 0.2, 1},
-            m_colour = {1, 1, 0, 1},
+            s_colour = { 1, 0.8, 0.2, 1 },
+            m_colour = { 1, 1, 0, 1 },
             message = title,
             icondata = "profileflair_rose",
         })
         CCSWHISPER(owner, {
             sender_name = "卡牌盒",
-            s_colour = {1, 0.8, 0.2, 1},
-            m_colour = {1, 1, 0, 1},
+            s_colour = { 1, 0.8, 0.2, 1 },
+            m_colour = { 1, 1, 0, 1 },
             message = cond,
             icondata = "profileflair_rose",
         })
         CCSWHISPER(owner, {
             sender_name = "卡牌盒",
-            s_colour = {1, 0.8, 0.2, 1},
-            m_colour = {1, 1, 0, 1},
+            s_colour = { 1, 0.8, 0.2, 1 },
+            m_colour = { 1, 1, 0, 1 },
             message = effect,
             icondata = "profileflair_rose",
         })

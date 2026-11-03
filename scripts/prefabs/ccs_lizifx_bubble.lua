@@ -14,22 +14,21 @@ local function IntColour(r, g, b, a)
 end
 
 local function InitEnvelope()
-
     local colour_envelope = {
-        { 0, IntColour(219, 206, 224, 255) },
+        { 0,   IntColour(219, 206, 224, 255) },
         { 0.5, IntColour(219, 206, 224, 255) },
-        { 1, IntColour(219, 206, 224, 0) },
+        { 1,   IntColour(219, 206, 224, 0) },
     }
-    
+
 
     EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME, colour_envelope)
 
     local max_scale = 0.7
     local scale_envelope = {
-        { 0,    { max_scale * 0.4, max_scale * 0.4 } },
-        { 0.3,  { max_scale * 0.5, max_scale * 0.5 } },
-        { 0.6,  { max_scale * 0.6, max_scale * 0.6 } },
-        { 1,    { max_scale * 0.7, max_scale * 0.7 } },
+        { 0,   { max_scale * 0.4, max_scale * 0.4 } },
+        { 0.3, { max_scale * 0.5, max_scale * 0.5 } },
+        { 0.6, { max_scale * 0.6, max_scale * 0.6 } },
+        { 1,   { max_scale * 0.7, max_scale * 0.7 } },
     }
     EnvelopeManager:AddVector2Envelope(SCALE_ENVELOPE_NAME, scale_envelope)
 

@@ -6,10 +6,10 @@ require "behaviours/panic"
 local TARGET_FOLLOW_DIST = 4
 local MAX_FOLLOW_DIST = 4.5
 
-local COMBAT_TOO_CLOSE_DIST = 5                 -- distance for find enitities check
+local COMBAT_TOO_CLOSE_DIST = 5               -- distance for find enitities check
 local COMBAT_TOO_CLOSE_DIST_SQ = COMBAT_TOO_CLOSE_DIST * COMBAT_TOO_CLOSE_DIST
-local COMBAT_SAFE_TO_WATCH_FROM_DIST = 8        -- will run to this distance and watch if was too close
-local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST = 12   -- combat is quite far away now, better catch up
+local COMBAT_SAFE_TO_WATCH_FROM_DIST = 8      -- will run to this distance and watch if was too close
+local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST = 12 -- combat is quite far away now, better catch up
 local COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST_SQ = COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST * COMBAT_SAFE_TO_WATCH_FROM_MAX_DIST
 local COMBAT_TIMEOUT = 6
 
@@ -48,16 +48,16 @@ end
 
 -------------------------------------------------------------------------------
 --  Play With Other Critters
-local PLAYMATE_NO_TAGS = {"busy"}
+local PLAYMATE_NO_TAGS = { "busy" }
 local function PlayWithPlaymate(self)
-    self.inst:PushEvent("start_playwithplaymate", {target=self.playfultarget})
+    self.inst:PushEvent("start_playwithplaymate", { target = self.playfultarget })
 end
 
 local function TargetCanPlay(self, target, owner, max_dist_from_owner, is_flier)
-	return (target.IsPlayful == nil or target:IsPlayful()) 
-			and target:IsNear(owner, max_dist_from_owner) 
-			and (is_flier or target:IsOnPassablePoint())
-			and (target.components.sleeper == nil or not target.components.sleeper:IsAsleep())
+    return (target.IsPlayful == nil or target:IsPlayful())
+        and target:IsNear(owner, max_dist_from_owner)
+        and (is_flier or target:IsOnPassablePoint())
+        and (target.components.sleeper == nil or not target.components.sleeper:IsAsleep())
 end
 
 local function FindPlaymate(self)
@@ -118,23 +118,23 @@ local function _avoidtargetfn(self, target)
     -- Is owner in combat with target?
     -- Are owner and target both in any combat?
     local t = GetTime()
-    return  (   (owner_combat:IsRecentTarget(target) or target_combat:HasTarget()) and
-                math.max(owner_combat.laststartattacktime or 0, owner_combat.lastdoattacktime or 0) + COMBAT_TIMEOUT > t
-            ) or
-            (   owner_combat.lastattacker == target and
-                owner_combat:GetLastAttackedTime() + COMBAT_TIMEOUT > t
-            )
+    return ((owner_combat:IsRecentTarget(target) or target_combat:HasTarget()) and
+            math.max(owner_combat.laststartattacktime or 0, owner_combat.lastdoattacktime or 0) + COMBAT_TIMEOUT > t
+        ) or
+        (owner_combat.lastattacker == target and
+            owner_combat:GetLastAttackedTime() + COMBAT_TIMEOUT > t
+        )
 end
 
 local function CombatAvoidanceFindEntityCheck(self)
     return function(ent)
-            if _avoidtargetfn(self, ent) then
-                self.inst:PushEvent("critter_avoidcombat", {avoid=true})
-                self.runawayfrom = ent
-                return true
-            end
-            return false
+        if _avoidtargetfn(self, ent) then
+            self.inst:PushEvent("critter_avoidcombat", { avoid = true })
+            self.runawayfrom = ent
+            return true
         end
+        return false
+    end
 end
 
 local function ValidateCombatAvoidance(self)
@@ -143,7 +143,7 @@ local function ValidateCombatAvoidance(self)
     end
 
     if not self.runawayfrom:IsValid() then
-        self.inst:PushEvent("critter_avoidcombat", {avoid=false})
+        self.inst:PushEvent("critter_avoidcombat", { avoid = false })
         self.runawayfrom = nil
         return false
     end
@@ -153,7 +153,7 @@ local function ValidateCombatAvoidance(self)
     end
 
     if not _avoidtargetfn(self, self.runawayfrom) then
-        self.inst:PushEvent("critter_avoidcombat", {avoid=false})
+        self.inst:PushEvent("critter_avoidcombat", { avoid = false })
         self.runawayfrom = nil
         return false
     end
@@ -163,19 +163,19 @@ end
 
 --- Minigames
 local function WatchingMinigame(inst)
-	return (inst.components.follower.leader ~= nil and inst.components.follower.leader.components.minigame_participator ~= nil) and inst.components.follower.leader.components.minigame_participator:GetMinigame() or nil
+    return (inst.components.follower.leader ~= nil and inst.components.follower.leader.components.minigame_participator ~= nil) and inst.components.follower.leader.components.minigame_participator:GetMinigame() or nil
 end
 local function WatchingMinigame_MinDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_min or 0
+    local minigame = WatchingMinigame(inst)
+    return minigame ~= nil and minigame.components.minigame.watchdist_min or 0
 end
 local function WatchingMinigame_TargetDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_target or 0
+    local minigame = WatchingMinigame(inst)
+    return minigame ~= nil and minigame.components.minigame.watchdist_target or 0
 end
 local function WatchingMinigame_MaxDist(inst)
-	local minigame = WatchingMinigame(inst)
-	return minigame ~= nil and minigame.components.minigame.watchdist_max or 0
+    local minigame = WatchingMinigame(inst)
+    return minigame ~= nil and minigame.components.minigame.watchdist_max or 0
 end
 
 -------------------------------------------------------------------------------
@@ -186,36 +186,36 @@ local Ccs_Xk_brain = Class(Brain, function(self, inst)
 end)
 
 function Ccs_Xk_brain:OnStart()
-	local watch_game = WhileNode( function() return WatchingMinigame(self.inst) end, "Watching Game",
-        PriorityNode{
-				Follow(self.inst, WatchingMinigame, WatchingMinigame_MinDist, WatchingMinigame_TargetDist, WatchingMinigame_MaxDist),
-				RunAway(self.inst, "minigame_participator", 5, 7),
-				FaceEntity(self.inst, WatchingMinigame, WatchingMinigame ),
+    local watch_game = WhileNode(function() return WatchingMinigame(self.inst) end, "Watching Game",
+        PriorityNode {
+            Follow(self.inst, WatchingMinigame, WatchingMinigame_MinDist, WatchingMinigame_TargetDist, WatchingMinigame_MaxDist),
+            RunAway(self.inst, "minigame_participator", 5, 7),
+            FaceEntity(self.inst, WatchingMinigame, WatchingMinigame),
         }, 0.1)
 
     local root = PriorityNode({
-        WhileNode( function() return self.inst.components.follower.leader end, "Has Owner",
-            PriorityNode{
-				watch_game,
+        WhileNode(function() return self.inst.components.follower.leader end, "Has Owner",
+            PriorityNode {
+                watch_game,
                 -- Combat Avoidance
-                PriorityNode{
-                    RunAway(self.inst, {tags={"_combat", "_health"}, notags={"wall", "INLIMBO"}, fn=CombatAvoidanceFindEntityCheck(self)}, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
-                    WhileNode( function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
+                PriorityNode {
+                    RunAway(self.inst, { tags = { "_combat", "_health" }, notags = { "wall", "INLIMBO" }, fn = CombatAvoidanceFindEntityCheck(self) }, COMBAT_TOO_CLOSE_DIST, COMBAT_SAFE_TO_WATCH_FROM_DIST),
+                    WhileNode(function() return ValidateCombatAvoidance(self) end, "Is Near Combat",
                         FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
                 },
                 WhileNode(function() return FindPlaymate(self) end, "Playful",
-                    SequenceNode{
+                    SequenceNode {
                         WaitNode(6),
-                        PriorityNode{
+                        PriorityNode {
                             Leash(self.inst, function() return self.playfultarget:GetPosition() end, PLAYFUL_OFFSET, PLAYFUL_OFFSET),
                             ActionNode(function() PlayWithPlaymate(self) end),
-                            --StandStill(self.inst),
+                            -- StandStill(self.inst),
                         },
                     }),
                 Follow(self.inst, function() return self.inst.components.follower.leader end, 0, 2, 2),
                 FailIfRunningDecorator(FaceEntity(self.inst, GetOwner, KeepFaceTargetFn)),
                 WhileNode(function() return OwnerIsClose(self.inst) and self.inst:IsAffectionate() end, "Affection",
-                    SequenceNode{
+                    SequenceNode {
                         WaitNode(4),
                         DoAction(self.inst, LoveOwner),
                     }),

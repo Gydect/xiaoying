@@ -1,8 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/ccs_guard.zip"),
-	Asset("ATLAS", "images/inventoryimages/ccs_guard.xml"),
-	Asset("IMAGE", "images/inventoryimages/ccs_guard.tex"),
+    Asset("ATLAS", "images/inventoryimages/ccs_guard.xml"),
+    Asset("IMAGE", "images/inventoryimages/ccs_guard.tex"),
 }
 
 local function Update(inst)
@@ -48,7 +48,7 @@ local function GiveSakura(inst, giver, item)
     Update(inst)
 end
 
---加载
+-- 加载
 local function onload(inst, data)
     if data then
         inst.ccs_sakura3 = data.ccs_sakura3 or 0
@@ -57,7 +57,7 @@ local function onload(inst, data)
     end
 end
 
---保存
+-- 保存
 local function onsave(inst, data)
     data.ccs_sakura3 = inst.ccs_sakura3 or 0
     data.ccs_cards_28 = inst.ccs_cards_28 or 0
@@ -75,16 +75,16 @@ local function fn()
     inst.AnimState:SetBank("ccs_guard")
     inst.AnimState:SetBuild("ccs_guard")
     inst.AnimState:PlayAnimation("idle")
-	
-	inst:AddTag("ccs_guard")
+
+    inst:AddTag("ccs_guard")
     inst:AddTag("ccs_mianyijitui2")
     inst:AddTag("ccstrader")
-	
-	MakeInventoryFloatable(inst, "med", nil, 0.75)
+
+    MakeInventoryFloatable(inst, "med", nil, 0.75)
 
     inst.entity:SetPristine()
-    
-	
+
+
     if not TheWorld.ismastersim then
         return inst
     end
@@ -92,12 +92,12 @@ local function fn()
     inst.ccs_sakura3 = 0
     inst.ccs_cards_28 = 0
 
-    
+
 
     inst:AddComponent("inspectable")
 
-    inst:AddComponent("inventoryitem")   --物品
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_guard.xml"
+    inst:AddComponent("inventoryitem") -- 物品
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_guard.xml"
 
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_INSTANT_REZ)

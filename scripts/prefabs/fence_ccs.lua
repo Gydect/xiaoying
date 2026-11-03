@@ -5,9 +5,9 @@ local wall_prefabs =
     "collapse_small",
 }
 
-local FINDDOOR_MUST_TAGS = {"door"}
-local FINDWALL_MUST_TAGS = {"wall"}
-local FINDWALL_CANT_TAGS = {"alignwall"}
+local FINDDOOR_MUST_TAGS = { "door" }
+local FINDWALL_MUST_TAGS = { "wall" }
+local FINDWALL_CANT_TAGS = { "alignwall" }
 
 local ROT_SIDES = 8
 local function CalcRotationEnum(rot)
@@ -35,8 +35,8 @@ end
 
 local function GetAnimName(inst, basename)
     return basename
-        ..(IsSwingRight(inst) and "right" or "")
-        ..(IsOpen(inst) and "_open" or "")
+        .. (IsSwingRight(inst) and "right" or "")
+        .. (IsOpen(inst) and "_open" or "")
 end
 
 local function GetAnimState(inst)
@@ -44,10 +44,10 @@ local function GetAnimState(inst)
 end
 
 -------------------------------------------------------------------------------
---Networked data
+-- Networked data
 local function GetDoorRotationOffset(inst, rot)
-    --angle1 to get back to hinge
-    --angle2 to open door using hinge as pivot
+    -- angle1 to get back to hinge
+    -- angle2 to open door using hinge as pivot
     local sign = IsSwingRight(inst) and -1 or 1
     local angle1 = inst.Transform:GetRotation() * DEGREES
     local angle2 = angle1 + sign * rot * DEGREES
@@ -59,7 +59,7 @@ local function GetDoorRotationOffset(inst, rot)
 end
 
 local function OnDoorStateDirty(inst)
-    --V2C: AnimState:SetSortWorldOffset is client side
+    -- V2C: AnimState:SetSortWorldOffset is client side
     if inst.dooranim ~= nil and inst._isopen ~= nil then
         if inst._isopen:value() then
             inst.dooranim.AnimState:SetSortWorldOffset(GetDoorRotationOffset(inst, 100))
@@ -70,7 +70,7 @@ local function OnDoorStateDirty(inst)
 end
 
 local function OnInitDoorClient(inst)
-    --V2C: No point doing it any earlier because we need to wait for rotation to set
+    -- V2C: No point doing it any earlier because we need to wait for rotation to set
     inst:ListenForEvent("doorstatedirty", OnDoorStateDirty)
     OnDoorStateDirty(inst)
 end
@@ -108,7 +108,7 @@ local function FindPairedDoor(inst)
     search_x = x + (swingright and search_x or -search_x)
     search_y = z + (swingright and -search_y or search_y)
 
-    local other_door = TheSim:FindEntities(search_x,0,search_y, 0.25, FINDDOOR_MUST_TAGS)[1]
+    local other_door = TheSim:FindEntities(search_x, 0, search_y, 0.25, FINDDOOR_MUST_TAGS)[1]
     if other_door then
         local opposite_swing = swingright ~= IsSwingRight(other_door)
         local opposite_rotation = inst.Transform:GetRotation() ~= other_door.Transform:GetRotation()
@@ -201,30 +201,30 @@ end
 
 local function FixUpFenceOrientation(inst, deployedrotation)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local neighbors = TheSim:FindEntities(x,0,z, 1.5, FINDWALL_MUST_TAGS)
+    local neighbors = TheSim:FindEntities(x, 0, z, 1.5, FINDWALL_MUST_TAGS)
 
     local rot = inst.Transform:GetRotation()
     local neighbor_index = 1
     local neighbor = neighbors[neighbor_index]
-    if deployedrotation ~= nil then --has a value for spawned items
+    if deployedrotation ~= nil then -- has a value for spawned items
         neighbor_index = 2
         neighbor = neighbors[neighbor_index]
         rot = deployedrotation
     end
 
     if inst.isdoor then
-        SetIsSwingRight(inst, false) --set it to false and assume we'll recalculate each frame
+        SetIsSwingRight(inst, false) -- set it to false and assume we'll recalculate each frame
     end
 
-    --Only look for parallel fence/gate neighbours when matching rotation and doing swing-side changes
+    -- Only look for parallel fence/gate neighbours when matching rotation and doing swing-side changes
     local this_e = CalcRotationEnum(rot)
     local neighbor_e = nil
     while neighbor ~= nil do
         neighbor_e = CalcRotationEnum(neighbor.Transform:GetRotation())
-        
-        --if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2)) then
-        if (neighbor.isdoor or string.find(neighbor.prefab,"fence")) and (this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2)) then
-            --found a parallel fence/gate neighbour!
+
+        -- if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2)) then
+        if (neighbor.isdoor or string.find(neighbor.prefab, "fence")) and (this_e % (ROT_SIDES / 2) == neighbor_e % (ROT_SIDES / 2)) then
+            -- found a parallel fence/gate neighbour!
             break
         end
         neighbor_index = neighbor_index + 1
@@ -232,19 +232,19 @@ local function FixUpFenceOrientation(inst, deployedrotation)
     end
 
     if neighbor == nil then
-        --no fence/gates, try the first item again it should be a wall
+        -- no fence/gates, try the first item again it should be a wall
         rot = inst.Transform:GetRotation()
         neighbor = neighbors[1]
-        if deployedrotation ~= nil then --has a value for spawned items
+        if deployedrotation ~= nil then -- has a value for spawned items
             neighbor = neighbors[2]
             rot = deployedrotation
         end
     end
 
     if neighbor ~= nil then
-        --align with fence/gate neighbor if we're placing from behind. This exists so that you can fix a hole in a wall from the back of wall. Needed for the case where the camera is obstructed from placing from the front of the wall
-        --if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e + ROT_SIDES/2) % ROT_SIDES == neighbor_e then
-        if (neighbor.isdoor or string.find(neighbor.prefab,"fence")) and (this_e % (ROT_SIDES/2) == neighbor_e % (ROT_SIDES/2)) then
+        -- align with fence/gate neighbor if we're placing from behind. This exists so that you can fix a hole in a wall from the back of wall. Needed for the case where the camera is obstructed from placing from the front of the wall
+        -- if (neighbor.isdoor or neighbor.prefab == "fence") and (this_e + ROT_SIDES/2) % ROT_SIDES == neighbor_e then
+        if (neighbor.isdoor or string.find(neighbor.prefab, "fence")) and (this_e % (ROT_SIDES / 2) == neighbor_e % (ROT_SIDES / 2)) then
             rot = rot + 180
             this_e = CalcRotationEnum(rot)
         end
@@ -386,7 +386,7 @@ local function getdooractionstring(inst)
 end
 
 local function lockabledoor_displaynamefn(inst)
-    return not inst._isunlocked:value() and STRINGS.NAMES[string.upper(inst.prefab.."_locked")] or nil
+    return not inst._isunlocked:value() and STRINGS.NAMES[string.upper(inst.prefab .. "_locked")] or nil
 end
 
 local function lockabledoor_getstatus(inst)
@@ -441,7 +441,7 @@ local function onload(inst, data)
             -- very old style of save data. updates save data to v2 format, safe to remove this when we go out of the beta branch
             rotation = data.rotation - 90
         elseif data.rot ~= nil then
-            rotation = data.rot*45
+            rotation = data.rot * 45
         end
         SetOrientation(inst, rotation)
 
@@ -454,7 +454,7 @@ local function onload(inst, data)
 end
 local function onloadpostpass(inst, newents, data)
     if data == nil then
-        --Don't crash on mods placing fences in worldgen
+        -- Don't crash on mods placing fences in worldgen
         return
     end
 
@@ -490,17 +490,17 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
     local assets, custom_wall_prefabs
 
     if isdoor then
-        custom_wall_prefabs = { name.."_anim" }
+        custom_wall_prefabs = { name .. "_anim" }
         for i, v in ipairs(wall_prefabs) do
             table.insert(custom_wall_prefabs, v)
         end
     else
         assets =
         {
-            Asset("ANIM", "anim/"..anims.wide..".zip"),
+            Asset("ANIM", "anim/" .. anims.wide .. ".zip"),
         }
         if anims.narrow then
-            table.insert(assets, Asset("ANIM", "anim/"..anims.narrow..".zip"))
+            table.insert(assets, Asset("ANIM", "anim/" .. anims.narrow .. ".zip"))
         end
         if anims.inv then
             table.insert(assets, Asset("ATLAS", "images/inventoryimages/" .. anims.inv .. ".xml"))
@@ -512,13 +512,13 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
         local inst = CreateEntity()
 
         inst.entity:AddTransform()
-        inst.entity:AddAnimState() --V2C: need this even if we are door, for mouseover sorting
+        inst.entity:AddAnimState() -- V2C: need this even if we are door, for mouseover sorting
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         inst.Transform:SetEightFaced()
 
-        
+
         MakeObstaclePhysics(inst, .5)
         if nophysics then
             RemovePhysicsColliders(inst)
@@ -535,10 +535,10 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
         if isdoor then
             inst.isdoor = true
             inst:AddTag("door")
-            inst._isopen = net_bool(inst.GUID, name.."._open", "doorstatedirty")
-            inst._isswingright = net_bool(inst.GUID, name.."._swingright", "doorstatedirty")
+            inst._isopen = net_bool(inst.GUID, name .. "._open", "doorstatedirty")
+            inst._isswingright = net_bool(inst.GUID, name .. "._swingright", "doorstatedirty")
             if klaussackkeyid ~= nil then
-                inst._isunlocked = net_bool(inst.GUID, name.."._unlocked")
+                inst._isunlocked = net_bool(inst.GUID, name .. "._unlocked")
                 -- inst.displaynamefn = lockabledoor_displaynamefn
             end
             inst.GetActivateVerb = getdooractionstring
@@ -551,8 +551,8 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
         inst._pfpos = nil
         inst._ispathfinding = net_bool(inst.GUID, "_ispathfinding", "onispathfindingdirty")
         makeobstacle(inst)
-        --Delay this because makeobstacle sets pathfinding on by default
-        --but we don't to handle it until after our position is set
+        -- Delay this because makeobstacle sets pathfinding on by default
+        -- but we don't to handle it until after our position is set
         inst:DoTaskInTime(0, InitializePathFinding)
 
         inst.OnRemoveEntity = onremove
@@ -570,7 +570,7 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
         inst:AddComponent("inspectable")
 
         if isdoor then
-            inst.dooranim = SpawnPrefab(name.."_anim")
+            inst.dooranim = SpawnPrefab(name .. "_anim")
             inst.dooranim.entity:SetParent(inst.entity)
             inst.highlightforward = inst.dooranim
             if klaussackkeyid ~= nil then
@@ -581,7 +581,7 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
         inst.anims = anims
 
         inst:AddComponent("lootdropper")
-        inst.components.lootdropper:SetLoot({ "twigs"})
+        inst.components.lootdropper:SetLoot({ "twigs" })
 
         if TheNet:GetServerGameMode() ~= "quagmire" then
             inst:AddComponent("workable")
@@ -635,17 +635,17 @@ end
 local function MakeWallAnim(name, anims, isdoor)
     local assets =
     {
-        Asset("ANIM", "anim/"..anims.wide..".zip"),
+        Asset("ANIM", "anim/" .. anims.wide .. ".zip"),
     }
     if anims.narrow then
-        table.insert(assets, Asset("ANIM", "anim/"..anims.narrow..".zip"))
+        table.insert(assets, Asset("ANIM", "anim/" .. anims.narrow .. ".zip"))
     end
 
     local function fn()
         local inst = CreateEntity()
 
         if isdoor then
-            --V2C: speecial =) must be the 1st tag added b4 AnimState component
+            -- V2C: speecial =) must be the 1st tag added b4 AnimState component
             inst:AddTag("can_offset_sort_pos")
         end
 
@@ -689,8 +689,8 @@ end
 local function MakeInvItem(name, placement, animdata, isdoor, bank)
     local assets =
     {
-        Asset("ANIM", "anim/"..animdata..".zip"),
-        Asset("ATLAS", "images/inventoryimages/"..animdata.."_item.xml"),
+        Asset("ANIM", "anim/" .. animdata .. ".zip"),
+        Asset("ATLAS", "images/inventoryimages/" .. animdata .. "_item.xml"),
         Asset("IMAGE", "images/inventoryimages/" .. animdata .. "_item.tex"),
     }
     local item_prefabs =
@@ -698,8 +698,8 @@ local function MakeInvItem(name, placement, animdata, isdoor, bank)
         placement,
     }
 
-    local function ondeploywall(inst, pt, deployer, rot )
-        local wall = SpawnPrefab(placement, inst.linked_skinname, inst.skin_id )
+    local function ondeploywall(inst, pt, deployer, rot)
+        local wall = SpawnPrefab(placement, inst.linked_skinname, inst.skin_id)
         if wall ~= nil then
             local x = math.floor(pt.x) + .5
             local z = math.floor(pt.z) + .5
@@ -730,7 +730,7 @@ local function MakeInvItem(name, placement, animdata, isdoor, bank)
         inst.AnimState:SetBuild(animdata)
         inst.AnimState:PlayAnimation("inventory")
 
-		MakeInventoryFloatable(inst, "small", nil, 1.1)
+        MakeInventoryFloatable(inst, "small", nil, 1.1)
 
         inst.entity:SetPristine()
 
@@ -743,7 +743,7 @@ local function MakeInvItem(name, placement, animdata, isdoor, bank)
 
         inst:AddComponent("inspectable")
         inst:AddComponent("inventoryitem")
-        inst.components.inventoryitem.atlasname = "images/inventoryimages/"..animdata.."_item.xml"
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. animdata .. "_item.xml"
 
         inst:AddComponent("deployable")
         inst.components.deployable.ondeploy = ondeploywall
@@ -799,18 +799,18 @@ local function MakeWallPlacer(placer, placement, anims, isdoor)
         nil, nil, true, nil, 0, "eight",
         function(inst)
             inst.components.placer.onupdatetransform = placerupdate
-		    inst.components.placer.SetBuilder = function(self,builder, recipe, invobject)
-			    self.builder = builder
-			    self.recipe = recipe
-			    self.invobject = invobject
-			    if invobject and invobject.linked_skinname then
-				    self.inst.AnimState:SetSkin(invobject.linked_skinname, anims.wide)
+            inst.components.placer.SetBuilder = function(self, builder, recipe, invobject)
+                self.builder = builder
+                self.recipe = recipe
+                self.invobject = invobject
+                if invobject and invobject.linked_skinname then
+                    self.inst.AnimState:SetSkin(invobject.linked_skinname, anims.wide)
                     if self.inst.dooranim then
                         self.inst.dooranim.AnimState:SetSkin(invobject.linked_skinname, anims.wide)
                     end
-			    end
-			    self.inst:StartWallUpdatingComponent(self)
-		    end
+                end
+                self.inst:StartWallUpdatingComponent(self)
+            end
             inst.anims = anims
             if isdoor then
                 inst.isdoor = true
@@ -823,40 +823,38 @@ local function MakeWallPlacer(placer, placement, anims, isdoor)
 end
 
 return
-    MakeWall("fence_ccsstrawberry", {wide="fence_ccsstrawberry",narrow="fence_thin",anim = "fence"}, false),
+    MakeWall("fence_ccsstrawberry", { wide = "fence_ccsstrawberry", narrow = "fence_thin", anim = "fence" }, false),
     MakeInvItem("fence_ccsstrawberry_item", "fence_ccsstrawberry", "fence_ccsstrawberry", false),
-    MakeWallPlacer("fence_ccsstrawberry_item_placer", "fence_ccsstrawberry", {wide="fence_ccsstrawberry", narrow="fence_thin",anim = "fence"}, false),
+    MakeWallPlacer("fence_ccsstrawberry_item_placer", "fence_ccsstrawberry", { wide = "fence_ccsstrawberry", narrow = "fence_thin", anim = "fence" }, false),
     MakeWall("ccs_huazhalan", { wide = "ccs_huazhalan", narrow = "ccs_huazhalan", anim = "ccs_huazhalan" }, false),
     MakeInvItem("ccs_huazhalan_item", "ccs_huazhalan", "ccs_huazhalan", false, "ccs_huazhalan"),
-    MakeWallPlacer("ccs_huazhalan_item_placer", "ccs_huazhalan", {wide="ccs_huazhalan", narrow="ccs_huazhalan",anim = "ccs_huazhalan"}, false),
+    MakeWallPlacer("ccs_huazhalan_item_placer", "ccs_huazhalan", { wide = "ccs_huazhalan", narrow = "ccs_huazhalan", anim = "ccs_huazhalan" }, false),
     MakeWall("ccs_huazhalan2", { wide = "ccs_huazhalan2", narrow = "ccs_huazhalan2", anim = "ccs_huazhalan2" }, false),
     MakeInvItem("ccs_huazhalan2_item", "ccs_huazhalan2", "ccs_huazhalan2", false, "ccs_huazhalan2"),
-    MakeWallPlacer("ccs_huazhalan2_item_placer", "ccs_huazhalan2", {wide="ccs_huazhalan2", narrow="ccs_huazhalan2",anim = "ccs_huazhalan2"}, false),
+    MakeWallPlacer("ccs_huazhalan2_item_placer", "ccs_huazhalan2", { wide = "ccs_huazhalan2", narrow = "ccs_huazhalan2", anim = "ccs_huazhalan2" }, false),
     MakeWall("ccs_huazhalan3", { wide = "ccs_huazhalan3", narrow = "ccs_huazhalan3", anim = "ccs_huazhalan3" }, false),
     MakeInvItem("ccs_huazhalan3_item", "ccs_huazhalan3", "ccs_huazhalan3", false, "ccs_huazhalan3"),
-    MakeWallPlacer("ccs_huazhalan3_item_placer", "ccs_huazhalan3", {wide="ccs_huazhalan3", narrow="ccs_huazhalan3",anim = "ccs_huazhalan3"}, false),
+    MakeWallPlacer("ccs_huazhalan3_item_placer", "ccs_huazhalan3", { wide = "ccs_huazhalan3", narrow = "ccs_huazhalan3", anim = "ccs_huazhalan3" }, false),
     MakeWall("ccs_huazhalan4", { wide = "ccs_huazhalan4", narrow = "ccs_huazhalan4", anim = "ccs_huazhalan4" }, false),
     MakeInvItem("ccs_huazhalan4_item", "ccs_huazhalan4", "ccs_huazhalan4", false, "ccs_huazhalan4"),
-    MakeWallPlacer("ccs_huazhalan4_item_placer", "ccs_huazhalan4", {wide="ccs_huazhalan4", narrow="ccs_huazhalan4",anim = "ccs_huazhalan4"}, false),
+    MakeWallPlacer("ccs_huazhalan4_item_placer", "ccs_huazhalan4", { wide = "ccs_huazhalan4", narrow = "ccs_huazhalan4", anim = "ccs_huazhalan4" }, false),
     MakeWall("ccs_huazhalan5", { wide = "ccs_huazhalan5", narrow = "ccs_huazhalan5", anim = "ccs_huazhalan5" }, false),
     MakeInvItem("ccs_huazhalan5_item", "ccs_huazhalan5", "ccs_huazhalan5", false, "ccs_huazhalan5"),
-    MakeWallPlacer("ccs_huazhalan5_item_placer", "ccs_huazhalan5", {wide="ccs_huazhalan5", narrow="ccs_huazhalan5",anim = "ccs_huazhalan5"}, false),
+    MakeWallPlacer("ccs_huazhalan5_item_placer", "ccs_huazhalan5", { wide = "ccs_huazhalan5", narrow = "ccs_huazhalan5", anim = "ccs_huazhalan5" }, false),
     MakeWall("ccs_huazhalan6", { wide = "ccs_huazhalan6", narrow = "ccs_huazhalan6", anim = "ccs_huazhalan6" }, false),
     MakeInvItem("ccs_huazhalan6_item", "ccs_huazhalan6", "ccs_huazhalan6", false, "ccs_huazhalan6"),
-    MakeWallPlacer("ccs_huazhalan6_item_placer", "ccs_huazhalan6", {wide="ccs_huazhalan6", narrow="ccs_huazhalan6",anim = "ccs_huazhalan6"}, false),
+    MakeWallPlacer("ccs_huazhalan6_item_placer", "ccs_huazhalan6", { wide = "ccs_huazhalan6", narrow = "ccs_huazhalan6", anim = "ccs_huazhalan6" }, false),
     MakeWall("ccs_huazhalan7", { wide = "ccs_huazhalan7", narrow = "ccs_huazhalan7", anim = "ccs_huazhalan7" }, false),
     MakeInvItem("ccs_huazhalan7_item", "ccs_huazhalan7", "ccs_huazhalan7", false, "ccs_huazhalan7"),
-    MakeWallPlacer("ccs_huazhalan7_item_placer", "ccs_huazhalan7", {wide="ccs_huazhalan7", narrow="ccs_huazhalan7",anim = "ccs_huazhalan7"}, false),
+    MakeWallPlacer("ccs_huazhalan7_item_placer", "ccs_huazhalan7", { wide = "ccs_huazhalan7", narrow = "ccs_huazhalan7", anim = "ccs_huazhalan7" }, false),
     MakeWall("ccs_huazhalan8", { wide = "ccs_huazhalan8", narrow = "ccs_huazhalan8", anim = "ccs_huazhalan8" }, false),
     MakeInvItem("ccs_huazhalan8_item", "ccs_huazhalan8", "ccs_huazhalan8", false, "ccs_huazhalan8"),
-    MakeWallPlacer("ccs_huazhalan8_item_placer", "ccs_huazhalan8", {wide="ccs_huazhalan8", narrow="ccs_huazhalan8",anim = "ccs_huazhalan8"}, false),
+    MakeWallPlacer("ccs_huazhalan8_item_placer", "ccs_huazhalan8", { wide = "ccs_huazhalan8", narrow = "ccs_huazhalan8", anim = "ccs_huazhalan8" }, false),
     MakeWall("ccs_door1", { wide = "ccs_door1", narrow = "ccs_door1", anim = "ccs_door1" }, true),
     MakeWallAnim("ccs_door1_anim", { wide = "ccs_door1", anim = "ccs_door1" }, true),
     MakeInvItem("ccs_door1_item", "ccs_door1", "ccs_door1", true, "ccs_door1"),
-    MakeWallPlacer("ccs_door1_item_placer", "ccs_door1", {wide="ccs_door1", narrow="ccs_door1",anim = "ccs_door1"}, true),
-    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv =  "ccs_archway1"}, false, true),
-    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", {wide="ccs_archway1", narrow="ccs_archway1",anim = "ccs_archway1"}, false),
-    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv =  "ccs_archway2" }, false, true),
-    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", {wide="ccs_archway2", narrow="ccs_archway2",anim = "ccs_archway2"}, false)
-    
-
+    MakeWallPlacer("ccs_door1_item_placer", "ccs_door1", { wide = "ccs_door1", narrow = "ccs_door1", anim = "ccs_door1" }, true),
+    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv = "ccs_archway1" }, false, true),
+    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1" }, false),
+    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv = "ccs_archway2" }, false, true),
+    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2" }, false)

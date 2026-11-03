@@ -1,10 +1,9 @@
 local TotooriaItems_replica = Class(function(self, inst)
     self.inst = inst
 
-    
+
     self.bounduserid = net_string(inst.GUID, "ccs_items.bounduserid", "bounduseriddirty")
-    --self.boundname   = net_string(inst.GUID, "totooria_items.boundname", "boundnamedirty")
-    
+    -- self.boundname   = net_string(inst.GUID, "totooria_items.boundname", "boundnamedirty")
 end)
 
 function TotooriaItems_replica:IsBound()

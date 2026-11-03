@@ -38,11 +38,11 @@ local function makeemptyfn(inst)
     inst.AnimState:PlayAnimation("idle")
 end
 local function dig(inst, worker)
-	inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
-	if inst.components.pickable:CanBePicked() then
-		inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
-	end
-	inst:Remove()
+    inst.SoundEmitter:PlaySound("dontstarve/forest/treefall")
+    if inst.components.pickable:CanBePicked() then
+        inst.components.lootdropper:SpawnLootPrefab(inst.components.pickable.product)
+    end
+    inst:Remove()
 end
 local function fn()
     local inst = CreateEntity()
@@ -60,7 +60,7 @@ local function fn()
     inst.Light:SetFalloff(0.6)
     inst.Light:SetIntensity(0.6)
     inst.Light:SetRadius(2)
-    inst.Light:SetColour(200/255, 200/255, 200/255,.8)
+    inst.Light:SetColour(200 / 255, 200 / 255, 200 / 255, .8)
     inst.Light:Enable(true)
 
     inst.AnimState:SetBank("ccs_bunny_fluorescen")
@@ -83,9 +83,9 @@ local function fn()
     inst.components.pickable:SetUp("ccs_bunny_fluorescen_fruit", TUNING.TOTAL_DAY_TIME * 3, 1)
 
     inst:AddComponent("workable")
-	inst.components.workable:SetWorkAction(ACTIONS.DIG)
-	inst.components.workable:SetOnFinishCallback(dig)
-	inst.components.workable:SetWorkLeft(1)
+    inst.components.workable:SetWorkAction(ACTIONS.DIG)
+    inst.components.workable:SetOnFinishCallback(dig)
+    inst.components.workable:SetWorkLeft(1)
 
     inst:AddComponent("lootdropper")
     inst:AddComponent("inspectable")
@@ -97,21 +97,21 @@ local function fn()
 end
 
 local item_weights = {
-    {prefab = "purplegem", weight = 2},
-    {prefab = "yellowgem", weight = 2},
-    {prefab = "bluegem", weight = 2},
-    {prefab = "redgem", weight = 2},
-    {prefab = "greengem", weight = 2},
-    {prefab = "orangegem", weight = 2},
-    {prefab = "opalpreciousgem", weight = 1},
-    {prefab = "rocks", weight = 18},
-    {prefab = "flint", weight = 10},
-    {prefab = "nitre", weight = 8},
-    {prefab = "thulecite_pieces", weight = 4},
-    {prefab = "townportaltalisman", weight = 4},
-    {prefab = "moonrocknugget", weight = 4},
-    {prefab = "dreadstone", weight = 2},
-    {prefab = "purebrilliance", weight = 2},
+    { prefab = "purplegem",          weight = 2 },
+    { prefab = "yellowgem",          weight = 2 },
+    { prefab = "bluegem",            weight = 2 },
+    { prefab = "redgem",             weight = 2 },
+    { prefab = "greengem",           weight = 2 },
+    { prefab = "orangegem",          weight = 2 },
+    { prefab = "opalpreciousgem",    weight = 1 },
+    { prefab = "rocks",              weight = 18 },
+    { prefab = "flint",              weight = 10 },
+    { prefab = "nitre",              weight = 8 },
+    { prefab = "thulecite_pieces",   weight = 4 },
+    { prefab = "townportaltalisman", weight = 4 },
+    { prefab = "moonrocknugget",     weight = 4 },
+    { prefab = "dreadstone",         weight = 2 },
+    { prefab = "purebrilliance",     weight = 2 },
 }
 
 local function on_mine(inst, worker, workleft, workdone)
@@ -184,7 +184,7 @@ local function fn1()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst, nil, 0.7)
-    inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2) --bullkelp_root deployspacing/2
+    inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2) -- bullkelp_root deployspacing/2
 
     inst.AnimState:SetBank('ccs_bunny_fluorescen_fruit')
     inst.AnimState:SetBuild('ccs_bunny_fluorescen_fruit')
@@ -213,7 +213,7 @@ local function fn1()
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
     inst.components.workable:SetWorkLeft(TUNING.ROCK_FRUIT_MINES * inst.components.stackable.stacksize)
-    --inst.components.workable:SetOnFinishCallback(on_mine)
+    -- inst.components.workable:SetOnFinishCallback(on_mine)
     inst.components.workable:SetOnWorkCallback(on_mine)
 
     inst:ListenForEvent("stacksizechange", stack_size_changed)
@@ -228,7 +228,7 @@ local function ondeploy(inst, pt, deployer)
     if plant ~= nil then
         plant.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
-        --plant.components.pickable:OnTransplant() -- bullkelp does not suffer from transplant sickness
+        -- plant.components.pickable:OnTransplant() -- bullkelp does not suffer from transplant sickness
         plant.components.pickable:MakeEmpty()
         if deployer ~= nil and deployer.SoundEmitter ~= nil then
             deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
@@ -281,6 +281,6 @@ local function fn2()
 end
 
 return Prefab("ccs_bunny_fluorescen", fn, assets),
-       Prefab("ccs_bunny_fluorescen_fruit", fn1, assets),
-       Prefab("ccs_bunny_fluorescen_seed", fn2, assets),
-       MakePlacer("ccs_bunny_fluorescen_seed_placer", "ccs_bunny_fluorescen", "ccs_bunny_fluorescen", "idle")
+    Prefab("ccs_bunny_fluorescen_fruit", fn1, assets),
+    Prefab("ccs_bunny_fluorescen_seed", fn2, assets),
+    MakePlacer("ccs_bunny_fluorescen_seed_placer", "ccs_bunny_fluorescen", "ccs_bunny_fluorescen", "idle")

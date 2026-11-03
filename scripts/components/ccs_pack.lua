@@ -1,11 +1,11 @@
---出自风铃大佬的打包
+-- 出自风铃大佬的打包
 local function canshrink(target)
     if target then
         if TUNING.CCS_PACK2 then
             return true
         else
             return not target.components.combat or
-                       target.components.combat.defaultdamage == 0
+                target.components.combat.defaultdamage == 0
         end
     end
 end
@@ -19,6 +19,7 @@ end)
 function Ccs_pack:HasPackage() return self.item ~= nil end
 
 function Ccs_pack:SetCanPackFn(fn) self.canpackfn = fn end
+
 local cantpack = {}
 function Ccs_pack:DefaultCanPackTest(target) -- 目标待改
     if target and target:HasTag("soracantpack") then return false end
@@ -27,9 +28,9 @@ function Ccs_pack:DefaultCanPackTest(target) -- 目标待改
     if target.prefab:match("_bell$") then return false end
     if TUNING.CCS_PACK then
         return target and
-                   not (target:HasTag("teleportato") -- or target:HasTag("irreplaceable")
-            or target:HasTag("player") or target:HasTag("nonpackable") or
-                       target:HasTag("companion") or target:HasTag("character") -- or target.prefab == "wormhole"--虫洞
+            not (target:HasTag("teleportato")                            -- or target:HasTag("irreplaceable")
+                or target:HasTag("player") or target:HasTag("nonpackable") or
+                target:HasTag("companion") or target:HasTag("character") -- or target.prefab == "wormhole"--虫洞
             -- or target.prefab == "beequeenhivegrown"--蜂王窝-底座
             -- or target.prefab =="beequeenhive"--蜂王窝
             -- or target.prefab =="cave_entrance"--虫洞入口
@@ -41,32 +42,31 @@ function Ccs_pack:DefaultCanPackTest(target) -- 目标待改
             )
     else
         return target and target:IsValid() and
-                   not (target:HasTag("teleportato") or target:HasTag("player") or
-                       target:HasTag("nonpackable") or
-                       target:HasTag("companion") or target:HasTag("character") -- or target.prefab == "wormhole"--虫洞
-            -- or target.prefab == "beequeenhivegrown"--蜂王窝-底座
-            or target.prefab == "beequeenhive" -- 蜂王窝
-            or target.prefab == "cave_entrance" -- 虫洞入口
-            or target.prefab == "cave_entrance_ruins" or target.prefab ==
-                       "cave_entrance_open" or target.prefab ==
-                       "multiplayer_portal" -- or target.prefab == "tentacle_pillar_hole"
+            not (target:HasTag("teleportato") or target:HasTag("player") or
+                target:HasTag("nonpackable") or
+                target:HasTag("companion") or target:HasTag("character") -- or target.prefab == "wormhole"--虫洞
+                -- or target.prefab == "beequeenhivegrown"--蜂王窝-底座
+                or target.prefab == "beequeenhive"                       -- 蜂王窝
+                or target.prefab == "cave_entrance"                      -- 虫洞入口
+                or target.prefab == "cave_entrance_ruins" or target.prefab ==
+                "cave_entrance_open" or target.prefab ==
+                "multiplayer_portal" -- or target.prefab == "tentacle_pillar_hole"
             -- or target.prefab == "tentacle_pillar"
             )
     end
-
 end
 
 function Ccs_pack:CanPack(target)
     return self.inst:IsValid() and not self:HasPackage() and
-               self:DefaultCanPackTest(target) and
-               (not self.canpackfn or self.canpackfn(target, self.inst)) and
-               not (target.components.container and
-                   target.components.container.openner)
+        self:DefaultCanPackTest(target) and
+        (not self.canpackfn or self.canpackfn(target, self.inst)) and
+        not (target.components.container and
+            target.components.container.openner)
 end
 
 local function get_name(target)
     local name = target:GetDisplayName() or
-                     (target.components.named and target.components.named.name)
+        (target.components.named and target.components.named.name)
     if not name or name == "MISSING NAME" then return "空的打包盒" end
 
     local adj = target:GetAdjective()
@@ -97,7 +97,7 @@ function Ccs_pack:Pack(target, doer, MustPack)
     local debugstring = target.entity:GetDebugString()
 
     local bank, build, anim = debugstring:match(
-                                  "bank: (.+) build: (.+) anim: .+:(.+) Frame")
+        "bank: (.+) build: (.+) anim: .+:(.+) Frame")
     if (not bank) or (bank:find("FROMNUM")) then
         bank = target.prefab -- 抢救一下吧
     end
@@ -108,7 +108,7 @@ function Ccs_pack:Pack(target, doer, MustPack)
         local debuginst = SpawnPrefab(target.prefab)
         debugstring = debuginst.entity:GetDebugString()
         bank, build, anim = debugstring:match(
-                                "bank: (.+) build: (.+) anim: .+:(.+) Frame")
+            "bank: (.+) build: (.+) anim: .+:(.+) Frame")
         debuginst:Remove()
     end
     if target and target.components.container and target.components.container:IsOpen() then
@@ -177,7 +177,7 @@ function Ccs_pack:Unpackbuild(pos)
 end
 
 function Ccs_pack:OnSave()
-    return self.item ~= nil and {item = self.item} or nil
+    return self.item ~= nil and { item = self.item } or nil
 end
 
 function Ccs_pack:OnLoad(data)
@@ -191,8 +191,8 @@ function Ccs_pack:OnLoad(data)
             "这是" .. self.item.name)
         self.inst:AddTag("Ccs_pack_full")
         self.inst.replica.ccs_pack:SetPlacer(self.item.item.prefab,
-                                               self.item.bank, self.item.build,
-                                               self.item.anim)
+            self.item.bank, self.item.build,
+            self.item.anim)
     end
 end
 

@@ -1,9 +1,8 @@
-
 local assets =
 {
-    Asset("ATLAS", "images/inventoryimages/ccs_magic_rocking_chair.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_magic_rocking_chair.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_magic_rocking_chair.tex"),
-    Asset("ANIM", "anim/ccs_magic_rocking_chair.zip"), 
+    Asset("ANIM", "anim/ccs_magic_rocking_chair.zip"),
 
 }
 
@@ -49,7 +48,7 @@ end
 local function OnHammered(inst, worker)
     local collapse_fx = SpawnPrefab("collapse_small")
     collapse_fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
-    collapse_fx:SetMaterial("wood")  -- 固定为木头材质
+    collapse_fx:SetMaterial("wood") -- 固定为木头材质
 
     inst.components.lootdropper:DropLoot()
     inst:Remove()
@@ -271,7 +270,7 @@ local function fn()
 
     MakeHauntableWork(inst)
 
-    inst:DoPeriodicTask(0.1,function(inst)
+    inst:DoPeriodicTask(0.1, function(inst)
         local build = inst.AnimState:GetBuild()
         if inst.back then
             inst.back.AnimState:SetBuild(build)
@@ -325,7 +324,7 @@ for i, value in ipairs(skins) do
             baseanimloop = true,
             checkfn = value.check and CCSAPI.CcsSkinCheckFn or nil,
             checkclientfn = value.check and CCSAPI.CcsSkinCheckClientFn or nil,
-            
+
         }
     )
 end

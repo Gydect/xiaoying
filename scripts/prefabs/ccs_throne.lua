@@ -1,9 +1,9 @@
 local assets =
 {
-    Asset("ATLAS", "images/inventoryimages/ccs_throne.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_throne.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_throne.tex"),
     Asset("ANIM", "anim/ccs_throne.zip"),
-    Asset("ATLAS", "images/inventoryimages/ccs_throne2.xml"),     --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_throne2.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_throne2.tex"),
     Asset("ANIM", "anim/ccs_throne2.zip"),
 }
@@ -36,9 +36,9 @@ local function fn()
     inst.AnimState:SetBuild("ccs_throne")
     inst.AnimState:PlayAnimation("idle", true)
 
-    inst.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )
-    inst.AnimState:SetLayer( LAYER_BACKGROUND )
-    inst.AnimState:SetSortOrder( 3 )
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
 
     inst.entity:SetPristine()
 
@@ -55,7 +55,7 @@ local function fn()
 
     inst:AddComponent("lootdropper")
 
-    if ttlmod:tbatEnable() then 
+    if ttlmod:tbatEnable() then
         inst:AddComponent("tbat_com_universal_baton_data")
     end
 
@@ -107,7 +107,7 @@ local function fn2()
 
     inst:AddComponent("lootdropper")
 
-    if ttlmod:tbatEnable() then 
+    if ttlmod:tbatEnable() then
         inst:AddComponent("tbat_com_universal_baton_data")
     end
 
@@ -126,7 +126,7 @@ local function fn2()
 end
 
 
-return  Prefab("ccs_throne", fn, assets),
-        MakePlacer("ccs_throne_placer", "ccs_throne", "ccs_throne", "idle", true, nil, nil, 0.9),
+return Prefab("ccs_throne", fn, assets),
+    MakePlacer("ccs_throne_placer", "ccs_throne", "ccs_throne", "idle", true, nil, nil, 0.9),
     Prefab("ccs_throne2", fn2, assets),
     MakePlacer("ccs_throne2_placer", "ccs_throne2", "ccs_throne2", "idle", true, nil, nil, 0.9)

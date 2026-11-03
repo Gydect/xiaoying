@@ -1,8 +1,8 @@
- local assets =
+local assets =
 {
     Asset("ANIM", "anim/ui_ccs_spbox.zip"),
-    Asset("ANIM", "anim/ccs_spbox.zip"),                         --动画
-    Asset("IMAGE", "images/inventoryimages/ccs_spbox.tex"),      --物品栏贴图
+    Asset("ANIM", "anim/ccs_spbox.zip"),                    -- 动画
+    Asset("IMAGE", "images/inventoryimages/ccs_spbox.tex"), -- 物品栏贴图
     Asset("ATLAS", "images/inventoryimages/ccs_spbox.xml"),
 }
 local function compareItems(a, b)
@@ -35,7 +35,6 @@ local function sortContainerItems(inst)
             if items[i] then
                 inst.components.container:GiveItem(items[i])
             end
-            
         end
     end
 end
@@ -44,8 +43,8 @@ local function collect(inst, doer)
         return
     end
 
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 20,nil,
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, 20, nil,
         { "INLIMBO", "NOCLICK", "catchable", "fire", "notdevourable", "singingshell" })
     for k, v in ipairs(ents) do
         -- 采集
@@ -68,7 +67,7 @@ local function collect(inst, doer)
             inst.components.container:GiveItem(v)
         end
     end
-    --敲巨大作物
+    -- 敲巨大作物
     local ents1 = TheSim:FindEntities(x, y, z, 20, nil, { "stale", "spoiled" }, { "oversized_veggie", "heavy" })
     while (#ents1 > 0) do
         local v = table.remove(ents1, 1)
@@ -79,7 +78,6 @@ local function collect(inst, doer)
         end)
     end
     sortContainerItems(inst)
-
 end
 
 local function fn(Sim)
@@ -88,7 +86,7 @@ local function fn(Sim)
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
-    --inst.entity:AddSoundEmitter()
+    -- inst.entity:AddSoundEmitter()
 
     MakeInventoryPhysics(inst)
     MakeInventoryFloatable(inst, "med", nil, 0.75)
@@ -127,4 +125,4 @@ local function fn(Sim)
     return inst
 end
 return Prefab("ccs_spbox", fn, assets),
-MakePlacer("ccs_spbox_placer", "ccs_spbox", "ccs_spbox", "idle")
+    MakePlacer("ccs_spbox_placer", "ccs_spbox", "ccs_spbox", "idle")

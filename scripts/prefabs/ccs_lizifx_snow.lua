@@ -22,20 +22,20 @@ local function InitEnvelope()
         COLOUR_ENVELOPE_NAME,
         {
             { 0,    IntColour(255, 255, 255, 0) },
-            { 0.05,  IntColour(255, 255, 255, 200) },
-            { 0.85,  IntColour(255, 255, 255, 200) },
+            { 0.05, IntColour(255, 255, 255, 200) },
+            { 0.85, IntColour(255, 255, 255, 200) },
             { 1,    IntColour(255, 255, 255, 0) },
         }
-   )
+    )
 
     local max_scale = .4
     local end_scale = .6
     EnvelopeManager:AddVector2Envelope(
         SCALE_ENVELOPE_NAME,
         {
-            { 0,    { max_scale, max_scale } },
-            { 0.5,  { max_scale, max_scale } },
-            { 1,    { end_scale * max_scale, end_scale * max_scale } },
+            { 0,   { max_scale, max_scale } },
+            { 0.5, { max_scale, max_scale } },
+            { 1,   { end_scale * max_scale, end_scale * max_scale } },
         }
     )
 
@@ -57,11 +57,11 @@ local function emit_fn(effect, emitter_fn)
 
     effect:AddRotatingParticleUV(
         0,
-        lifetime,           -- lifetime
-        px, py, pz,         -- position
-        vx, vy, vz,         -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,       -- lifetime
+        px, py, pz,     -- position
+        vx, vy, vz,     -- velocity
+        angle, ang_vel, -- angle, angular_velocity
+        uv_offset, 0    -- uv offset
     )
 end
 
@@ -77,7 +77,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -87,7 +87,7 @@ local function fn()
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(1)
 
-    --SNOW
+    -- SNOW
     effect:SetRenderResources(0, TEXTURE, SHADER)
     effect:SetRotationStatus(0, true)
     effect:SetGroundPhysics(0, true)
@@ -97,7 +97,7 @@ local function fn()
     effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME)
     effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME)
     effect:SetBlendMode(0, BLENDMODE.Premultiplied)
-    --effect:EnableBloomPass(0, true)
+    -- effect:EnableBloomPass(0, true)
     effect:SetSortOrder(0, 0)
     effect:SetSortOffset(0, 0)
 
@@ -111,13 +111,13 @@ local function fn()
     local high_per_tick = desired_pps_high * tick_time
     local num_to_emit = 0
 
-    local emitter_fn = CreateBoxEmitter( -0.1, -0.3, -0.1, 0.1, 0.2, 0.1 )
+    local emitter_fn = CreateBoxEmitter(-0.1, -0.3, -0.1, 0.1, 0.2, 0.1)
     inst.last_pos = inst:GetPosition()
 
     EmitterManager:AddEmitter(inst, nil, function()
         local dist_moved = inst:GetPosition() - inst.last_pos
         local move = dist_moved:Length()
-        move = math.clamp(move*6, 0, 1)
+        move = math.clamp(move * 6, 0, 1)
 
         local per_tick = Lerp(low_per_tick, high_per_tick, move)
 

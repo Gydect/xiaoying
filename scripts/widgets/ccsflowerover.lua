@@ -1,7 +1,7 @@
 local UIAnim = require "widgets/uianim"
 local Widget = require "widgets/widget"
 
-local WendyFlowerOver =  Class(Widget, function(self, owner)
+local WendyFlowerOver = Class(Widget, function(self, owner)
     self.owner = owner
     Widget._ctor(self, "InkOver")
 
@@ -18,15 +18,15 @@ local WendyFlowerOver =  Class(Widget, function(self, owner)
     self.anim:GetAnimState():AnimateWhilePaused(false)
 end)
 
-function WendyFlowerOver:SetSkin( skinname )
+function WendyFlowerOver:SetSkin(skinname)
     if skinname == "" then
         self.skinbuild = nil
     else
-        self.skinbuild = GetBuildForItem( skinname )
+        self.skinbuild = GetBuildForItem(skinname)
     end
 end
 
-function WendyFlowerOver:Play( level )
+function WendyFlowerOver:Play(level)
     local skinsym = ""
     if self.skinbuild ~= nil then
         self.anim:GetAnimState():SetSkin(self.skinbuild, "ccs_flower_over")
@@ -34,7 +34,7 @@ function WendyFlowerOver:Play( level )
         self.anim:GetAnimState():SetBuild("ccs_flower_over")
     end
 
-    self.anim:GetAnimState():PlayAnimation("over_stage"..tostring(level))
+    self.anim:GetAnimState():PlayAnimation("over_stage" .. tostring(level))
 end
 
 return WendyFlowerOver

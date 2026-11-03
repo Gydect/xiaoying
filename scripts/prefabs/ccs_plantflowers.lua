@@ -1,5 +1,5 @@
 local function onhammered(inst, worker)
-    local fx = SpawnPrefab("collapse_small") --锤烂的特效
+    local fx = SpawnPrefab("collapse_small") -- 锤烂的特效
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("metal")
     inst:Remove()
@@ -8,7 +8,7 @@ end
 local function MakeFlower(name)
     local assets = {
         Asset("ANIM", "anim/" .. name .. ".zip"),
-        Asset("IMAGE", "images/inventoryimages/" .. name .. ".tex"), --物品栏贴图
+        Asset("IMAGE", "images/inventoryimages/" .. name .. ".tex"), -- 物品栏贴图
         Asset("ATLAS", "images/inventoryimages/" .. name .. ".xml"),
     }
     local function fn(Sim)

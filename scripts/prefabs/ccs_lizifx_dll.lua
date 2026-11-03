@@ -47,8 +47,8 @@ local function InitEnvelope()
     -- 创建渐变的颜色
     for i = 0, rainbow_steps - 1 do
         local hue = (i / rainbow_steps) * 360
-        local saturation = 0.7  -- 饱和度
-        local value = 0.7       -- 亮度
+        local saturation = 0.7 -- 饱和度
+        local value = 0.7      -- 亮度
 
         -- 如果是紫色段，增加亮度和饱和度
         if hue >= 270 and hue < 360 then
@@ -95,11 +95,11 @@ local function emit_sparkle_fn(effect, sphere_emitter)
 
     effect:AddRotatingParticleUV(
         0,
-        lifetime,           -- lifetime
-        px, py, pz,         -- position
-        vx, vy, vz,         -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,       -- lifetime
+        px, py, pz,     -- position
+        vx, vy, vz,     -- velocity
+        angle, ang_vel, -- angle, angular_velocity
+        uv_offset, 0    -- uv offset
     )
 end
 
@@ -115,7 +115,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -153,7 +153,7 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, function()
         local dist_moved = inst:GetPosition() - inst.last_pos
         local move = dist_moved:Length()
-        move = math.clamp(move*6, 0, 1)
+        move = math.clamp(move * 6, 0, 1)
 
         local per_tick = Lerp(low_per_tick, high_per_tick, move)
 

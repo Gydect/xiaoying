@@ -707,11 +707,11 @@ CcsItemSkin("ccs_bag", "ccs_bag_skin_hana", {
         inst.components.container:Close()
     end,
     -- checkfn = function(inventory, name)
-	-- 	return true
-	-- end,
-	-- checkclientfn = function(inventory, userid, name)
-	-- 	return true
-	-- end
+    -- 	return true
+    -- end,
+    -- checkclientfn = function(inventory, userid, name)
+    -- 	return true
+    -- end
 })
 CCSAPI.CcsItemAssets(Assets, "ccs_bag_skin_xiaotucha", true, true)
 CcsItemSkin("ccs_bag", "ccs_bag_skin_xiaotucha", {
@@ -937,7 +937,7 @@ local function PlantTick(inst)
         if offset then
             local plant = SpawnPrefab("wormwood_plant_fx")
             plant.Transform:SetPosition(x + offset.x, 0, z + offset.z)
-            --randomize, favoring ones that haven't been used recently
+            -- randomize, favoring ones that haven't been used recently
             local rnd = math.random()
             rnd = table.remove(plantpool, math.clamp(math.ceil(rnd * rnd * #plantpool), 1, #plantpool))
             table.insert(plantpool, rnd)
@@ -2365,11 +2365,11 @@ CcsItemSkin("ccs_hat1", "ccs_hat_skins_dancecat", {
     basebuild = "ccs_hat1",
     basebank = "ccs_hat1",
     -- checkfn = function(inventory, name)
-	-- 	return true
-	-- end,
-	-- checkclientfn = function(inventory, userid, name)
-	-- 	return true
-	-- end
+    -- 	return true
+    -- end,
+    -- checkclientfn = function(inventory, userid, name)
+    -- 	return true
+    -- end
 })
 
 CcsItemSkin("ccs_hat1", "ccs_hat_skins4", {
@@ -3066,10 +3066,10 @@ CcsItemSkin("ccs_cards_21", "ccs_cards_21_skins3", {
     basebuild = "ccs_cards",
     basebank = "ccs_cards",
 })
---飞牌：地面动画循环播放 ccs_cards_26；飞行时改播 ccs_fly_zhimeng（见 ccs_api.lua 的 CCS_FLY_SKINS）
-CCSAPI.CcsItemAssets(Assets, "ccs_cards_26_skin_zhimeng", true, true, {Asset("ANIM", "anim/ccs_fly_zhimeng.zip")})
+-- 飞牌：地面动画循环播放 ccs_cards_26；飞行时改播 ccs_fly_zhimeng（见 ccs_api.lua 的 CCS_FLY_SKINS）
+CCSAPI.CcsItemAssets(Assets, "ccs_cards_26_skin_zhimeng", true, true, { Asset("ANIM", "anim/ccs_fly_zhimeng.zip") })
 CCSAPI.MakeItemSkinDefaultImage('ccs_cards_26', 'images/inventoryimages/ccs_cards/ccs_cards_26.xml', 'ccs_cards_26')
-CcsItemSkin("ccs_cards_26", "ccs_cards_26_skin_zhimeng", { --TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+CcsItemSkin("ccs_cards_26", "ccs_cards_26_skin_zhimeng", { -- TODO 测试用，无需解锁；测试完改回 CcsItemSkin
     name = "定制：织梦",
     atlas = "images/inventoryimages/ccs_cards_26_skin_zhimeng.xml",
     image = "ccs_cards_26_skin_zhimeng",
@@ -3772,13 +3772,13 @@ CcsItemSkin("ccs_jt", "ccs_jt_skins_tiannv", {
         if inst._state then
             inst._state:set(3)
             inst.Light:SetColour(255 / 255, 182 / 255, 193 / 255, 1)
-            --inst.Transform:SetScale(1.5, 1.5, 1.5)
+            -- inst.Transform:SetScale(1.5, 1.5, 1.5)
         end
     end,
     clear_fn = function(inst)
         inst._state:set(1)
         inst.Light:SetColour(0 / 255, 245 / 255, 255 / 255, 1)
-        --inst.Transform:SetScale(2, 2, 2)
+        -- inst.Transform:SetScale(2, 2, 2)
     end,
 
 })
@@ -3989,12 +3989,12 @@ local function PlayIdleLoop(inst, animation_queue, index)
     local current_animation = animation_queue[index]
     if current_animation then
         inst.AnimState:PlayAnimation(current_animation)
-        --递归调用下一动画
+        -- 递归调用下一动画
         inst:DoTaskInTime(inst.AnimState:GetCurrentAnimationLength(), function()
             if not inst.should_stop then
                 local next_index = index + 1
                 if next_index > #animation_queue then
-                    next_index = 1 --回到队列的第一个动画
+                    next_index = 1 -- 回到队列的第一个动画
                 end
                 PlayIdleLoop(inst, animation_queue, next_index)
             end
@@ -4352,7 +4352,7 @@ CCSAPI.CcsItemAssets(Assets, "ccs_cookpot2_skin_xingmian", true, true, {
     Asset("IMAGE", "images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.tex"),
     Asset("ATLAS", "images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.xml"),
 })
-CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { --TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { -- TODO 测试用，无需解锁；测试完改回 CcsItemSkin
     name = "定制：星冕",
     atlas = "images/inventoryimages/ccs_cookpot2_skin_xingmian.xml",
     image = "ccs_cookpot2_skin_xingmian",
@@ -4361,7 +4361,7 @@ CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { --TODO 测试用，�
     basebuild = "ccs_cookpot2",
     basebank = "ccs_cookpot2",
     init_fn = function(inst)
-        --制作时的虚影（placer）也会调用，没有容器，跳过
+        -- 制作时的虚影（placer）也会调用，没有容器，跳过
         if inst._state and inst.components.container then
             inst._state:set(3)
             inst.components.container:WidgetSetup("ui_ccs_cookpot2_skin_xingmian")
@@ -4379,7 +4379,7 @@ CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { --TODO 测试用，�
         if inst.components.container then
             inst.components.container:WidgetSetup("ccs_cookpot2")
             inst.components.container:Close()
-            --原皮没有 proximity 动画，切回时要重新播放 idle
+            -- 原皮没有 proximity 动画，切回时要重新播放 idle
             inst.AnimState:PlayAnimation("idle", true)
         end
         if CCSAPI.Cookpot2SetProximity ~= nil then

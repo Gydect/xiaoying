@@ -1,5 +1,3 @@
-
-
 -- 服务端记录每个玩家拥有的永久皮肤。
 local skinowner = {}
 -- 本机玩家拥有的永久皮肤，用于客户端本地鉴权。
@@ -20,6 +18,7 @@ end
 function IsDefaultCharacterSkin(item_key)
     return string.sub(item_key, -5) == "_none"
 end
+
 local test = false
 function CcsSkinCheckFn(inventory, name)
     if test then
@@ -44,7 +43,7 @@ function CcsSkinCheckClientFn(inventory, userid, name)
     if IsDefaultCharacterSkin(name) then
         return true
     end
-    return  false
+    return false
 end
 
 local cache = "CcsSkinCache_New2"
@@ -172,7 +171,7 @@ if TheNet:GetIsServer() then
     end)
 end
 
-AddModRPCHandler("Ccs", 'SetCcsKey', function(player,str)
+AddModRPCHandler("Ccs", 'SetCcsKey', function(player, str)
     if player ~= nil and type(player.userid) == "string" and type(str) == "string" and SaveServerSkin(player.userid, str) then
         SendModRPCToShard(GetShardModRPC("Ccs", "SetCcsKeyShard"), nil, player.userid, str)
     end
@@ -200,69 +199,68 @@ function SaveSkinCache()
     end
 end
 
-
 -- 不在收藏界面展示未拥有的特殊皮肤。
 local black = {
-    ccs_skins5 = 1,
-	ccs_skins6 = 1,
-    ccs_skins8 = 1,
-    ccs_skins_madoka = 1,
-    ccs_skins_madoka1 = 1,
-    shiranui = 1,
-    ccs_skins_bronya = 1,
-    ccs_skins_qqj = 1,
-    daji = 1,
-    zhishi = 1,
-    ccs_skins_haiyu = 1,
-    ccs_skins_kioku = 1,
-    ccs_skins_chuqing = 1,
-    ccs_skins_chuqing2 = 1,
-    ccs_skins_afu = 1,
-    ccs_skins_sea = 1,
-    ccs_kinomoto = 1,
-    ccs_naxida1 = 1,
-    ccs_naxida2 = 1,
-    ccs_skins_xhqj = 1,
-    ccs_skins_fhyy = 1,
-    ccs_skins_hyly = 1,
-    ccs_skins_cbgy = 1,
-    ccs_skins_gjzx = 1,
-    ccs_skins_xd2 = 1,
-    ccs_skins_qfqx = 1,
-    ccs_skins_bsem = 1,
-    ccs_skins_fbhl = 1,
-    ccs_skins_zxyy =1,
-    ccs_skins_xgm = 1,
-    ccs_skins_mm = 1,
-    ccs_skins_mls = 1,
-    ccs_skins_bs = 1,
-    ccs_skins_ylxm = 1,
-    ccs_skins_rb = 1,
-    ccs_skins_kq = 1,
-    ccs_skins_hlh = 1,
-    ccs_skins_hj = 1,
-    ccs_skins_byb = 1,
-    ccs_skins_hqfa = 1,
-    ccs_skins_dzm = 1,
-    ccs_skin_cgm = 1,
-    ccs_skin_msnzs = 1,
-    ccs_skin_yxxc = 1,
+    ccs_skins5          = 1,
+    ccs_skins6          = 1,
+    ccs_skins8          = 1,
+    ccs_skins_madoka    = 1,
+    ccs_skins_madoka1   = 1,
+    shiranui            = 1,
+    ccs_skins_bronya    = 1,
+    ccs_skins_qqj       = 1,
+    daji                = 1,
+    zhishi              = 1,
+    ccs_skins_haiyu     = 1,
+    ccs_skins_kioku     = 1,
+    ccs_skins_chuqing   = 1,
+    ccs_skins_chuqing2  = 1,
+    ccs_skins_afu       = 1,
+    ccs_skins_sea       = 1,
+    ccs_kinomoto        = 1,
+    ccs_naxida1         = 1,
+    ccs_naxida2         = 1,
+    ccs_skins_xhqj      = 1,
+    ccs_skins_fhyy      = 1,
+    ccs_skins_hyly      = 1,
+    ccs_skins_cbgy      = 1,
+    ccs_skins_gjzx      = 1,
+    ccs_skins_xd2       = 1,
+    ccs_skins_qfqx      = 1,
+    ccs_skins_bsem      = 1,
+    ccs_skins_fbhl      = 1,
+    ccs_skins_zxyy      = 1,
+    ccs_skins_xgm       = 1,
+    ccs_skins_mm        = 1,
+    ccs_skins_mls       = 1,
+    ccs_skins_bs        = 1,
+    ccs_skins_ylxm      = 1,
+    ccs_skins_rb        = 1,
+    ccs_skins_kq        = 1,
+    ccs_skins_hlh       = 1,
+    ccs_skins_hj        = 1,
+    ccs_skins_byb       = 1,
+    ccs_skins_hqfa      = 1,
+    ccs_skins_dzm       = 1,
+    ccs_skin_cgm        = 1,
+    ccs_skin_msnzs      = 1,
+    ccs_skin_yxxc       = 1,
     ccs_moyuxuanli_xjlw = 1,
-    ccs_skin_xnylh = 1,
-    ccs_skins_adastra = 1,
-    ccs_skins_mika = 1,
-    ccs_skins_maho = 1,
-    ccs_skins_alxy = 1,
-    ccs_skins_cbem = 1,
-    ccs_skins_xin = 1,
-    ccs_skin_xuechuyin = 1,
-    ccs_skin_glby = 1,
-    ccs_skin_mlby = 1,
-    ccs_skins_xiyacha  = 1,
-    ccs_skins_xiyadai  = 1,
-    ccs_skin_bylf  = 1,
-    ccs_skin_aiyfl  = 1,
-    ccs_skins_fhyya = 1
+    ccs_skin_xnylh      = 1,
+    ccs_skins_adastra   = 1,
+    ccs_skins_mika      = 1,
+    ccs_skins_maho      = 1,
+    ccs_skins_alxy      = 1,
+    ccs_skins_cbem      = 1,
+    ccs_skins_xin       = 1,
+    ccs_skin_xuechuyin  = 1,
+    ccs_skin_glby       = 1,
+    ccs_skin_mlby       = 1,
+    ccs_skins_xiyacha   = 1,
+    ccs_skins_xiyadai   = 1,
+    ccs_skin_bylf       = 1,
+    ccs_skin_aiyfl      = 1,
+    ccs_skins_fhyya     = 1
 }
 
 AddSimPostInit(function()

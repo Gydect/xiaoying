@@ -28,35 +28,35 @@ WeGame平台: 穹の空 模组ID：workshop-2199027653598519351
 3,严禁直接修改本mod内文件后二次发布。
 4,从本mod内提前的源码请保留版权信息,并且禁止加密、混淆。
 ]]
---require "config/debug"
+-- require "config/debug"
 require "prefabutil"
 
 local Ccs_pack = Class(function(self, inst)
-	self.inst = inst
-	self.placerstring = net_string(inst.GUID,"Ccs_pack.placerstring","ccs_placerstringdirty")
-    inst:ListenForEvent("ccs_placerstringdirty",function() self:ondirty() end)
+    self.inst = inst
+    self.placerstring = net_string(inst.GUID, "Ccs_pack.placerstring", "ccs_placerstringdirty")
+    inst:ListenForEvent("ccs_placerstringdirty", function() self:ondirty() end)
 end)
-function Ccs_pack:SetPlacer(prefab,bank,build,anim)
-    local suc,str = pcall(json.encode,{
+function Ccs_pack:SetPlacer(prefab, bank, build, anim)
+    local suc, str = pcall(json.encode, {
         prefab = prefab,
         bank = bank,
-        build=build,
+        build = build,
         anim = anim,
     })
     if suc then
         self.placerstring:set(str)
     end
-    
 end
+
 function Ccs_pack:ondirty()
     local str = self.placerstring:value()
-    local suc,tb = pcall(json.decode,str)
+    local suc, tb = pcall(json.decode, str)
     if suc and tb.prefab and tb.bank and tb.build and tb.anim then
-        if Prefabs[tb.prefab.."_placer"] then
-            self.inst.overridedeployplacername = tb.prefab.."_placer"
+        if Prefabs[tb.prefab .. "_placer"] then
+            self.inst.overridedeployplacername = tb.prefab .. "_placer"
             return
         end
-        local helpname = string.format("soraplacer_%s_%s_%s",tb.bank,tb.build,tb.anim):lower()
+        local helpname = string.format("soraplacer_%s_%s_%s", tb.bank, tb.build, tb.anim):lower()
         if helpname:find("fromnum") then
             self.inst.overridedeployplacername = nil
         end
@@ -64,9 +64,9 @@ function Ccs_pack:ondirty()
             self.inst.overridedeployplacername = helpname
             return
         end
-        local newplacer = MakePlacer(helpname,tb.bank,tb.build,tb.anim)
+        local newplacer = MakePlacer(helpname, tb.bank, tb.build, tb.anim)
         RegisterPrefabs(newplacer)
-        TheSim:LoadPrefabs({helpname})
+        TheSim:LoadPrefabs({ helpname })
         self.inst.overridedeployplacername = helpname
         return
     end

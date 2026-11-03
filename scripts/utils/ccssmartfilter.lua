@@ -29,10 +29,10 @@ WeGame平台: 穹の空 模组ID：workshop-2199027653598519351
 4,从本mod内提前的源码请保留版权信息,并且禁止加密、混淆。
 ]]
 
---食用说明  可以根据人物TAG 来决定是否显示某些过滤器   注意此处的tag 必须是人物生成的时候 就固有的tag，不支持 动态添加或者移除
---Filter 需要先使用 AddRecipeFilter 来创建
+-- 食用说明  可以根据人物TAG 来决定是否显示某些过滤器   注意此处的tag 必须是人物生成的时候 就固有的tag，不支持 动态添加或者移除
+-- Filter 需要先使用 AddRecipeFilter 来创建
 
---示例  modmain里面 
+-- 示例  modmain里面
 --[[
     local name = "sorasmartfilter"
     local xml = "images/inventoryitems1.xml"
@@ -41,40 +41,41 @@ WeGame平台: 穹の空 模组ID：workshop-2199027653598519351
     STRINGS.UI.CRAFTING_FILTERS[name:upper()] = "测试"
     local smart = require "utils/sorasmartfilter"
     smart(name,"sora")
-]]--
-local SmartFilterFixVersion = 1 
+]]
+--
+local SmartFilterFixVersion = 1
 local function TryToFixUi(ui)
-    if not ui.SmartFilterFix then       --没人初始化过
-        ui.SmartOldMakeFilterPanel = ui.MakeFilterPanel --保存旧函数
-        ui.SmartFilterFix = SmartFilterFixVersion   
-    elseif ui.SmartFilterFix < SmartFilterFixVersion then   --有人初始化过就升级版本
+    if not ui.SmartFilterFix then                         -- 没人初始化过
+        ui.SmartOldMakeFilterPanel = ui.MakeFilterPanel   -- 保存旧函数
+        ui.SmartFilterFix = SmartFilterFixVersion
+    elseif ui.SmartFilterFix < SmartFilterFixVersion then -- 有人初始化过就升级版本
         ui.SmartFilterFix = SmartFilterFixVersion
     else
-        return  --其他情况不需要HOOK
+        return -- 其他情况不需要HOOK
     end
-    --初始化 OR  升级版本
-    ui.MakeFilterPanel = function(s,width,...)
-        local OldCRAFTING_FILTER_DEFS = CRAFTING_FILTER_DEFS    --保存参数然后copy
+    -- 初始化 OR  升级版本
+    ui.MakeFilterPanel = function(s, width, ...)
+        local OldCRAFTING_FILTER_DEFS = CRAFTING_FILTER_DEFS -- 保存参数然后copy
         local NewDefs = {}
         CRAFTING_FILTER_DEFS = NewDefs
-        for k,v in pairs(OldCRAFTING_FILTER_DEFS) do
+        for k, v in pairs(OldCRAFTING_FILTER_DEFS) do
             if v then
                 if not v.OwnerTag then
-                    table.insert(NewDefs,v)
+                    table.insert(NewDefs, v)
                 elseif v.OwnerTag and s.owner and s.owner:HasTag(v.OwnerTag) then
-                    table.insert(NewDefs,v)
+                    table.insert(NewDefs, v)
                 end
             end
         end
-        local r = ui.SmartOldMakeFilterPanel(s,width,...)
-        CRAFTING_FILTER_DEFS = OldCRAFTING_FILTER_DEFS          --返回原值
-        return r --返回原值
+        local r = ui.SmartOldMakeFilterPanel(s, width, ...)
+        CRAFTING_FILTER_DEFS = OldCRAFTING_FILTER_DEFS -- 返回原值
+        return r                                       -- 返回原值
     end
 end
 local ui = require "widgets/redux/craftingmenu_widget"
 TryToFixUi(ui)
-local function MakeSmartFilter(filtername,ownertag)
-    if CRAFTING_FILTERS[filtername:upper()] then        --因为 CRAFTING_FILTER_DEFS 和 CRAFTING_FILTERS 里面指向的内容是同一个表 所以修改 CRAFTING_FILTERS 也会影响 CRAFTING_FILTER_DEFS
+local function MakeSmartFilter(filtername, ownertag)
+    if CRAFTING_FILTERS[filtername:upper()] then -- 因为 CRAFTING_FILTER_DEFS 和 CRAFTING_FILTERS 里面指向的内容是同一个表 所以修改 CRAFTING_FILTERS 也会影响 CRAFTING_FILTER_DEFS
         CRAFTING_FILTERS[filtername:upper()].OwnerTag = ownertag
     end
 end

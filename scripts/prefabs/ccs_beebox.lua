@@ -4,8 +4,8 @@ require("worldsettingsutil")
 local assets =
 {
     Asset("ANIM", "anim/ccs_bee_box.zip"),
-	Asset("ATLAS", "images/inventoryimages/ccs_beebox.xml"),
-	Asset("IMAGE", "images/inventoryimages/ccs_beebox.tex"),
+    Asset("ATLAS", "images/inventoryimages/ccs_beebox.xml"),
+    Asset("IMAGE", "images/inventoryimages/ccs_beebox.tex"),
 
 }
 
@@ -21,13 +21,13 @@ FLOWER_TEST_RADIUS = 30
 
 local levels =
 {
-    { amount=6, idle="honey3", hit="hit_honey3" },
-    { amount=3, idle="honey2", hit="hit_honey2" },
-    { amount=1, idle="honey1", hit="hit_honey1" },
-    { amount=0, idle="idle", hit="hit_idle" },
+    { amount = 6, idle = "honey3", hit = "hit_honey3" },
+    { amount = 3, idle = "honey2", hit = "hit_honey2" },
+    { amount = 1, idle = "honey1", hit = "hit_honey1" },
+    { amount = 0, idle = "idle",   hit = "hit_idle" },
 }
 
-local FLOWER_MUST_TAG = {"flower"}
+local FLOWER_MUST_TAG = { "flower" }
 local function CanStartGrowing(inst)
     return not inst:HasTag("burnt") and
         inst.components.harvestable and
@@ -57,14 +57,14 @@ end
 local function OnIsCaveDay(inst, isday)
     if not isday then
         Stop(inst)
-    elseif not (--[[TheWorld.state.iswinter or--]] inst:HasTag("burnt"))
+    elseif not ( --[[TheWorld.state.iswinter or--]] inst:HasTag("burnt"))
         and inst:IsInLight() then
         Start(inst)
     end
 end
 
 local function OnEnterLight(inst)
-    if not (--[[TheWorld.state.iswinter or--]] inst:HasTag("burnt"))
+    if not ( --[[TheWorld.state.iswinter or--]] inst:HasTag("burnt"))
         and TheWorld.state.iscaveday then
         Start(inst)
     end
@@ -91,8 +91,8 @@ end
 
 local function onhit(inst, worker)
     -- if not inst:HasTag("burnt") then
-        -- inst.AnimState:PlayAnimation(inst.anims.hit)
-        -- inst.AnimState:PushAnimation(inst.anims.idle, false)
+    -- inst.AnimState:PlayAnimation(inst.anims.hit)
+    -- inst.AnimState:PushAnimation(inst.anims.idle, false)
     -- end
 end
 
@@ -120,19 +120,19 @@ local function updatelevel(inst)
 end
 
 local function onharvest(inst, picker, produce)
-    --print(inst, "onharvest")
+    -- print(inst, "onharvest")
     if not inst:HasTag("burnt") then
         if inst.components.harvestable then
             inst.components.harvestable:SetGrowTime(nil)
             inst.components.harvestable.pausetime = nil
             inst.components.harvestable:StopGrowing()
         end
-		if produce == levels[1].amount then
-			AwardPlayerAchievement("honey_harvester", picker)
-		end
+        if produce == levels[1].amount then
+            AwardPlayerAchievement("honey_harvester", picker)
+        end
         updatelevel(inst)
         if inst.components.childspawner ~= nil --[[and not TheWorld.state.iswinter--]] then
-            --inst.components.childspawner:ReleaseAllChildren(picker)
+            -- inst.components.childspawner:ReleaseAllChildren(picker)
         end
     end
 end
@@ -170,7 +170,7 @@ local function StopSleepGrowing(inst)
 end
 
 local function OnLoad(inst, data)
-    --print(inst, "OnLoad")
+    -- print(inst, "OnLoad")
     if data ~= nil and data.burnt then
         inst.components.burnable.onburnt(inst)
     else
@@ -179,7 +179,7 @@ local function OnLoad(inst, data)
 end
 
 local function onbuilt(inst)
-    --inst.AnimState:PlayAnimation("place")
+    -- inst.AnimState:PlayAnimation("place")
     inst.AnimState:PlayAnimation("idle")
     inst.SoundEmitter:PlaySound("dontstarve/common/bee_box_craft")
 end
@@ -203,10 +203,10 @@ end
 
 local function GetStatus(inst)
     return inst.components.harvestable ~= nil
-        and (   (inst.components.harvestable.produce >= inst.components.harvestable.maxproduce and "READY") or
-                (inst.components.harvestable:CanBeHarvested() and "SOMEHONEY") or
-                ((inst.components.childspawner == nil or inst.components.childspawner:NumChildren() <= 0) and "NOHONEY")
-            )
+        and ((inst.components.harvestable.produce >= inst.components.harvestable.maxproduce and "READY") or
+            (inst.components.harvestable:CanBeHarvested() and "SOMEHONEY") or
+            ((inst.components.childspawner == nil or inst.components.childspawner:NumChildren() <= 0) and "NOHONEY")
+        )
         or nil
 end
 
@@ -235,7 +235,6 @@ local function OnPreLoad(inst, data)
 end
 
 local function MakeBeebox(name, common_postinit, master_postinit)
-
     local function fn()
         local inst = CreateEntity()
 
@@ -248,7 +247,7 @@ local function MakeBeebox(name, common_postinit, master_postinit)
 
         MakeObstaclePhysics(inst, .5)
 
-        --inst.MiniMapEntity:SetIcon("beebox.png")
+        -- inst.MiniMapEntity:SetIcon("beebox.png")
 
         inst.AnimState:SetBank("bee_box")
         inst.AnimState:SetBuild("bee_box")
@@ -292,7 +291,7 @@ local function MakeBeebox(name, common_postinit, master_postinit)
             inst.components.childspawner:StartSpawning()
         end
 
-        --inst:WatchWorldState("iswinter", AsleepHoneyGrowth)
+        -- inst:WatchWorldState("iswinter", AsleepHoneyGrowth)
         inst:WatchWorldState("iscaveday", OnIsCaveDay)
         inst:ListenForEvent("enterlight", OnEnterLight)
         inst:ListenForEvent("enterdark", OnEnterDark)
@@ -328,7 +327,7 @@ local function ccs_beebox_common(inst)
     inst.AnimState:SetBank("ccs_bee_box")
     inst.AnimState:SetBuild("ccs_bee_box")
     inst.AnimState:PlayAnimation("idle")
-	inst.Transform:SetScale(2, 2, 2)
+    inst.Transform:SetScale(2, 2, 2)
 end
 
 local function ccs_beebox_master(inst)
@@ -345,4 +344,4 @@ local function ccs_beebox_master(inst)
 end
 
 return MakeBeebox("ccs_beebox", ccs_beebox_common, ccs_beebox_master),
-	MakePlacer("ccs_beebox_placer", "ccs_bee_box", "ccs_bee_box", "idle",false, nil, nil, 2)
+    MakePlacer("ccs_beebox_placer", "ccs_bee_box", "ccs_bee_box", "idle", false, nil, nil, 2)

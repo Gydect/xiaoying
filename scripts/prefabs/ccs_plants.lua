@@ -1,15 +1,15 @@
 require "prefabutil"
 
 local function make_plantable(data)
-    local assets = 
-	{
-	    Asset("ANIM", "anim/ccs_plants.zip"),
-        Asset( "IMAGE", "images/inventoryimages/"..data.name..".tex" ),
-        Asset( "ATLAS", "images/inventoryimages/"..data.name..".xml" ),
+    local assets =
+    {
+        Asset("ANIM", "anim/ccs_plants.zip"),
+        Asset("IMAGE", "images/inventoryimages/" .. data.name .. ".tex"),
+        Asset("ATLAS", "images/inventoryimages/" .. data.name .. ".xml"),
     }
 
     local function ondeploy(inst, pt, deployer)
-        local tree = SpawnPrefab(data.name)		--根种下去后生成树
+        local tree = SpawnPrefab(data.name) -- 根种下去后生成树
         if tree ~= nil then
             tree.Transform:SetPosition(pt:Get())
             inst.components.stackable:Get():Remove()
@@ -17,7 +17,7 @@ local function make_plantable(data)
                 tree.components.pickable:OnTransplant()
             end
             if deployer ~= nil and deployer.SoundEmitter ~= nil then
-                --V2C: WHY?!! because many of the plantables don't
+                -- V2C: WHY?!! because many of the plantables don't
                 --     have SoundEmitter, and we don't want to add
                 --     one just for this sound!
                 deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
@@ -34,7 +34,7 @@ local function make_plantable(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
-        --inst.entity:AddSoundEmitter()
+        -- inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
 
         MakeInventoryPhysics(inst)
@@ -61,10 +61,10 @@ local function make_plantable(data)
         inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
         inst:AddComponent("inspectable")
-		
+
         inst:AddComponent("inventoryitem")
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/"..data.name..".xml" 
-		inst.components.inventoryitem.imagename = data.name
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. data.name .. ".xml"
+        inst.components.inventoryitem.imagename = data.name
 
         inst:AddComponent("fuel")
         inst.components.fuel.fuelvalue = TUNING.LARGE_FUEL
@@ -75,27 +75,27 @@ local function make_plantable(data)
         MakeHauntableLaunchAndIgnite(inst)
 
         inst:AddComponent("deployable")
-        --inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
+        -- inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
         inst.components.deployable.ondeploy = ondeploy
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
         if data.mediumspacing then
             inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
         end
-		
-		--万圣节
-		if data.halloweenmoonmutable_settings ~= nil then
-			inst:AddComponent("halloweenmoonmutable")
-			inst.components.halloweenmoonmutable:SetPrefabMutated(data.halloweenmoonmutable_settings.prefab)
-		end
+
+        -- 万圣节
+        if data.halloweenmoonmutable_settings ~= nil then
+            inst:AddComponent("halloweenmoonmutable")
+            inst.components.halloweenmoonmutable:SetPrefabMutated(data.halloweenmoonmutable_settings.prefab)
+        end
 
         ---------------------
         return inst
     end
 
-    return Prefab("dug_"..data.name, fn, assets)
+    return Prefab("dug_" .. data.name, fn, assets)
 end
 
-local prefabs = {} 
+local prefabs = {}
 for i, v in pairs(require("ccs_plantables")) do
     table.insert(prefabs, make_plantable(v))
 end

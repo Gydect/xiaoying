@@ -4,14 +4,14 @@
 -- local function OnAttached(inst, target)
 --     inst.entity:SetParent(target.entity)
 --     inst.Transform:SetPosition(0, 0, 0) --in case of loading
-	
+
 -- 	target.components.combat.externaldamagemultipliers:SetModifier("ccs_card_dp", 1.35) 		
 -- 	target.components.combat.externaldamagetakenmultipliers:SetModifier("ccs_card_dp",0.65)	
-	
+
 -- 	if inst._fx ~= nil then
 -- 		inst._fx:kill_fx()
 -- 	end
-		
+
 -- 	inst._fx = SpawnPrefab("forcefieldfx")
 -- 	inst._fx.AnimState:SetBuild("ccs_shield_fx")
 -- 	inst._fx.entity:SetParent(target.entity)
@@ -53,15 +53,15 @@
 -- local function OnAttached_1(inst, target)
 --     inst.entity:SetParent(target.entity)
 --     inst.Transform:SetPosition(0, 0, 0) --in case of loading
-	
+
 -- 	target.components.combat.externaldamagemultipliers:SetModifier("ccs_card_dp", 1.35)
 -- 	target.components.combat.externaldamagetakenmultipliers:SetModifier("ccs_card_dp", 0.65)
-	
+
 -- 	if inst._fx ~= nil then
 -- 		inst._fx:Remove()
 -- 		inst._fx = nil
 -- 	end
-		
+
 -- 	inst._fx = SpawnPrefab("ccs_lizifx_ranibowspark")
 -- 	inst._fx.entity:AddFollower()
 -- 	inst._fx.entity:SetParent(target.entity)
@@ -115,15 +115,15 @@
 -- local function OnAttached_2(inst, target)
 --     inst.entity:SetParent(target.entity)
 --     inst.Transform:SetPosition(0, 0, 0) --in case of loading
-	
+
 -- 	target.components.combat.externaldamagemultipliers:SetModifier("ccs_card_dp", 1.35)
 -- 	target.components.combat.externaldamagetakenmultipliers:SetModifier("ccs_card_dp", 0.65)
-	
+
 -- 	if target._fx ~= nil then
 -- 		target._fx:Cancel()
 -- 		target._fx = nil
 -- 	end
-		
+
 -- 	target._fx = target:DoPeriodicTask(.25, Tick1)
 -- 	if target._ccsbondlevel then
 -- 		if not target._ccsbondlevel:value() then
@@ -247,7 +247,7 @@
 -- local function OnAttached2(inst, target)
 --     inst.entity:SetParent(target.entity)
 --     inst.Transform:SetPosition(0, 0, 0) --in case of loading
-	
+
 -- 	target:ListenForEvent("attacked",attacked)	
 -- end
 
@@ -373,7 +373,7 @@
 --     inst.components.timer:StartTimer("buffover", 480)
 -- end
 
--- local function OnExtended_fp4(inst,target) 
+-- local function OnExtended_fp4(inst,target)
 --     inst.components.timer:StopTimer("buffover")
 --     inst.components.timer:StartTimer("buffover", 960)
 -- end
@@ -382,7 +382,7 @@
 -- --------------------------------------------------------------------------- ---------------------------------------------------------------------------
 -- --------------------------------------------------------------------------------------------------------------------------------------------------------
 
--- local ccs_buffs = 
+-- local ccs_buffs =
 -- {
 -- 	ccs_card_dp = 		
 -- 	{

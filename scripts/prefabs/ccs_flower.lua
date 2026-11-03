@@ -11,7 +11,7 @@ local prefabs =
     "planted_flower",
 }
 
-local names = {"f1","f2","f3","f4"}
+local names = { "f1", "f2", "f3", "f4" }
 local ROSE_NAME = "rose"
 local ROSE_CHANCE = 0.01
 
@@ -58,7 +58,7 @@ local function onpickedfn(inst, picker)
         TheWorld:PushEvent("beginregrowth", inst)
     end
 
-    TheWorld:PushEvent("plantkilled", { doer = picker, pos = pos }) --this event is pushed in other places too
+    TheWorld:PushEvent("plantkilled", { doer = picker, pos = pos }) -- this event is pushed in other places too
 end
 
 local function GetStatus(inst)
@@ -71,30 +71,30 @@ end
 
 local FINDLIGHT_MUST_TAGS = { "daylight", "lightsource" }
 local function DieInDarkness(inst)
-    local x,y,z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x,0,z, TUNING.DAYLIGHT_SEARCH_RANGE, FINDLIGHT_MUST_TAGS)
-    for i,v in ipairs(ents) do
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, 0, z, TUNING.DAYLIGHT_SEARCH_RANGE, FINDLIGHT_MUST_TAGS)
+    for i, v in ipairs(ents) do
         local lightrad = v.Light:GetCalculatedRadius() * .7
-        if v:GetDistanceSqToPoint(x,y,z) < lightrad * lightrad then
-            --found light
+        if v:GetDistanceSqToPoint(x, y, z) < lightrad * lightrad then
+            -- found light
             return
         end
     end
-    --in darkness
+    -- in darkness
     inst:Remove()
-    SpawnPrefab("flower_withered").Transform:SetPosition(x,y,z)
+    SpawnPrefab("flower_withered").Transform:SetPosition(x, y, z)
 end
 
 local function OnIsCaveDay(inst, isday)
     if isday then
-        inst:DoTaskInTime(5.0 + math.random()*5.0, DieInDarkness)
+        inst:DoTaskInTime(5.0 + math.random() * 5.0, DieInDarkness)
     end
 end
 
 local function OnBurnt(inst)
-	if not inst.planted then
-		TheWorld:PushEvent("beginregrowth", inst)
-	end
+    if not inst.planted then
+        TheWorld:PushEvent("beginregrowth", inst)
+    end
     DefaultBurntFn(inst)
 end
 
@@ -112,8 +112,8 @@ local function fn()
 
     inst:AddTag("ccs_flower")
     inst:AddTag("cattoy")
-	
-	inst.Transform:SetScale(2, 2, 2)
+
+    inst.Transform:SetScale(2, 2, 2)
 
     inst.entity:SetPristine()
 
@@ -128,23 +128,23 @@ local function fn()
     inst.components.pickable.picksound = "dontstarve/wilson/pickup_plants"
     inst.components.pickable:SetUp("petals", 10)
     inst.components.pickable.onpickedfn = onpickedfn
-	inst.components.pickable.remove_when_picked = true
+    inst.components.pickable.remove_when_picked = true
     inst.components.pickable.quickpick = true
     inst.components.pickable.wildfirestarter = true
 
-    --inst:AddComponent("transformer")
-    --inst.components.transformer:SetTransformWorldEvent("isfullmoon", true)
-    --inst.components.transformer:SetRevertWorldEvent("isfullmoon", false)
-    --inst.components.transformer:SetOnLoadCheck(testfortransformonload)
-    --inst.components.transformer.transformPrefab = "flower_evil"
+    -- inst:AddComponent("transformer")
+    -- inst.components.transformer:SetTransformWorldEvent("isfullmoon", true)
+    -- inst.components.transformer:SetRevertWorldEvent("isfullmoon", false)
+    -- inst.components.transformer:SetOnLoadCheck(testfortransformonload)
+    -- inst.components.transformer.transformPrefab = "flower_evil"
 
     MakeSmallBurnable(inst)
     inst.components.burnable:SetOnBurntFn(OnBurnt)
 
     MakeSmallPropagator(inst)
 
-	inst:AddComponent("halloweenmoonmutable")
-	inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly_sapling")
+    inst:AddComponent("halloweenmoonmutable")
+    inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly_sapling")
 
     if TheWorld:HasTag("cave") then
         inst:WatchWorldState("iscaveday", OnIsCaveDay)
@@ -178,4 +178,4 @@ function plantedflowerfn()
 end
 
 return Prefab("ccs_flower", fn, assets, prefabs),
-       Prefab("planted_ccs_flower", plantedflowerfn, assets, prefabs)
+    Prefab("planted_ccs_flower", plantedflowerfn, assets, prefabs)

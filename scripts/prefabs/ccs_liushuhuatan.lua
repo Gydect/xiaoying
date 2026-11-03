@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ATLAS", "images/inventoryimages/ccs_liushuhuatan.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_liushuhuatan.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_liushuhuatan.tex"),
     Asset("ANIM", "anim/ccs_liushuhuatan.zip"),
 }
@@ -16,7 +16,6 @@ local function onhammered_common(inst, worker)
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
     fx:SetMaterial("wood")
     inst:Remove()
-    
 end
 
 local function fn()
@@ -32,9 +31,9 @@ local function fn()
     inst.AnimState:SetBuild("ccs_liushuhuatan")
     inst.AnimState:PlayAnimation("idle", true)
 
-    inst.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )
-    inst.AnimState:SetLayer( LAYER_BACKGROUND )
-    inst.AnimState:SetSortOrder( 3 )
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
 
     inst.entity:SetPristine()
 
@@ -52,7 +51,7 @@ local function fn()
     CCSAPI.CcsItemInit(inst)
     inst:AddComponent("lootdropper")
 
-    if ttlmod:tbatEnable() then 
+    if ttlmod:tbatEnable() then
         inst:AddComponent("tbat_com_universal_baton_data")
     end
 
@@ -74,8 +73,8 @@ CCSAPI.MakeItemSkinDefaultImage('ccs_liushuhuatan', 'images/inventoryimages/ccs_
 local skins = {
     [1] = { name = "黄宝石蜂巢", check = true },
     [2] = { name = "暖冬夜苹果", check = true },
-    [3] = { name = "小熊地毯" , check = true},
-    [4] = { name = "蝶恋花" , check = true},
+    [3] = { name = "小熊地毯", check = true },
+    [4] = { name = "蝶恋花", check = true },
 }
 
 for i, value in ipairs(skins) do

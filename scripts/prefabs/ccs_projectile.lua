@@ -1,4 +1,4 @@
-local assets_starhit = { --星星法球特效
+local assets_starhit = { -- 星星法球特效
     Asset("ANIM", "anim/ccs_star_projectile.zip"),
 
 }
@@ -21,13 +21,13 @@ local assets_fireballhit = {
     Asset("ANIM", "anim/deer_fire_charge.zip"),
     Asset("ANIM", "anim/ccs_redheartfx.zip"),
 }
---投掷抛射物
+-- 投掷抛射物
 local function OnThrown(inst, owner, target)
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
     inst.Physics:SetMotorVel(inst.components.projectile.speed, -0.4, 0)
 end
 
---创建抛射物拖尾
+-- 创建抛射物拖尾
 local function CreateTail(bank, build, lightoverride, addcolour, multcolour)
     local inst = CreateEntity()
 
@@ -62,7 +62,7 @@ local function CreateTail(bank, build, lightoverride, addcolour, multcolour)
     return inst
 end
 
---更新抛射物拖尾
+-- 更新抛射物拖尾
 local function OnUpdateProjectileTail(inst, bank, build, speed, lightoverride, addcolour, multcolour, hitfx, tails)
     local x, y, z = inst.Transform:GetWorldPosition()
     for tail, _ in pairs(tails) do
@@ -97,8 +97,8 @@ local function OnUpdateProjectileTail(inst, bank, build, speed, lightoverride, a
     end
 end
 
---制造抛射物
-local function MakeProjectile(name, bank, build, speed, lightoverride, addcolour, multcolour, hitfx, hitdist, tail, heal, arrow, scale,hitfxhight)
+-- 制造抛射物
+local function MakeProjectile(name, bank, build, speed, lightoverride, addcolour, multcolour, hitfx, hitdist, tail, heal, arrow, scale, hitfxhight)
     local assets = {
         Asset('ANIM', 'anim/' .. build .. '.zip')
     }
@@ -133,9 +133,9 @@ local function MakeProjectile(name, bank, build, speed, lightoverride, addcolour
         inst.AnimState:SetFinalOffset(-1)
         inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-        
 
-        --抛射物(从抛射物组件)添加到原始状态进行优化
+
+        -- 抛射物(从抛射物组件)添加到原始状态进行优化
         inst:AddTag('projectile')
 
         if not TheNet:IsDedicated() and tail == true then
@@ -185,7 +185,7 @@ local function MakeProjectile(name, bank, build, speed, lightoverride, addcolour
                 else
                     fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
                 end
-                
+
                 fx:DoTaskInTime(
                     2,
                     function(fx)
@@ -270,8 +270,8 @@ local function TryBounce_Star(inst, x, z, attacker, target)
                 end
             end
             if inst.initial_hostile and not vhostile and vrecentindex == nil and v.components.locomotor == nil then
-                --attack was initiated against a hostile target
-                --skip if non-hostile, can't move, and has never been targeted
+                -- attack was initiated against a hostile target
+                -- skip if non-hostile, can't move, and has never been targeted
             elseif newtarget == nil then
                 newtarget = v
                 newrecentindex = vrecentindex
@@ -327,7 +327,7 @@ local function OnHit_Star(inst, attacker, target)
         x = x + math.cos(angle) * radius + GetRandomMinMax(-.2, .2)
         y = GetRandomMinMax(.1, .3)
         z = z - math.sin(angle) * radius + GetRandomMinMax(-.2, .2)
-        --blast:PushFlash(target)
+    -- blast:PushFlash(target)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
@@ -379,7 +379,7 @@ local function OnHit_Rose(inst, attacker, target)
         x = x + math.cos(angle) * radius + GetRandomMinMax(-.2, .2)
         y = GetRandomMinMax(.1, .3)
         z = z - math.sin(angle) * radius + GetRandomMinMax(-.2, .2)
-        --blast:PushFlash(target)
+    -- blast:PushFlash(target)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
@@ -405,7 +405,7 @@ local function OnHit_Blue(inst, attacker, target)
         x = x + math.cos(angle) * radius + GetRandomMinMax(-.2, .2)
         y = GetRandomMinMax(.1, .3)
         z = z - math.sin(angle) * radius + GetRandomMinMax(-.2, .2)
-        --blast:PushFlash(target)
+    -- blast:PushFlash(target)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
@@ -431,7 +431,7 @@ local function OnHit_Sakura(inst, attacker, target)
         x = x + math.cos(angle) * radius + GetRandomMinMax(-.2, .2)
         y = GetRandomMinMax(.1, .3)
         z = z - math.sin(angle) * radius + GetRandomMinMax(-.2, .2)
-        --blast:PushFlash(target)
+    -- blast:PushFlash(target)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
@@ -457,7 +457,7 @@ local function OnHit_Fire(inst, attacker, target)
         x = x + math.cos(angle) * radius + GetRandomMinMax(-.2, .2)
         y = GetRandomMinMax(.1, .3)
         z = z - math.sin(angle) * radius + GetRandomMinMax(-.2, .2)
-        --blast:PushFlash(target)
+    -- blast:PushFlash(target)
     else
         x, y, z = inst.Transform:GetWorldPosition()
     end
@@ -508,7 +508,7 @@ local function fn_bounce_star()
     inst.AnimState:SetFinalOffset(-1)
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-    --projectile (from projectile component) added to pristine state for optimization
+    -- projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     if not TheNet:IsDedicated() then
@@ -637,7 +637,7 @@ local function fn_bounce_rose()
     inst.AnimState:SetFinalOffset(-1)
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-    --projectile (from projectile component) added to pristine state for optimization
+    -- projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     if not TheNet:IsDedicated() then
@@ -705,7 +705,7 @@ local function fn_bounce_blue()
     inst.AnimState:SetFinalOffset(-1)
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-    --projectile (from projectile component) added to pristine state for optimization
+    -- projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     if not TheNet:IsDedicated() then
@@ -773,7 +773,7 @@ local function fn_bounce_sakura()
     inst.AnimState:SetFinalOffset(-1)
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-    --projectile (from projectile component) added to pristine state for optimization
+    -- projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     if not TheNet:IsDedicated() then
@@ -842,7 +842,7 @@ local function fn_bounce_fire()
     inst.AnimState:SetFinalOffset(-1)
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
 
-    --projectile (from projectile component) added to pristine state for optimization
+    -- projectile (from projectile component) added to pristine state for optimization
     inst:AddTag("projectile")
 
     if not TheNet:IsDedicated() then
@@ -1019,7 +1019,7 @@ local function starhithit_fn()
     inst.AnimState:SetBloomEffectHandle('shaders/anim.ksh')
     inst.AnimState:SetLightOverride(1)
     inst.AnimState:SetFinalOffset(3)
-    inst.AnimState:SetScale(0.7,0.7,0.7)
+    inst.AnimState:SetScale(0.7, 0.7, 0.7)
 
     inst:AddTag('FX')
     inst:AddTag('NOCLICK')
@@ -1101,80 +1101,78 @@ local function yellowballhit_fn()
 end
 
 return MakeProjectile(
-    'ccs_bow_prj',
-    'ccs_bow_prj',
-    'ccs_bow_prj',
-    30,
-    1,
-    nil,
-    nil,
-    nil,
-    1,
-    false,
-    false,
-    true,
-    2.3
-),
-MakeProjectile(
-    'ccs_bow_skin_mwml_prj',
-    'ccs_arrow_skin_mwml',
-    'ccs_arrow_skin_mwml',
-    30,
-    1,
-    nil,
-    nil,
-    nil,
-    1,
-    false,
-    false,
-    true,
-    2.3
-),
-MakeProjectile(
-    'ccs_magicarrow_skin_heart',
-    'ccs_magicarrow_skin_heart',
-    'ccs_magicarrow_skin_heart',
-    30,
-    1,
-    nil,
-    nil,
-    "ccs_magicarrow_hearthit_fx",
-    1,
-    false,
-    false,
-    true,
-    0.75
-),
--- MakeProjectile(
---     'ccs_fireball',
---     'fireball_fx',
---     'fireball_2_fx',
---     20,
---     1,
---     nil,
---     nil,
---     "ccs_fireball_hitfx",
---     1,
---     true,
---     false,
---     false,
---     nil,
---     1.5
--- ),
-Prefab("ccs_star_hit_fx", starhit_fn, assets_starhit),
-Prefab("ccs_rose_hit_fx", rosehit_fn, assets_rosehit),
-Prefab("ccs_star_bounce", fn_bounce_star, assets_starhit),
-Prefab("ccs_star_bounce_goldwing", fn_bounce_goldwing, assets_starhit),
-Prefab("ccs_rose_bounce", fn_bounce_rose, assets_rosehit),
-Prefab("ccs_blue_bounce", fn_bounce_blue, assets_bluehit),
-Prefab("ccs_fireball", fn_bounce_fire, assets_fireballhit),
-Prefab("ccs_blue_bouncehit", bluehit_fn, assets_bluehit),
-Prefab("ccs_sakura_bounce", fn_bounce_sakura, assets_sakurahit),
-Prefab("ccs_sakura_bouncehit", sakurahit_fn, assets_sakurahit),
-Prefab("ccs_fireball_hitfx", yellowballhit_fn, assets_fireballhit),
-Prefab("ccs_starhit", starhithit_fn, {
+        'ccs_bow_prj',
+        'ccs_bow_prj',
+        'ccs_bow_prj',
+        30,
+        1,
+        nil,
+        nil,
+        nil,
+        1,
+        false,
+        false,
+        true,
+        2.3
+    ),
+    MakeProjectile(
+        'ccs_bow_skin_mwml_prj',
+        'ccs_arrow_skin_mwml',
+        'ccs_arrow_skin_mwml',
+        30,
+        1,
+        nil,
+        nil,
+        nil,
+        1,
+        false,
+        false,
+        true,
+        2.3
+    ),
+    MakeProjectile(
+        'ccs_magicarrow_skin_heart',
+        'ccs_magicarrow_skin_heart',
+        'ccs_magicarrow_skin_heart',
+        30,
+        1,
+        nil,
+        nil,
+        "ccs_magicarrow_hearthit_fx",
+        1,
+        false,
+        false,
+        true,
+        0.75
+    ),
+    -- MakeProjectile(
+    --     'ccs_fireball',
+    --     'fireball_fx',
+    --     'fireball_2_fx',
+    --     20,
+    --     1,
+    --     nil,
+    --     nil,
+    --     "ccs_fireball_hitfx",
+    --     1,
+    --     true,
+    --     false,
+    --     false,
+    --     nil,
+    --     1.5
+    -- ),
+    Prefab("ccs_star_hit_fx", starhit_fn, assets_starhit),
+    Prefab("ccs_rose_hit_fx", rosehit_fn, assets_rosehit),
+    Prefab("ccs_star_bounce", fn_bounce_star, assets_starhit),
+    Prefab("ccs_star_bounce_goldwing", fn_bounce_goldwing, assets_starhit),
+    Prefab("ccs_rose_bounce", fn_bounce_rose, assets_rosehit),
+    Prefab("ccs_blue_bounce", fn_bounce_blue, assets_bluehit),
+    Prefab("ccs_fireball", fn_bounce_fire, assets_fireballhit),
+    Prefab("ccs_blue_bouncehit", bluehit_fn, assets_bluehit),
+    Prefab("ccs_sakura_bounce", fn_bounce_sakura, assets_sakurahit),
+    Prefab("ccs_sakura_bouncehit", sakurahit_fn, assets_sakurahit),
+    Prefab("ccs_fireball_hitfx", yellowballhit_fn, assets_fireballhit),
+    Prefab("ccs_starhit", starhithit_fn, {
         Asset("ANIM", "anim/ccs_starhithit.zip"),
-}),
-Prefab("ccs_magicarrow_hearthit_fx", ccs_magicarrow_hearthit_fx_fn, {Asset('ANIM', 'anim/ccs_magicarrow_skin_heart.zip')})
-
-
+    }),
+    Prefab("ccs_magicarrow_hearthit_fx", ccs_magicarrow_hearthit_fx_fn, { Asset('ANIM', 'anim/ccs_magicarrow_skin_heart.zip') })

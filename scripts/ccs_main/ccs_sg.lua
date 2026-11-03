@@ -1,11 +1,11 @@
-AddModRPCHandler("CCS", "CCS_SPEAL_MAGIC", function(player,boolen)
-	if inst.components.playercontroller ~= nil then
-		if boolen == true then
-			inst.components.playercontroller:Enable(true)
-		else
-			inst.components.playercontroller:Enable(false)
-		end
-	end
+AddModRPCHandler("CCS", "CCS_SPEAL_MAGIC", function(player, boolen)
+    if inst.components.playercontroller ~= nil then
+        if boolen == true then
+            inst.components.playercontroller:Enable(true)
+        else
+            inst.components.playercontroller:Enable(false)
+        end
+    end
 end)
 
 local skindata = {
@@ -53,18 +53,17 @@ AddStategraphState("wilson",
         tags = { "doing", "busy", "canrotate" },
 
         onenter = function(inst)
-
-			inst.components.health:SetInvincible(true)
+            inst.components.health:SetInvincible(true)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(false)
             end
 
             inst:AddTag("css_nodrown")
-            
+
             inst.AnimState:SetDeltaTimeMultiplier(0.5)
-            inst.AnimState:PlayAnimation("ccs_spell_pre",true)
+            inst.AnimState:PlayAnimation("ccs_spell_pre", true)
             inst.AnimState:OverrideSymbol("card_fx", "ccs_spell_anim", "card_fx")
-           
+
 
             inst.components.locomotor:Stop()
 
@@ -72,7 +71,7 @@ AddStategraphState("wilson",
             local colour = staff ~= nil and staff.fxcolour or { 1, 1, 1 }
 
             inst.sg.statemem.stafffx = SpawnPrefab(inst.components.rider:IsRiding() and "staffcastfx_mount" or
-            "staffcastfx")
+                "staffcastfx")
             inst.sg.statemem.stafffx.entity:SetParent(inst.entity)
             inst.sg.statemem.stafffx:SetUp(colour)
 
@@ -111,7 +110,6 @@ AddStategraphState("wilson",
             inst.sg.statemem.magic_Fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
 
             inst.sg:SetTimeout(3 * FRAMES)
-
         end,
 
         timeline =
@@ -126,30 +124,30 @@ AddStategraphState("wilson",
                     end
                     inst.sg.statemem.targetfx = nil
                 end
-                inst.sg.statemem.stafffx = nil 
-                inst.sg.statemem.stafflight = nil 
+                inst.sg.statemem.stafffx = nil
+                inst.sg.statemem.stafflight = nil
                 inst:PerformBufferedAction()
             end),
             TimeEvent(1.1, function(inst)
                 inst.AnimState:Pause()
             end),
             TimeEvent(3, function(inst)
-                inst.AnimState:Resume() 
+                inst.AnimState:Resume()
                 inst.sg:GoToState("idle")
             end),
         },
 
         events =
         {
-			--[[EventHandler("attacked", function(inst)
+            --[[EventHandler("attacked", function(inst)
 				inst.sg:GoToState("idle")
 			end),--]]
         },
 
         onexit = function(inst)
-			inst.components.health:SetInvincible(false)
+            inst.components.health:SetInvincible(false)
             inst:RemoveTag("css_nodrown")
-			inst.AnimState:Resume() 
+            inst.AnimState:Resume()
             inst.AnimState:SetDeltaTimeMultiplier(1)
             if inst.components.playercontroller ~= nil then
                 inst.components.playercontroller:Enable(true)
@@ -175,7 +173,7 @@ AddStategraphState("wilson_client",
         onenter = function(inst)
             inst.components.locomotor:Stop()
             inst.AnimState:SetDeltaTimeMultiplier(.5)
-            inst.AnimState:PlayAnimation("ccs_spell_pre",true)
+            inst.AnimState:PlayAnimation("ccs_spell_pre", true)
             inst.AnimState:OverrideSymbol("card_fx", "ccs_spell_anim", "card_fx")
 
             inst:PerformPreviewBufferedAction()
@@ -191,7 +189,7 @@ AddStategraphState("wilson_client",
                 inst.sg:GoToState("idle")
             end
         end,--]]
-		timeline =
+        timeline =
         {
             TimeEvent(1.1, function(inst)
                 inst.AnimState:Pause()
@@ -204,44 +202,43 @@ AddStategraphState("wilson_client",
 
         ontimeout = function(inst)
             inst:ClearBufferedAction()
-			inst.AnimState:Resume()
+            inst.AnimState:Resume()
             inst.sg:GoToState("idle")
         end,
     }
 )
 
---弓
-AddStategraphPostInit("wilson", function(sg)   
+-- 弓
+AddStategraphPostInit("wilson", function(sg)
     local old_ATTACK = sg.actionhandlers[ACTIONS.ATTACK].deststate
-    sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action,...)
+    sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action, ...)
         local weapon = inst.components.combat:GetWeapon()
-        if weapon then 
-            if weapon:HasTag("ccs_bow") then     
+        if weapon then
+            if weapon:HasTag("ccs_bow") then
                 return "ccs_shoot"
             end
-        end 
-        return old_ATTACK(inst, action,...)
+        end
+        return old_ATTACK(inst, action, ...)
     end
-	
 end)
 
-AddStategraphPostInit("wilson_client", function(sg)    
+AddStategraphPostInit("wilson_client", function(sg)
     local old_ATTACK = sg.actionhandlers[ACTIONS.ATTACK].deststate
-    sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action,...)
+    sg.actionhandlers[ACTIONS.ATTACK].deststate = function(inst, action, ...)
         local weapon = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        if weapon  then 
-            if weapon:HasTag("ccs_bow") then       --
+        if weapon then
+            if weapon:HasTag("ccs_bow") then --
                 return "ccs_shoot"
             end
-        end 
-        return old_ATTACK(inst, action,...)
+        end
+        return old_ATTACK(inst, action, ...)
     end
 end)
 
 
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
     name = "ccs_shoot",
-    tags = {"attack"},
+    tags = { "attack" },
 
     onenter = function(inst)
         if inst.components.combat:InCooldown() then
@@ -258,13 +255,13 @@ AddStategraphState("wilson",State{
         end
 
         inst.sg.statemem.abouttoattack = true
-        --inst.AnimState:PlayAnimation("slingshot_pre")
+        -- inst.AnimState:PlayAnimation("slingshot_pre")
         inst.AnimState:PlayAnimation("slingshot")
 
-        --if inst.sg.laststate == inst.sg.currentstate then
-            inst.sg.statemem.chained = true
-            --inst.AnimState:SetTime(3 * FRAMES)
-        --end
+        -- if inst.sg.laststate == inst.sg.currentstate then
+        inst.sg.statemem.chained = true
+        -- inst.AnimState:SetTime(3 * FRAMES)
+        -- end
 
         inst.components.combat:StartAttack()
         inst.components.combat:SetTarget(target)
@@ -303,7 +300,7 @@ AddStategraphState("wilson",State{
                         inst:PerformBufferedAction()
                         local weapon = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
                         if weapon and weapon:HasTag("ccs_bow") then
-                            ---这里插入可以播放的音乐                            
+                            --- 这里插入可以播放的音乐
                             inst.SoundEmitter:PlaySound("dontstarve/characters/walter/slingshot/shoot")
                         end
                     else
@@ -343,20 +340,20 @@ AddStategraphState("wilson",State{
     end,
 })
 
-AddStategraphState("wilson_client", State{
+AddStategraphState("wilson_client", State {
     name = "ccs_shoot",
-    tags = { "attack"},
+    tags = { "attack" },
 
     onenter = function(inst)
         inst.components.locomotor:Stop()
         inst.AnimState:PlayAnimation("slingshot")
-        --inst.AnimState:PlayAnimation("slingshot_pre")
-        --inst.AnimState:PushAnimation("slingshot_lag", true)
+        -- inst.AnimState:PlayAnimation("slingshot_pre")
+        -- inst.AnimState:PushAnimation("slingshot_lag", true)
 
-        --if inst.sg.laststate == inst.sg.currentstate then
-            inst.sg.statemem.chained = true
-            --inst.AnimState:SetTime(3 * FRAMES)
-        --end
+        -- if inst.sg.laststate == inst.sg.currentstate then
+        inst.sg.statemem.chained = true
+        -- inst.AnimState:SetTime(3 * FRAMES)
+        -- end
 
         local buffaction = inst:GetBufferedAction()
         if buffaction ~= nil then
@@ -372,7 +369,7 @@ AddStategraphState("wilson_client", State{
     end,
 
     onupdate = function(inst)
-        if inst.sg.timeinstate >= (inst.sg.statemem.chained and 6)*FRAMES and inst.sg.statemem.flattened_time == nil and inst:HasTag("attack") then
+        if inst.sg.timeinstate >= (inst.sg.statemem.chained and 6) * FRAMES and inst.sg.statemem.flattened_time == nil and inst:HasTag("attack") then
             if inst.entity:FlattenMovementPrediction() then
                 inst.sg.statemem.flattened_time = inst.sg.timeinstate
                 inst.sg:AddStateTag("idle")
@@ -410,10 +407,10 @@ AddStategraphState("wilson_client", State{
     end,
 })
 
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
 
     name = "ccs_shipwrecked_portal_mounted",
-    tags = {"busy", "pausepredict"},
+    tags = { "busy", "pausepredict" },
     onenter = function(inst)
         inst.AnimState:PlayAnimation("dismount")
         inst.SoundEmitter:PlaySound("dontstarve/beefalo/saddle/dismount")
@@ -424,13 +421,13 @@ AddStategraphState("wilson",State{
         EventHandler("animover", function(inst)
             inst.components.rider:ActualDismount()
             inst.sg:GoToState("ccs_portal_shipwrecked_pre")
-        end ),
+        end),
     }
 })
 
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
     name = "ccs_shipwrecked_portal_pre",
-    tags = {"doing","busy", "pausepredict"},
+    tags = { "doing", "busy", "pausepredict" },
 
     onenter = function(inst)
         inst.AnimState:PlayAnimation("idle_loop")
@@ -451,7 +448,7 @@ AddStategraphState("wilson",State{
         -- TimeEvent(30*FRAMES, function(inst)
         --     inst.DynamicShadow:Enable(false)
         -- end),
-        TimeEvent(30*FRAMES, function(inst)
+        TimeEvent(30 * FRAMES, function(inst)
             inst.AnimState:PlayAnimation("jump")
             -- local portal = SpawnPrefab("wormhole_shipwrecked_fx")
             -- portal.Transform:SetPosition((inst:GetPosition() - (TheCamera:GetDownVec() * 0.1)):Get())
@@ -471,19 +468,18 @@ AddStategraphState("wilson",State{
     end,
 })
 
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
     name = "ccs_shipwrecked_portal_loop",
-    tags = {"canrotate", "pausepredict", "busy"},
+    tags = { "canrotate", "pausepredict", "busy" },
 
     onenter = function(inst)
-
         -- inst.sg:AddStateTag("temp_invincible")
         inst.AnimState:AddOverrideBuild("ccs_portal_shipwrecked")
         inst.AnimState:PlayAnimation("shipwrecked_portal_pre")
         inst.AnimState:PushAnimation("shipwrecked_portal_loop", true)
 
         -- local target = GetClosestInstWithTag("ccs_shipwrecked", inst, 5)
-        
+
         inst.sg.statemem.target = inst.ccs_shipwrecked
 
         inst.sg.statemem.target:Hide()
@@ -520,18 +516,17 @@ AddStategraphState("wilson",State{
     },
 
     events =
-		{
-			EventHandler("locomote", function(inst, data)
-				if data ~= nil and data.remoteoverridelocomote or inst.components.locomotor:WantsToMoveForward() then
-					inst.sg:GoToState("idle", true)
-				end
-				return true
-			end),
+    {
+        EventHandler("locomote", function(inst, data)
+            if data ~= nil and data.remoteoverridelocomote or inst.components.locomotor:WantsToMoveForward() then
+                inst.sg:GoToState("idle", true)
+            end
+            return true
+        end),
 
-		},
+    },
 
     onexit = function(inst)
-
         -- ChangeToObstaclePhysics(inst.sg.statemem.target)
         -- inst.SoundEmitter:KillSound("music_lp")
         -- inst.SoundEmitter:KillSound("ride_lp")
@@ -551,7 +546,7 @@ AddStategraphState("wilson",State{
 local brc_sitswing = GLOBAL.State {
     name = "brc_sitswing",
     tags = { "busy", "pausepredict" },
-    --sg执行
+    -- sg执行
     onenter = function(inst, data)
         local buffaction = inst:GetBufferedAction()
         local target = buffaction ~= nil and buffaction.target or nil
@@ -559,7 +554,7 @@ local brc_sitswing = GLOBAL.State {
         if target ~= nil then
             if target.prefab == "brc_swing" then
                 target.AnimState:SetBank("brc_swing_fast")
-                target.AnimState:PlayAnimation("shake",true)
+                target.AnimState:PlayAnimation("shake", true)
                 target.AnimState:SetFrame(math.floor(inst.AnimState:GetCurrentAnimationNumFrames() / 5))
                 target.passenger = inst
                 target:AddTag("isusing")
@@ -573,10 +568,10 @@ local brc_sitswing = GLOBAL.State {
                 inst.Physics:SetActive(false)
                 -----------------------------------------------------------------------------------
                 inst.AnimState:PlayAnimation("brc_sit2_loop", true)
-                -----------------------------------------------------------------------------------
+            -----------------------------------------------------------------------------------
             elseif target.prefab == "brc_swing_double" then
                 if not target.AnimState:IsCurrentAnimation("shake") then
-                    target.AnimState:PlayAnimation("shake",true)
+                    target.AnimState:PlayAnimation("shake", true)
                 end
                 target.AnimState:SetFrame(math.floor(inst.AnimState:GetCurrentAnimationNumFrames() / 5))
                 if target.passengerA then
@@ -601,7 +596,7 @@ local brc_sitswing = GLOBAL.State {
             end
         end
     end,
-    --sg结束
+    -- sg结束
     timeline =
     {
         TimeEvent(.2, function(inst)
@@ -637,7 +632,7 @@ local brc_sitswing = GLOBAL.State {
         if inst.swingprefab and inst.swingprefab:IsValid() then
             if inst.swingprefab.prefab == "brc_swing" then
                 inst.swingprefab.AnimState:SetBank("brc_swing")
-                inst.swingprefab.AnimState:PlayAnimation("idle",true)
+                inst.swingprefab.AnimState:PlayAnimation("idle", true)
                 inst.swingprefab:RemoveTag("isusing")
                 inst.swingprefab.passenger = nil
             elseif inst.swingprefab.prefab == "brc_swing_double" then
@@ -648,7 +643,7 @@ local brc_sitswing = GLOBAL.State {
                     inst.swingprefab.passengerB = nil
                 end
                 if inst.swingprefab.passengerA == nil and inst.swingprefab.passengerB == nil and not inst.swingprefab.AnimState:IsCurrentAnimation("idle") then
-                    inst.swingprefab.AnimState:PlayAnimation("idle",true)
+                    inst.swingprefab.AnimState:PlayAnimation("idle", true)
                 end
             end
             inst.swingprefab = nil
@@ -659,7 +654,7 @@ local brc_sitswing = GLOBAL.State {
         end
     end,
 }
---加入sg
+-- 加入sg
 AddStategraphState("wilson", brc_sitswing)
 AddStategraphState("wilson_client", brc_sitswing)
 
@@ -716,7 +711,7 @@ AddStategraphState("wilson_client", brc_sit_pre)
 local brc_hotspring = GLOBAL.State {
     name = "brc_hotspring",
     tags = { "busy", "pausepredict" },
-    --sg执行
+    -- sg执行
     onenter = function(inst, data)
         local buffaction = inst:GetBufferedAction()
         local target = buffaction ~= nil and buffaction.target or nil
@@ -737,7 +732,7 @@ local brc_hotspring = GLOBAL.State {
             end
         end
     end,
-    --sg结束
+    -- sg结束
     timeline =
     {
         TimeEvent(.2, function(inst)
@@ -786,7 +781,7 @@ local brc_hotspring = GLOBAL.State {
         end
     end,
 }
---加入sg
+-- 加入sg
 AddStategraphState("wilson", brc_hotspring)
 AddStategraphState("wilson_client", brc_hotspring)
 
@@ -867,7 +862,7 @@ local function DoWortoxPortalTint(inst, val)
         inst.AnimState:SetMultColour(1, 1, 1, 1)
     end
 end
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
     name = "ccs_portal_jumpin",
     tags = { "busy", "pausepredict", "nodangle", "nomorph" },
 
@@ -919,7 +914,7 @@ AddStategraphState("wilson",State{
 
     ontimeout = function(inst)
         inst.sg.statemem.portaljumping = true
-        inst.sg:GoToState("portal_jumpout", {dest = inst.sg.statemem.dest, from_map = inst.sg.statemem.from_map})
+        inst.sg:GoToState("portal_jumpout", { dest = inst.sg.statemem.dest, from_map = inst.sg.statemem.from_map })
     end,
 
     onexit = function(inst)
@@ -931,7 +926,7 @@ AddStategraphState("wilson",State{
     end,
 })
 
-AddStategraphState("wilson",State{
+AddStategraphState("wilson", State {
     name = "ccs_portal_jumpout",
     tags = { "busy", "nopredict", "nomorph", "noattack", "nointerrupt" },
 
@@ -997,7 +992,7 @@ AddStategraphState("wilson",State{
     end,
 })
 
-AddStategraphState("wilson_client", State{
+AddStategraphState("wilson_client", State {
     name = "ccs_portal_jumpin_pre",
     tags = { "busy" },
     server_states = { "ccs_portal_jumpin_pre", "ccs_portal_jumpin" },

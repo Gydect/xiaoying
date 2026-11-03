@@ -1,6 +1,6 @@
 -- 精简后的特效模板文件（只保留模板函数 + 你的绑定特效）
 
-local pas = {}  -- 存放公共变量
+local pas = {} -- 存放公共变量
 
 local prefs = {}
 
@@ -194,8 +194,8 @@ end
 local function DanceCatAnim(inst, data)
     inst.AnimState:SetBank("ccs_hat_skins_dancecat")
     inst.AnimState:SetBuild("ccs_hat_skins_dancecat")
-    inst.AnimState:PlayAnimation("dance", true)  -- 循环播放
-    --inst.Transform:SetTwoFaced()                 -- 只有两面（正面/背面），不随视角转四向
+    inst.AnimState:PlayAnimation("dance", true) -- 循环播放
+    -- inst.Transform:SetTwoFaced()                 -- 只有两面（正面/背面），不随视角转四向
 end
 
 MakeFxFollow({
@@ -232,14 +232,14 @@ MakeFxFollow({
 })
 
 MakeFxFollow({
-    name = "dancecat_hat_bind",          
+    name = "dancecat_hat_bind",
     assets = {
         Asset("ANIM", "anim/ccs_hat_skins_dancecat.zip"),
     },
-    fn_anim = DanceCatAnim,              
-    symbol = "hair",                 
+    fn_anim = DanceCatAnim,
+    symbol = "hair",
     fx = {
-        { anim = "dance" ,x = 0, y = -120, z = 0 }               
+        { anim = "dance", x = 0, y = -120, z = 0 }
     }
 })
 

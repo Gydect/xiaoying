@@ -1,6 +1,6 @@
 local assets =
 {
-    Asset("ATLAS", "images/inventoryimages/ccs_mubanlu.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_mubanlu.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_mubanlu.tex"),
     Asset("ANIM", "anim/ccs_mubanlu.zip"),
 }
@@ -27,15 +27,15 @@ local function fn()
     inst.entity:AddMiniMapEntity()
     inst.entity:AddNetwork()
 
-    --inst.Transform:SetScale(1.1, 1.1, 1.1)
+    -- inst.Transform:SetScale(1.1, 1.1, 1.1)
 
     inst.AnimState:SetBank("ccs_mubanlu")
     inst.AnimState:SetBuild("ccs_mubanlu")
     inst.AnimState:PlayAnimation("idle")
 
-    inst.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )
-    inst.AnimState:SetLayer( LAYER_BACKGROUND )
-    inst.AnimState:SetSortOrder( 3 )
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
 
     inst.entity:SetPristine()
 
@@ -53,7 +53,7 @@ local function fn()
 
     inst:AddComponent("lootdropper")
 
-    if ttlmod:tbatEnable() then 
+    if ttlmod:tbatEnable() then
         inst:AddComponent("tbat_com_universal_baton_data")
     end
 
@@ -66,11 +66,11 @@ local function fn()
     -- MakeLargeBurnable(inst, nil, nil, true)
     -- MakeMediumPropagator(inst)
 
-    --inst.OnTheoneRemove = onhammered_common
+    -- inst.OnTheoneRemove = onhammered_common
 
     return inst
 end
 
 
-return  Prefab("ccs_mubanlu", fn, assets),
-        MakePlacer("ccs_mubanlu_placer", "ccs_mubanlu", "ccs_mubanlu", "idle",true, nil, nil, nil, 15)
+return Prefab("ccs_mubanlu", fn, assets),
+    MakePlacer("ccs_mubanlu_placer", "ccs_mubanlu", "ccs_mubanlu", "idle", true, nil, nil, nil, 15)

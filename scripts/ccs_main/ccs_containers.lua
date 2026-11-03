@@ -2,15 +2,18 @@ local containers = require "containers"
 local params = containers.params
 
 local ImageButton = require "widgets/imagebutton"
-local function AddButton(config,name,pos,fn,postfn)
+local function AddButton(config, name, pos, fn, postfn)
     local btn
-    local data  = {tokill = {}}
-    local CcsOnOpenFn = config.CcsOnOpenFn 
-    config.CcsOnOpenFn = function(self,inst,doer,...)
-        if btn and btn.inst and btn.inst.widget then btn:Kill() btn = nil end
-        btn = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, {1,1}, {0,0}))
+    local data          = { tokill = {} }
+    local CcsOnOpenFn   = config.CcsOnOpenFn
+    config.CcsOnOpenFn  = function(self, inst, doer, ...)
+        if btn and btn.inst and btn.inst.widget then
+            btn:Kill()
+            btn = nil
+        end
+        btn = self:AddChild(ImageButton("images/ui.xml", "button_small.tex", "button_small_over.tex", "button_small_disabled.tex", nil, nil, { 1, 1 }, { 0, 0 }))
         btn.image:SetScale(1.07)
-        btn.text:SetPosition(2,-2)
+        btn.text:SetPosition(2, -2)
         btn:SetPosition(pos:Get())
         btn:SetText(name)
 
@@ -24,53 +27,55 @@ local function AddButton(config,name,pos,fn,postfn)
             btn:SetOnClick(function()
                 if doer ~= nil then
                     if doer:HasTag("busy") then
-                        --Ignore button click when doer is busy
+                        -- Ignore button click when doer is busy
                         return
                     elseif doer.components.playercontroller ~= nil then
                         local iscontrolsenabled, ishudblocking = doer.components.playercontroller:IsEnabled()
                         if not (iscontrolsenabled or ishudblocking) then
-                            --Ignore button click when controls are disabled
-                            --but not just because of the HUD blocking input
+                            -- Ignore button click when controls are disabled
+                            -- but not just because of the HUD blocking input
                             return
                         end
                     end
                 end
-                fn(inst, doer,btn,self,data)
+                fn(inst, doer, btn, self, data)
             end)
         end
         if postfn then
-            postfn(btn,inst,name,self,data,...)
+            postfn(btn, inst, name, self, data, ...)
         end
         if CcsOnOpenFn then
-            return CcsOnOpenFn(self,inst, doer,...)
+            return CcsOnOpenFn(self, inst, doer, ...)
         end
     end
-    local CcsOnCloseFn = config.CcsOnCloseFn
-    config.CcsOnCloseFn = function(self,inst,doer,...)
-        if btn and btn.inst and btn.inst.widget  then btn:Kill() btn = nil end
-        for k,v in pairs (data.tokill) do
-            if v and v.inst and v.inst.widget then 
+    local CcsOnCloseFn  = config.CcsOnCloseFn
+    config.CcsOnCloseFn = function(self, inst, doer, ...)
+        if btn and btn.inst and btn.inst.widget then
+            btn:Kill()
+            btn = nil
+        end
+        for k, v in pairs(data.tokill) do
+            if v and v.inst and v.inst.widget then
                 v:Kill()
             end
         end
     end
-
 end
 
---魔杖
+-- 魔杖
 params.ccs_magic_wand3 =
 {
     widget =
     {
         slotpos =
-        {		
-			Vector3(0,   32 + 24,  0),
-			Vector3(0,   32 - 46,  0),
-			Vector3(0,   32 - 116,  0),
+        {
+            Vector3(0, 32 + 24, 0),
+            Vector3(0, 32 - 46, 0),
+            Vector3(0, 32 - 116, 0),
         },
         animbank = "ui_cookpot_1x2",
         animbuild = "ui_cookpot_1x2",
-        pos = Vector3(0, 110, 0),		
+        pos = Vector3(0, 110, 0),
     },
     type = "hand_inv",
 }
@@ -79,7 +84,7 @@ function params.ccs_magic_wand3.itemtestfn(container, item, slot)
     return item:HasTag("ccs_card")
 end
 
---背包
+-- 背包
 params.ccs_bag =
 {
     widget =
@@ -87,7 +92,7 @@ params.ccs_bag =
         slotpos = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ccs_bag_2x9",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-10, -50, 0),
     },
     issidewidget = true,
@@ -108,7 +113,7 @@ params.ccs_dinosaur_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_dinosaur_bag_2x9",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-10, -50, 0),
     },
     issidewidget = true,
@@ -122,9 +127,9 @@ for y = 0, 8 do
 end
 for i = 0, 17 do
     table.insert(
-            params.ccs_dinosaur_bag.widget.slotbg,
-            {image = 'ui_dinosaur_slot.tex', atlas = 'images/inventoryimages/ui_dinosaur_slot.xml'}
-        )
+        params.ccs_dinosaur_bag.widget.slotbg,
+        { image = 'ui_dinosaur_slot.tex', atlas = 'images/inventoryimages/ui_dinosaur_slot.xml' }
+    )
 end
 
 params.ccs_hanbao_bag =
@@ -135,7 +140,7 @@ params.ccs_hanbao_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_hanbao_bag_2x9",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-10, -50, 0),
     },
     issidewidget = true,
@@ -149,9 +154,9 @@ for y = 0, 8 do
 end
 for i = 0, 17 do
     table.insert(
-            params.ccs_hanbao_bag.widget.slotbg,
-            {image = 'ui_hanbao_slot.tex', atlas = 'images/inventoryimages/ui_hanbao_slot.xml'}
-        )
+        params.ccs_hanbao_bag.widget.slotbg,
+        { image = 'ui_hanbao_slot.tex', atlas = 'images/inventoryimages/ui_hanbao_slot.xml' }
+    )
 end
 
 params.ccs_xiaotu_bag =
@@ -162,7 +167,7 @@ params.ccs_xiaotu_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_xiaotu_bag_2x9",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -189,7 +194,7 @@ params.ccs_huihui_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_huihui_bag_2x9",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -197,11 +202,11 @@ params.ccs_huihui_bag =
     openlimit = 1,
 }
 
-local ROWS = 9            -- 行数（y = 0 到 8）
-local COLS = 2            -- 列数（每行 2 个格子）
-local SLOT_SIZE = 72      -- 格子间距
-local OFFSET_X = -153     -- 第一列的 X 位置
-local OFFSET_Y = 280      -- 第一行的 Y 位置
+local ROWS = 9        -- 行数（y = 0 到 8）
+local COLS = 2        -- 列数（每行 2 个格子）
+local SLOT_SIZE = 72  -- 格子间距
+local OFFSET_X = -153 -- 第一列的 X 位置
+local OFFSET_Y = 280  -- 第一行的 Y 位置
 
 for y = 0, ROWS - 1 do
     for x = 0, COLS - 1 do
@@ -225,7 +230,7 @@ params.ccs_huayu_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_ccs_bag_skin_huayu",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -252,7 +257,7 @@ params.ccs_xxcb_bag =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_ccs_bag_skin_xxcb",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -279,7 +284,7 @@ params.ccs_bag_skin_hana_ui =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ccs_bag_skin_hana_ui",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -307,7 +312,7 @@ params.ccs_bag_skin_xiaotucha_ui =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ccs_bag_skin_xiaotucha_ui",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -334,7 +339,7 @@ params.ccs_bag_skin_xiaohuanghua_ui =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ui_ccs_bag_skin_xiaohuanghua",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -359,10 +364,10 @@ params.ccs_bag_skin_wuxia_ui =
     widget =
     {
         slotpos = {},
-        --slotbg = {},
+        -- slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ccs_bag_skin_wuxia_ui",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -384,7 +389,7 @@ params.ccs_bag_yyb_ui =
         slotbg = {},
         animbank = "ui_krampusbag_2x8",
         animbuild = "ccs_bag_yyb_ui",
-        --pos = Vector3(-5, -120, 0),
+        -- pos = Vector3(-5, -120, 0),
         pos = Vector3(-20, -50, 0),
     },
     issidewidget = true,
@@ -404,15 +409,15 @@ for i = 0, 17 do
 end
 
 -- function params.ccs_bag.widget:OnOpenFn(inst)
-	-- CcsMakeWidgetMovable(self, "ccs_bag", Vector3(-5, -130, 0), {
-		-- drag_offset = 0.6
-	-- })
+-- CcsMakeWidgetMovable(self, "ccs_bag", Vector3(-5, -130, 0), {
+-- drag_offset = 0.6
+-- })
 -- end
 
---卡牌盒
+-- 卡牌盒
 params.ccs_card_box =
 {
-	widget =
+    widget =
     {
         slotpos = {},
         animbank = "ui_chest_3x3",
@@ -434,9 +439,9 @@ function params.ccs_card_box.itemtestfn(container, item, slot)
 end
 
 function params.ccs_card_box.widget:OnOpenFn(inst)
-	CcsMakeWidgetMovable(self, "ccs_card_box", Vector3(0, 100, 0), {
-		drag_offset = 0.6
-	})
+    CcsMakeWidgetMovable(self, "ccs_card_box", Vector3(0, 100, 0), {
+        drag_offset = 0.6
+    })
 end
 
 params.ccs_card_box_caomei_ui =
@@ -456,7 +461,7 @@ params.ccs_card_box_caomei_ui =
 for y = 4, 0, -1 do
     for x = 0, 4 do
         table.insert(params.ccs_card_box_caomei_ui.widget.slotpos,
-        Vector3(80 * x - 80 * 2 + 205, 80 * y - 80 * 2 + 120, 0))
+            Vector3(80 * x - 80 * 2 + 205, 80 * y - 80 * 2 + 120, 0))
     end
 end
 for i = 0, 24 do
@@ -474,7 +479,6 @@ function params.ccs_card_box_caomei_ui.widget:OnOpenFn(inst)
         drag_offset = 0.6
     })
 end
-
 
 params.ccs_card_box_alxy_ui =
 {
@@ -584,10 +588,10 @@ function params.ccs_card_box_flxy2_ui.widget:OnOpenFn(inst)
     })
 end
 
---卡牌盒2
+-- 卡牌盒2
 params.ccs_bag2 =
 {
-	widget =
+    widget =
     {
         slotpos = {},
         animbank = "ui_chest_3x3",
@@ -609,16 +613,15 @@ function params.ccs_bag2.itemtestfn(container, item, slot)
 end
 
 function params.ccs_bag2.widget:OnOpenFn(inst)
-	CcsMakeWidgetMovable(self, "ccs_bag2", Vector3(0, 100, 0), {
-		drag_offset = 0.6
-	})
+    CcsMakeWidgetMovable(self, "ccs_bag2", Vector3(0, 100, 0), {
+        drag_offset = 0.6
+    })
 end
 
-
---暗黑箱子
+-- 暗黑箱子
 params.ccs_chest =
 {
-	widget =
+    widget =
     {
         slotpos = {},
         animbank = "ui_chest_3x3",
@@ -650,10 +653,10 @@ params.ccs_oven_shasha =
     type = "ccs_chest",
 }
 
-local COLS, ROWS = 5, 5    -- 5*5
-local SLOT_SIZE = 77       -- 格子间距
-local OFFSET_X = -275       -- 值越小越往左
-local OFFSET_Y = -170        -- 值越小越往下
+local COLS, ROWS = 5, 5 -- 5*5
+local SLOT_SIZE = 77    -- 格子间距
+local OFFSET_X = -275   -- 值越小越往左
+local OFFSET_Y = -170   -- 值越小越往下
 
 for y = ROWS - 1, 0, -1 do
     for x = 0, COLS - 1 do
@@ -683,10 +686,10 @@ params.ccs_oven_shasha_y =
     type = "ccs_chest",
 }
 
-local COLS, ROWS = 5, 5    -- 5*5
-local SLOT_SIZE = 77       -- 格子间距
-local OFFSET_X = -275       -- 值越小越往左
-local OFFSET_Y = -170        -- 值越小越往下
+local COLS, ROWS = 5, 5 -- 5*5
+local SLOT_SIZE = 77    -- 格子间距
+local OFFSET_X = -275   -- 值越小越往左
+local OFFSET_Y = -170   -- 值越小越往下
 
 for y = ROWS - 1, 0, -1 do
     for x = 0, COLS - 1 do
@@ -716,10 +719,10 @@ params.ccs_oven_mixue =
     type = "ccs_chest",
 }
 
-local COLS, ROWS = 5, 5    -- 5*5
-local SLOT_SIZE = 77       -- 格子间距
-local OFFSET_X = -275       -- 值越小越往左
-local OFFSET_Y = -170        -- 值越小越往下
+local COLS, ROWS = 5, 5 -- 5*5
+local SLOT_SIZE = 77    -- 格子间距
+local OFFSET_X = -275   -- 值越小越往左
+local OFFSET_Y = -170   -- 值越小越往下
 
 for y = ROWS - 1, 0, -1 do
     for x = 0, COLS - 1 do
@@ -749,10 +752,10 @@ params.ccs_oven_mixue_y =
     type = "ccs_chest",
 }
 
-local COLS, ROWS = 5, 5    -- 5*5
-local SLOT_SIZE = 77       -- 格子间距
-local OFFSET_X = -275       -- 值越小越往左
-local OFFSET_Y = -170        -- 值越小越往下
+local COLS, ROWS = 5, 5 -- 5*5
+local SLOT_SIZE = 77    -- 格子间距
+local OFFSET_X = -275   -- 值越小越往左
+local OFFSET_Y = -170   -- 值越小越往下
 
 for y = ROWS - 1, 0, -1 do
     for x = 0, COLS - 1 do
@@ -769,17 +772,17 @@ for i = 0, COLS * ROWS - 1 do
 end
 
 
---樱花灯
+-- 樱花灯
 params.ccs_light3 =
 {
-	widget =
+    widget =
     {
         slotpos = {},
         animbank = "ui_chest_3x3",
         animbuild = "ccs_card_box_5x5",
         pos = Vector3(0, 100, 0),
         side_align_tip = 160,
-		buttoninfo =
+        buttoninfo =
         {
             text = "一键收纳",
             position = Vector3(0, -165, 0),
@@ -789,7 +792,7 @@ params.ccs_light3 =
 }
 
 function params.ccs_light3.widget.buttoninfo.fn(inst, doer)
-	SendModRPCToServer(MOD_RPC["CCS"]["ccs_light3_sn"],inst)
+    SendModRPCToServer(MOD_RPC["CCS"]["ccs_light3_sn"], inst)
 end
 
 function params.ccs_light3.widget.buttoninfo.validfn(inst)
@@ -797,7 +800,7 @@ function params.ccs_light3.widget.buttoninfo.validfn(inst)
 end
 
 AddButton(params.ccs_light3.widget, "拆除包囊", Vector3(150, -165, 0), function(inst)
-	SendModRPCToServer(MOD_RPC["CCS"]["ccs_light3_cc"],inst)
+    SendModRPCToServer(MOD_RPC["CCS"]["ccs_light3_cc"], inst)
 end)
 
 for y = 4, 0, -1 do
@@ -806,7 +809,7 @@ for y = 4, 0, -1 do
     end
 end
 
---樱花灯皮肤
+-- 樱花灯皮肤
 params.ui_ccs_light3_skins3 =
 {
     widget =
@@ -885,7 +888,7 @@ end)
 for y = 4, 0, -1 do
     for x = 0, 4 do
         table.insert(params.ui_ccs_light3_skin_xingyuan.widget.slotpos,
-        Vector3(80 * x - 80 * 2 - 3, 80 * y - 80 * 2 - 10, 0))
+            Vector3(80 * x - 80 * 2 - 3, 80 * y - 80 * 2 - 10, 0))
     end
 end
 for i = 0, 24 do
@@ -894,7 +897,7 @@ for i = 0, 24 do
         { image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml' }
     )
 end
---小可
+-- 小可
 params.ccs_xk_rq =
 {
 
@@ -902,7 +905,7 @@ params.ccs_xk_rq =
     {
         slotpos =
         {
-            Vector3(0,   32 + 4,  0),
+            Vector3(0, 32 + 4, 0),
             Vector3(0, -(32 + 4), 0),
         },
         slotbg =
@@ -915,21 +918,21 @@ params.ccs_xk_rq =
     type = "ccs_xk_rq",
 }
 
---冰箱
+-- 冰箱
 params.ccs_ice_box_rq =
 {
     widget =
     {
-        slotpos = {},					
-        animbank = "ui_chest_3x3",		
-        animbuild = "ccs_card_box_5x5",		
-		pos = Vector3(0, 100, 0),
-        side_align_tip = 160,				
+        slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ccs_card_box_5x5",
+        pos = Vector3(0, 100, 0),
+        side_align_tip = 160,
     },
     type = "ccs_ice_box_rq",
 }
 
-for y = 4, 0, -1 do				
+for y = 4, 0, -1 do
     for x = 0, 4 do
         table.insert(params.ccs_ice_box_rq.widget.slotpos, Vector3(80 * x - 80 * 2 + 127, 80 * y - 80 * 2 + 92, 0))
     end
@@ -943,27 +946,27 @@ params.ccs_ice_box_xigewen =
 {
     widget =
     {
-        slotpos = {},					
-        animbank = "ui_chest_3x3",		
-        animbuild = "ui_xigewen_box",		
-		pos = Vector3(0, 100, 0),
+        slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_xigewen_box",
+        pos = Vector3(0, 100, 0),
         slotbg = {},
-        side_align_tip = 160,				
+        side_align_tip = 160,
     },
     type = "ccs_ice_box_rq",
 }
 
 for y = 2, -2, -1 do
     for x = -2, 2 do
-        table.insert(params.ccs_ice_box_xigewen.widget.slotpos, Vector3(80 * x + 13 , 80 * y - 25, 0))
+        table.insert(params.ccs_ice_box_xigewen.widget.slotpos, Vector3(80 * x + 13, 80 * y - 25, 0))
     end
 end
 
 for i = 0, 24 do
     table.insert(
-            params.ccs_ice_box_xigewen.widget.slotbg,
-            {image = 'ui_xigewen_slot2.tex', atlas = 'images/inventoryimages/ui_xigewen_slot2.xml'}
-        )
+        params.ccs_ice_box_xigewen.widget.slotbg,
+        { image = 'ui_xigewen_slot2.tex', atlas = 'images/inventoryimages/ui_xigewen_slot2.xml' }
+    )
 end
 
 
@@ -975,27 +978,27 @@ params.ccs_ice_box_shoe =
 {
     widget =
     {
-        slotpos = {},					
-        animbank = "ui_chest_3x3",		
-        animbuild = "ui_shoe_box",		
-		pos = Vector3(0, 100, 0),
+        slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ui_shoe_box",
+        pos = Vector3(0, 100, 0),
         slotbg = {},
-        side_align_tip = 160,				
+        side_align_tip = 160,
     },
     type = "ccs_ice_box_rq",
 }
 
 for y = 2, -2, -1 do
     for x = -2, 2 do
-        table.insert(params.ccs_ice_box_shoe.widget.slotpos, Vector3(80 * x + 5 , 80 * y - 25, 0))
+        table.insert(params.ccs_ice_box_shoe.widget.slotpos, Vector3(80 * x + 5, 80 * y - 25, 0))
     end
 end
 
 for i = 0, 24 do
     table.insert(
-            params.ccs_ice_box_shoe.widget.slotbg,
-            {image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml'}
-        )
+        params.ccs_ice_box_shoe.widget.slotbg,
+        { image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml' }
+    )
 end
 
 
@@ -1035,17 +1038,17 @@ function params.ccs_ice_box_cat.itemtestfn(container, item, slot)
     return not item.replica.container
 end
 
---水晶球
+-- 水晶球
 params.ccs_trash =
 {
-	widget =
+    widget =
     {
         slotpos = {},
         animbank = "ui_chest_3x3",
         animbuild = "ccs_card_box_5x5",
         pos = Vector3(0, 200, 0),
         side_align_tip = 160,
-		buttoninfo =
+        buttoninfo =
         {
             text = "清理垃圾",
             position = Vector3(0, -165, 0),
@@ -1061,7 +1064,7 @@ for y = 4, 0, -1 do
 end
 
 function params.ccs_trash.widget.buttoninfo.fn(inst, doer)
-	SendModRPCToServer(MOD_RPC["CCS"]["CCS_trash_rpc"],inst)
+    SendModRPCToServer(MOD_RPC["CCS"]["CCS_trash_rpc"], inst)
 end
 
 function params.ccs_trash.widget.buttoninfo.validfn(inst)
@@ -1069,12 +1072,10 @@ function params.ccs_trash.widget.buttoninfo.validfn(inst)
 end
 
 function params.ccs_trash.widget:OnOpenFn(inst)
-	CcsMakeWidgetMovable(self, "ccs_trash", Vector3(0, 100, 0), {
-		drag_offset = 0.6
-	})
+    CcsMakeWidgetMovable(self, "ccs_trash", Vector3(0, 100, 0), {
+        drag_offset = 0.6
+    })
 end
-
-
 
 params.ui_ccs_trash_skin_zkbb =
 {
@@ -1097,7 +1098,7 @@ params.ui_ccs_trash_skin_zkbb =
 for y = 4, 0, -1 do
     for x = 0, 4 do
         table.insert(params.ui_ccs_trash_skin_zkbb.widget.slotpos,
-        Vector3(80 * x - 80 * 2, 80 * y - 80 * 2, 0))
+            Vector3(80 * x - 80 * 2, 80 * y - 80 * 2, 0))
     end
 end
 
@@ -1115,12 +1116,11 @@ function params.ui_ccs_trash_skin_zkbb.widget:OnOpenFn(inst)
     })
 end
 
-
 for k, v in pairs(params) do
     containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, v.widget.slotpos ~= nil and #v.widget.slotpos or 0)
 end
 
---星星法杖
+-- 星星法杖
 params.ccs_starstaff = {
     widget = {
         slotpos = {
@@ -1137,7 +1137,7 @@ function params.ccs_starstaff.itemtestfn(container, item, slot)
     return not item.replica.container
 end
 
---生命法杖
+-- 生命法杖
 params.ccs_lifestaff = {
     widget = {
         slotpos = {
@@ -1154,27 +1154,27 @@ function params.ccs_lifestaff.itemtestfn(container, item, slot)
     return not item.replica.container
 end
 
---储物箱
+-- 储物箱
 params.ccs_treasurechest =
 {
     widget =
     {
-        slotpos = {},					
-        animbank = "ui_chest_3x3",		
-        animbuild = "ccs_card_box_5x5",		
-		pos = Vector3(0, 100, 0),
-        side_align_tip = 160,				
+        slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ccs_card_box_5x5",
+        pos = Vector3(0, 100, 0),
+        side_align_tip = 160,
     },
     type = "ccs_treasurechest",
 }
 
-for y = 4, 0, -1 do				
+for y = 4, 0, -1 do
     for x = 0, 4 do
         table.insert(params.ccs_treasurechest.widget.slotpos, Vector3(80 * x - 80 * 2 + 127, 80 * y - 80 * 2 + 92, 0))
     end
 end
 
---xksb皮肤ui
+-- xksb皮肤ui
 params.ccs_bluepet =
 {
     widget =
@@ -1197,9 +1197,9 @@ end
 
 for i = 0, 8 do
     table.insert(
-            params.ccs_bluepet.widget.slotbg,
-            {image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml'}
-        )
+        params.ccs_bluepet.widget.slotbg,
+        { image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml' }
+    )
 end
 
 
@@ -1229,9 +1229,9 @@ end
 
 for i = 0, 8 do
     table.insert(
-            params.ccs_blackpet.widget.slotbg,
-            {image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml'}
-        )
+        params.ccs_blackpet.widget.slotbg,
+        { image = 'ui_xigewen_slot.tex', atlas = 'images/inventoryimages/ui_xigewen_slot.xml' }
+    )
 end
 
 
@@ -1303,7 +1303,6 @@ function params.ccs_xuexuepet.itemtestfn(container, item, slot)
     return not item.replica.container
 end
 
-
 params.ui_ccs_sb_item_skin_rzym =
 {
     widget =
@@ -1321,7 +1320,7 @@ params.ui_ccs_sb_item_skin_rzym =
 for y = 2, 0, -1 do
     for x = 0, 2 do
         table.insert(params.ui_ccs_sb_item_skin_rzym.widget.slotpos,
-        Vector3(80 * x - 80 * 2 + 80, 80 * y - 85 * 2 + 120, 0))
+            Vector3(80 * x - 80 * 2 + 80, 80 * y - 85 * 2 + 120, 0))
     end
 end
 
@@ -1354,7 +1353,7 @@ params.ui_ccs_sb_item_bada =
 for y = 2, 0, -1 do
     for x = 0, 2 do
         table.insert(params.ui_ccs_sb_item_bada.widget.slotpos,
-        Vector3(70 * x - 80, 70 * y - 70, 0))
+            Vector3(70 * x - 80, 70 * y - 70, 0))
     end
 end
 
@@ -1384,10 +1383,10 @@ params.ui_ccs_sb_item_baozi =
     type = "ccs_pet",
 }
 
-local COLS, ROWS = 3, 3    -- 3*3
-local SLOT_SIZE = 70       -- 格子间距
-local OFFSET_X = -70       -- 值越小越往左
-local OFFSET_Y = -83       -- 值越小越往下
+local COLS, ROWS = 3, 3 -- 3*3
+local SLOT_SIZE = 70    -- 格子间距
+local OFFSET_X = -70    -- 值越小越往左
+local OFFSET_Y = -83    -- 值越小越往下
 
 for y = ROWS - 1, 0, -1 do
     for x = 0, COLS - 1 do
@@ -1425,7 +1424,7 @@ params.ui_ccs_sb_item_dilu =
 for y = 2, 0, -1 do
     for x = 0, 2 do
         table.insert(params.ui_ccs_sb_item_dilu.widget.slotpos,
-        Vector3(75 * x - 80, 75 * y - 70, 0))
+            Vector3(75 * x - 80, 75 * y - 70, 0))
     end
 end
 
@@ -1440,7 +1439,6 @@ end
 function params.ui_ccs_sb_item_dilu.itemtestfn(container, item, slot)
     return not item.replica.container
 end
-
 
 params.ccs_apple_container =
 {
@@ -1464,16 +1462,15 @@ end
 
 for i = 0, 8 do
     table.insert(
-            params.ccs_apple_container.widget.slotbg,
-            {image = 'ccs_sb_item_skins_appale2_image.tex', atlas = 'images/inventoryimages/ccs_sb_item_skins_appale2_image.xml'}
-        )
+        params.ccs_apple_container.widget.slotbg,
+        { image = 'ccs_sb_item_skins_appale2_image.tex', atlas = 'images/inventoryimages/ccs_sb_item_skins_appale2_image.xml' }
+    )
 end
 
 
 function params.ccs_apple_container.itemtestfn(container, item, slot)
     return not item.replica.container
 end
-
 
 params.ccs_apple2_container =
 {
@@ -1497,9 +1494,9 @@ end
 
 for i = 0, 8 do
     table.insert(
-            params.ccs_apple2_container.widget.slotbg,
-            {image = 'ccs_sb_item_skins_appale2_image.tex', atlas = 'images/inventoryimages/ccs_sb_item_skins_appale2_image.xml'}
-        )
+        params.ccs_apple2_container.widget.slotbg,
+        { image = 'ccs_sb_item_skins_appale2_image.tex', atlas = 'images/inventoryimages/ccs_sb_item_skins_appale2_image.xml' }
+    )
 end
 
 
@@ -1699,6 +1696,7 @@ params.ccs_homesign =
 function params.ccs_homesign.itemtestfn(container, item, slot)
     return item:HasTag("ccs_card")
 end
+
 for k, v in pairs(params) do
     containers.MAXITEMSLOTS = math.max(containers.MAXITEMSLOTS, v.widget.slotpos ~= nil and #v.widget.slotpos or 0)
 end

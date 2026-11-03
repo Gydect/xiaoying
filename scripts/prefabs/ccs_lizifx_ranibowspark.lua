@@ -18,10 +18,8 @@ local function IntColour(r, g, b, a)
 end
 
 local function InitEnvelope()
-
-
     EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME, {
-        { 0, IntColour(255, 41, 34, 255) }, { 0.15, IntColour(255, 41, 34, 0) },
+        { 0,    IntColour(255, 41, 34, 255) }, { 0.15, IntColour(255, 41, 34, 0) },
         { 0.16, IntColour(255, 113, 76, 255) }, { 0.31, IntColour(255, 113, 76, 0) },
         { 0.32, IntColour(255, 243, 76, 255) }, { 0.47, IntColour(255, 243, 76, 0) },
         { 0.48, IntColour(76, 255, 87, 255) }, { 0.63, IntColour(76, 255, 87, 0) },
@@ -34,8 +32,8 @@ local function InitEnvelope()
     EnvelopeManager:AddVector2Envelope(
         SCALE_ENVELOPE_NAME,
         {
-            { 0,    { max_scale, max_scale } },
-            { 1,    { max_scale * .5, max_scale * .5 } },
+            { 0, { max_scale, max_scale } },
+            { 1, { max_scale * .5, max_scale * .5 } },
         }
     )
 
@@ -57,11 +55,11 @@ local function emit_sparkle_fn(effect, sphere_emitter)
 
     effect:AddRotatingParticleUV(
         0,
-        lifetime,           -- lifetime
-        px, py, pz,         -- position
-        vx, vy, vz,         -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,       -- lifetime
+        px, py, pz,     -- position
+        vx, vy, vz,     -- velocity
+        angle, ang_vel, -- angle, angular_velocity
+        uv_offset, 0    -- uv offset
     )
 end
 
@@ -77,7 +75,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -115,7 +113,7 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, function()
         local dist_moved = inst:GetPosition() - inst.last_pos
         local move = dist_moved:Length()
-        move = math.clamp(move*6, 0, 1)
+        move = math.clamp(move * 6, 0, 1)
 
         local per_tick = Lerp(low_per_tick, high_per_tick, move)
 

@@ -23,17 +23,17 @@ local function spawn_grouped_loot(center_x, center_z, loot_table, radius, min_ra
     if not loot_table or not next(loot_table) then
         return
     end
-    
+
     -- 设置默认参数
     radius = radius or 0.1
     min_radius = min_radius or 0.1
-    
+
     -- 遍历掉落物表
     for loot_prefab, total_count in pairs(loot_table) do
         if total_count > 0 then
             -- 获取该物品的实际堆叠上限
-            local max_stack = 1  -- 默认堆叠上限
-            
+            local max_stack = 1 -- 默认堆叠上限
+
             local test_item = SpawnPrefab(loot_prefab)
             if test_item then
                 if test_item.components.stackable then
@@ -41,13 +41,13 @@ local function spawn_grouped_loot(center_x, center_z, loot_table, radius, min_ra
                 end
                 test_item:Remove()
             end
-            
+
             local remaining = total_count
-            
+
             -- 生成堆叠物品
             while remaining > 0 do
                 local stack_size = math.min(remaining, max_stack)
-                
+
                 -- 生成物品
                 local drop_item = SpawnPrefab(loot_prefab)
                 if drop_item then
@@ -55,29 +55,29 @@ local function spawn_grouped_loot(center_x, center_z, loot_table, radius, min_ra
                     if drop_item.components.stackable then
                         drop_item.components.stackable:SetStackSize(stack_size)
                     end
-                    
+
                     -- 设置随机掉落位置
                     local angle = math.random() * 2 * PI
                     local drop_radius = math.random() * radius + min_radius
                     local drop_x = center_x + math.cos(angle) * drop_radius
                     local drop_z = center_z + math.sin(angle) * drop_radius
-                    
+
                     drop_item.Transform:SetPosition(drop_x, 0, drop_z)
-                    
+
                     -- 设置随机速度，类似原SpawnLootPrefab函数
                     if drop_item.Physics ~= nil then
                         drop_item.Physics:SetVel(2 * math.cos(angle), 10, 2 * math.sin(angle))
                         drop_item:DoTaskInTime(1, CheckSpawnedLoot)
                     end
-                    
+
                     -- 掉落物品
                     if drop_item.components.inventoryitem then
                         drop_item.components.inventoryitem:OnDropped(true)
                     end
-                    
+
                     -- 触发事件
-                    drop_item:PushEvent("on_loot_dropped", {dropper = nil})
-                    
+                    drop_item:PushEvent("on_loot_dropped", { dropper = nil })
+
                     remaining = remaining - stack_size
                 else
                     break
@@ -214,13 +214,12 @@ function GiveOrDropBulk(doer, prefab, amount, pos)
     end
 end
 
-
 local function ttlFnDecorator(obj, key, beforeFn, afterFn, isUseBeforeReturn)
     assert(type(obj) == "table")
     assert(beforeFn == nil or type(beforeFn) == "function",
-           "beforeFn must be nil or a function")
+        "beforeFn must be nil or a function")
     assert(afterFn == nil or type(afterFn) == "function",
-           "afterFn must be nil or a function")
+        "afterFn must be nil or a function")
 
     local oldVal = obj[key]
 
@@ -230,9 +229,9 @@ local function ttlFnDecorator(obj, key, beforeFn, afterFn, isUseBeforeReturn)
 
         if type(oldVal) == "function" and not isSkipOld then
             if newParam ~= nil then
-                r = {oldVal(unpack(newParam))}
+                r = { oldVal(unpack(newParam)) }
             else
-                r = {oldVal(...)}
+                r = { oldVal(...) }
             end
             if not isUseBeforeReturn then retTab = r end
         end
@@ -258,9 +257,9 @@ local function TTGetEquippedMedals(attacker)
     if not (attacker and attacker:IsValid() and attacker.components and attacker.components.inventory) then
         return {}
     end
-    
+
     local equipped_medals = {}
-    
+
     -- 遍历勋章列表，检查哪些是装备的
     for medal_prefab, _ in pairs(medal_list) do
         local medal = attacker.components.inventory:EquipMedalWithName(medal_prefab)
@@ -268,7 +267,7 @@ local function TTGetEquippedMedals(attacker)
             equipped_medals[medal_prefab] = medal
         end
     end
-    
+
     return equipped_medals
 end
 
@@ -278,14 +277,14 @@ local function TTCheckMedalKill(target, attacker)
     end
 
     if not ttlmod:MedalEnable() then return end
-    
+
     -- 获取装备的勋章
     local equipped_medals = TTGetEquippedMedals(attacker)
-    
+
     if next(equipped_medals) == nil then
-        return false  -- 没有装备任何勋章
+        return false -- 没有装备任何勋章
     end
-    
+
     -- 触发每个装备的勋章
     for medal_prefab, medal in pairs(equipped_medals) do
         -- 触发勋章击杀事件
@@ -294,7 +293,7 @@ local function TTCheckMedalKill(target, attacker)
             prefab = medal_prefab
         })
     end
-    
+
     return true
 end
 
@@ -351,16 +350,16 @@ local function ttlrealhealth(player, target, num, cause, afflicter, force_set)
             target:PushEvent("healthdelta", {
                 oldpercent = old_percent,
                 newpercent = new_percent,
-                overtime = false,          
+                overtime = false,
                 cause = cause,
                 afflicter = afflicter,
-                amount = actual_amount     
+                amount = actual_amount
             })
         end
 
         if th:IsDead() and player:IsValid() then
             TTCheckMedalKill(target, player)
-            player:PushEvent("killed", {victim = target})
+            player:PushEvent("killed", { victim = target })
             if target.components.combat ~= nil and
                 target.components.combat.onkilledbyother ~= nil then
                 target.components.combat.onkilledbyother(target, player)
@@ -370,25 +369,25 @@ local function ttlrealhealth(player, target, num, cause, afflicter, force_set)
 end
 
 
-local function ttlSetTreadWaterCollides(player,canTread)
-	if player ~= nil and player.Physics ~= nil and not player:HasTag("playerghost") then
-		player.medal_canTread = canTread
-		player.Physics:ClearCollisionMask()
-		player.Physics:CollidesWith(canTread and COLLISION.GROUND or COLLISION.WORLD)
-		player.Physics:CollidesWith(COLLISION.OBSTACLES)
-		player.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
-		player.Physics:CollidesWith(COLLISION.CHARACTERS)
-		player.Physics:CollidesWith(COLLISION.GIANTS)
-		player.Physics:Teleport(player.Transform:GetWorldPosition())
-	end
+local function ttlSetTreadWaterCollides(player, canTread)
+    if player ~= nil and player.Physics ~= nil and not player:HasTag("playerghost") then
+        player.medal_canTread = canTread
+        player.Physics:ClearCollisionMask()
+        player.Physics:CollidesWith(canTread and COLLISION.GROUND or COLLISION.WORLD)
+        player.Physics:CollidesWith(COLLISION.OBSTACLES)
+        player.Physics:CollidesWith(COLLISION.SMALLOBSTACLES)
+        player.Physics:CollidesWith(COLLISION.CHARACTERS)
+        player.Physics:CollidesWith(COLLISION.GIANTS)
+        player.Physics:Teleport(player.Transform:GetWorldPosition())
+    end
 
-    if player.tashui_task then 
+    if player.tashui_task then
         player.tashui_task:Cancel()
         player.tashui_task = nil
     end
 
-    if canTread then 
-        player.tashui_task = player:DoPeriodicTask(0.5,function()
+    if canTread then
+        player.tashui_task = player:DoPeriodicTask(0.5, function()
             if player.components.drownable ~= nil then
                 if player.components.drownable.enabled ~= false then
                     player.components.drownable.enabled = false
@@ -404,17 +403,16 @@ local function ttlSetTreadWaterCollides(player,canTread)
         end
         ChangeToCharacterPhysics(player)
     end
-
 end
 
 local function ccsgetcm(inst)
-	if not inst then return end
+    if not inst then return end
 
-    if not inst.components.CcsCounterManager then 
+    if not inst.components.CcsCounterManager then
         inst:AddComponent("CcsCounterManager")
     end
-    
-    return inst.components.CcsCounterManager 
+
+    return inst.components.CcsCounterManager
 end
 
 
@@ -503,19 +501,18 @@ function Detach(inst, target)
     inst._createFx = nil
 end
 
-
 function TTgetentityMultiplier(inst, target, weapon, multiplier)
     -- 参数验证
     if inst == nil then
         return 1
     end
-    
+
     -- 获取攻击者的战斗组件
     local combat = inst.components.combat
     if combat == nil then
         return 1
     end
-    
+
     -- 如果未提供武器，尝试从攻击者手上获取武器
     if weapon == nil then
         -- 检查是否有库存组件
@@ -526,7 +523,7 @@ function TTgetentityMultiplier(inst, target, weapon, multiplier)
                 weapon = nil
             end
         end
-        
+
         -- 如果是骑乘状态，检查坐骑
         if weapon == nil and inst.components.rider ~= nil and inst.components.rider:IsRiding() then
             local mount = inst.components.rider:GetMount()
@@ -535,19 +532,18 @@ function TTgetentityMultiplier(inst, target, weapon, multiplier)
             end
         end
     end
-    
+
     -- 处理目标参数
     local final_target = target
     if final_target == nil then
         -- 如果没有提供目标，使用攻击者的当前目标
         final_target = combat.target
     end
-    
+
     -- 方案1：直接调用方法（如果已定义）
     if combat.GetCompleteAttackerMultiplier_ccs ~= nil then
         return combat:GetCompleteAttackerMultiplier_ccs(inst, final_target, weapon, multiplier)
     end
-      
 end
 
 local EQUIP_SLOTS = {
@@ -607,7 +603,9 @@ end
 local function TTLgeteqbypre(inst, prefab)
     local found = nil
     ForEachEquipped(inst, function(item)
-        if item.prefab == prefab then found = item; return true end
+        if item.prefab == prefab then
+            found = item; return true
+        end
     end)
     return found
 end
@@ -616,24 +614,27 @@ end
 local function TTLgeteqbytag(inst, tag)
     local found = nil
     ForEachEquipped(inst, function(item)
-        if item:HasTag(tag) then found = item; return true end
+        if item:HasTag(tag) then
+            found = item; return true
+        end
     end)
     return found
 end
 
 -- 防止特殊禁疗的特殊目标
-local TTnohealthcheck_table = {"klaus", "zhijiang_soulreaver"}
-local TTnohealthcheck_table_s = {"xd_ziyunboss"}
+local TTnohealthcheck_table = { "klaus", "zhijiang_soulreaver" }
+local TTnohealthcheck_table_s = { "xd_ziyunboss" }
 
 local function TTnohealthcheck(value)
-
     for k, v in pairs(TTnohealthcheck_table_s) do
         if v == value.prefab then return true end
     end
 
     for k, v in pairs(TTnohealthcheck_table) do
         if v == value.prefab and value.IsUnchained ~= nil and
-            not value:IsUnchained() then return true end
+            not value:IsUnchained() then
+            return true
+        end
     end
     return false
 end
@@ -676,8 +677,8 @@ end
 --   targetSymbol  要跟随的子符号名，nil 则跟随整个符号（可选）
 --   postX, postY, postZ  微调偏移，对应 FollowSymbol 的最后三个参数（可选）
 local function TTLApplyWeaponSkinAndFX(owner, inst, swap_symbol, build, symbol_name,
-                                        fx_prefab, fx_anim, ox, oy, oz,
-                                        targetSymbol, postX, postY, postZ)
+                                       fx_prefab, fx_anim, ox, oy, oz,
+                                       targetSymbol, postX, postY, postZ)
     -- 1. 替换模型符号
     if symbol_name then
         owner.AnimState:OverrideSymbol(swap_symbol, build, symbol_name)
@@ -701,10 +702,10 @@ local function TTLApplyWeaponSkinAndFX(owner, inst, swap_symbol, build, symbol_n
         fx.Follower:FollowSymbol(
             owner.GUID,
             swap_symbol,
-            ox or 0, oy or 0, oz or 0,        
-            true,                              
-            targetSymbol,                      
-            postX or 0, postY or 0, postZ or 0 
+            ox or 0, oy or 0, oz or 0,
+            true,
+            targetSymbol,
+            postX or 0, postY or 0, postZ or 0
         )
 
         if fx_anim then
@@ -717,7 +718,7 @@ end
 
 local ttspecialmonster = {
     "gelblob", "elecarmet", "houndmound", "wasphive",
-    "eyeofterror_mini_grounded","corrupt_heart"
+    "eyeofterror_mini_grounded", "corrupt_heart"
 }
 
 local function isintable(value, tb)
@@ -727,7 +728,9 @@ end
 
 local function IsEnemyPre(ent)
     if ent.components.health == nil or ent.components.health:IsDead() or
-        ent.components.combat == nil then return true end
+        ent.components.combat == nil then
+        return true
+    end
     if ent.sg ~= nil and
         (ent.sg:HasStateTag("flight") or ent.sg:HasStateTag("invisible")) then
         return true
@@ -781,7 +784,9 @@ end
 local function ttchecktarget(inst, target) -- 是否为合法目标
     if target.components.freezable or target:HasTag("monster") or
         IsEnemy_player(inst, target) or
-        isintable(target.prefab, ttspecialmonster) then return true end
+        isintable(target.prefab, ttspecialmonster) then
+        return true
+    end
     return false
 end
 

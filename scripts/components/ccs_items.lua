@@ -2,7 +2,7 @@ local TotooriaItems = Class(function(self, inst)
     self.inst = inst
 
     self._bounduserid = ""
-    --self._boundname   = ""
+    -- self._boundname   = ""
 
     -- if inst.components.equippable then
     --     self._onequip = function(inst, data)
@@ -32,13 +32,13 @@ function TotooriaItems:TryBind(owner)
                 return
             end
 
-            local uid  = owner.userid
-            --local name = owner:GetDisplayName() or ""
+            local uid         = owner.userid
+            -- local name = owner:GetDisplayName() or ""
             self._bounduserid = uid
-            --self._boundname   = name
+            -- self._boundname   = name
             -- local mg = ''
 
-            -- if self.inst.components.equippable then 
+            -- if self.inst.components.equippable then
             --     mg = '首次装备,绑定'
             -- else
             --     mg = '首次持有,绑定'
@@ -47,7 +47,7 @@ function TotooriaItems:TryBind(owner)
 
             if self.inst.replica.ccs_items then
                 self.inst.replica.ccs_items.bounduserid:set(uid)
-                --self.inst.replica.ccs_items.boundname:set(name)
+                -- self.inst.replica.ccs_items.boundname:set(name)
             end
 
             -- 通知
@@ -89,7 +89,7 @@ function TotooriaItems:OnSave()
     if self:IsBound() then
         return {
             bounduserid = self._bounduserid,
-            --boundname   = self._boundname,
+            -- boundname   = self._boundname,
         }
     end
 end
@@ -97,11 +97,11 @@ end
 function TotooriaItems:OnLoad(data)
     if data ~= nil and data.bounduserid ~= nil then
         self._bounduserid = data.bounduserid
-        --self._boundname   = data.boundname or ""
+        -- self._boundname   = data.boundname or ""
 
         if self.inst.replica.ccs_items then
             self.inst.replica.ccs_items.bounduserid:set(self._bounduserid)
-            --self.inst.replica.ccs_items.boundname:set(self._boundname)
+            -- self.inst.replica.ccs_items.boundname:set(self._boundname)
         end
     end
 end

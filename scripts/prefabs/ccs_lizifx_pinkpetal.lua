@@ -18,27 +18,26 @@ local assets =
 
 --------------------------------------------------------------------------
 local function InitEnvelope()
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME .. 0,
+        {
+            { 0,   IntColour(250, 240, 245, 255) },
+            { 0.5, IntColour(250, 240, 245, 255) },
+            { 1,   IntColour(250, 240, 245, 0) },
+        })
 
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME..0,
-    {
-        { 0, IntColour(250, 240, 245, 255) },
-        { 0.5, IntColour(250, 240, 245, 255) },
-        { 1, IntColour(250, 240, 245, 0) },
-    })
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME .. 1,
+        {
+            { 0,   IntColour(255, 255, 255, 255) },
+            { 0.5, IntColour(255, 255, 255, 255) },
+            { 1,   IntColour(255, 255, 255, 0) },
+        })
 
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME..1,
-    {
-        { 0, IntColour(255, 255, 255, 255) },
-        { 0.5, IntColour(255, 255, 255, 255) },
-        { 1, IntColour(255, 255, 255, 0) },
-    })
-
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME..2,
-    {
-        { 0, IntColour(245, 230, 240, 255) },
-        { 0.5, IntColour(245, 230, 240, 255) },
-        { 1, IntColour(245, 230, 240, 0) },
-    })
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME .. 2,
+        {
+            { 0,   IntColour(245, 230, 240, 255) },
+            { 0.5, IntColour(245, 230, 240, 255) },
+            { 1,   IntColour(245, 230, 240, 0) },
+        })
 
 
 
@@ -51,17 +50,17 @@ local function InitEnvelope()
     local t = 0
     local step = .2
     while t + step < 1 do
-        local s = Lerp( max_scale, end_scale, Clamp(2*t - 0.5, 0, 1) )
+        local s = Lerp(max_scale, end_scale, Clamp(2 * t - 0.5, 0, 1))
         table.insert(envs, { t, { s * 0.25, s } })
         t = t + step
 
-        local s = Lerp( max_scale, end_scale, Clamp(2*t - 0.5, 0, 1))
+        local s = Lerp(max_scale, end_scale, Clamp(2 * t - 0.5, 0, 1))
         table.insert(envs, { t, { s, s * 0.2 } })
         t = t + step
     end
     table.insert(envs, { 1, { max_scale, max_scale * 0.6 } })
 
-    EnvelopeManager:AddVector2Envelope( SCALE_ENVELOPE_NAME, envs )
+    EnvelopeManager:AddVector2Envelope(SCALE_ENVELOPE_NAME, envs)
 
 
 
@@ -82,11 +81,11 @@ local function emit_rose_fn(effect, i, spark_sphere_emitter)
 
     effect:AddRotatingParticleUV(
         i,
-        lifetime,           -- lifetime
-        px, py, pz,         -- position
-        vx, vy, vz,         -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,       -- lifetime
+        px, py, pz,     -- position
+        vx, vy, vz,     -- velocity
+        angle, ang_vel, -- angle, angular_velocity
+        uv_offset, 0    -- uv offset
     )
 end
 
@@ -102,7 +101,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -113,13 +112,13 @@ local function fn()
     effect:InitEmitters(6)
 
     local num_emitters = 2
-    for i=0,num_emitters do
+    for i = 0, num_emitters do
         effect:SetRenderResources(i, TEXTURE, SHADER)
         effect:SetRotationStatus(i, true)
         effect:SetUVFrameSize(i, 0.125, 1)
         effect:SetMaxNumParticles(i, 200)
         effect:SetMaxLifetime(i, MAX_LIFETIME)
-        effect:SetColourEnvelope(i, COLOUR_ENVELOPE_NAME..i)
+        effect:SetColourEnvelope(i, COLOUR_ENVELOPE_NAME .. i)
         effect:SetScaleEnvelope(i, SCALE_ENVELOPE_NAME)
         effect:SetBlendMode(i, BLENDMODE.Premultiplied)
         effect:EnableBloomPass(i, true)

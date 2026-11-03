@@ -203,9 +203,9 @@ local function LooksLikePlainPayload(text, modtype)
     end
     local skins, userid = skinapi.ParsePayload(text)
     if userid and (#skins > 0
-        or string.find(text, "cspfxy", 1, true)
-        or string.find(text, "mfsnxy", 1, true)
-        or (modtype and string.find(text, modtype, 1, true))) then
+            or string.find(text, "cspfxy", 1, true)
+            or string.find(text, "mfsnxy", 1, true)
+            or (modtype and string.find(text, modtype, 1, true))) then
         return true
     end
     return false

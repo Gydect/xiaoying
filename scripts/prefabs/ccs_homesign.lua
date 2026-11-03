@@ -225,8 +225,7 @@ local config = {
         fn = function(inst)
             inst.Light:Enable(true)
         end,
-        dayfn = function (inst)
-
+        dayfn = function(inst)
             -- 仙人掌可以开花,冬天启动生长
             local x, y, z = inst:GetPosition():Get()
             local ents = TheSim:FindEntities(x, y, z, 30, nil, { "pickable", "stump", "withered", "INLIMBO" })
@@ -258,20 +257,19 @@ local config = {
     ccs_cards_11 = {
         tasktime = 1,
         taskname = "ccs_cards_11_task",
-        taskfn = function (inst)
+        taskfn = function(inst)
             local x, y, z = inst:GetPosition():Get()
             local ents = TheSim:FindEntities(x, y, z, 30, { "player" }, { "playerghost" })
             -- 设置温度，不会过冷
-            for k, v in pairs(ents) do 
+            for k, v in pairs(ents) do
                 if v and v.components.temperature and v.components.temperature.current < 10 then
                     v.components.temperature:SetTemperature(30)
                 end
             end
-
         end
     },
 
-    -- 冰牌 
+    -- 冰牌
     ccs_cards_2 = {
         tasktime = 1,
         taskname = "ccs_cards_2_task",
@@ -375,7 +373,7 @@ local sptask = {
 }
 
 local function alldayfn(inst)
-    inst:DoTaskInTime(0.5,function ()
+    inst:DoTaskInTime(0.5, function()
         -- 查一下容器里面的东西，如果有config里面的物品，就执行对应的dayfn
         local items = inst.components.container:GetAllItems()
         for k, v in pairs(items) do
@@ -386,7 +384,6 @@ local function alldayfn(inst)
             end
         end
     end)
-
 end
 
 local function allfn(inst, items)
@@ -438,9 +435,9 @@ local function onclose(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
 
     local items = inst.components.container:GetAllItems()
-    clear(inst) -- 先清理
+    clear(inst)            -- 先清理
 
-    allfn(inst, items) -- 关闭容器就执行的效果
+    allfn(inst, items)     -- 关闭容器就执行的效果
 
     alltaskfn(inst, items) -- 启动定时任务
 
@@ -452,7 +449,6 @@ local function onclose(inst)
             end
         end
     end
-    
 end
 local MIN = TUNING.SHADE_CANOPY_RANGE_SMALL
 local MAX = MIN + TUNING.WATERTREE_PILLAR_CANOPY_BUFFER
@@ -510,7 +506,7 @@ local function fn()
     inst.Light:SetColour(237 / 255, 237 / 255, 209 / 255)
     inst.Light:Enable(false)
 
-    inst:SetDeploySmartRadius(0.75) --recipe min_spacing/2
+    inst:SetDeploySmartRadius(0.75) -- recipe min_spacing/2
     MakeObstaclePhysics(inst, .2)
 
     inst.MiniMapEntity:SetIcon("sign.png")
@@ -521,7 +517,7 @@ local function fn()
 
 
     inst:AddTag("structure")
-    inst:AddTag('daylight') --自然光
+    inst:AddTag('daylight') -- 自然光
 
 
     inst:AddComponent("raindome")

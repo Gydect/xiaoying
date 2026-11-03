@@ -27,10 +27,10 @@ local function InitEnvelope()
 
     local max_scale = 0.7
     local scale_envelope = {
-        { 0,    { max_scale * 0.4, max_scale * 0.4 } },
-        { 0.3,  { max_scale * 0.5, max_scale * 0.5 } },
-        { 0.6,  { max_scale * 0.6, max_scale * 0.6 } },
-        { 1,    { max_scale * 0.7, max_scale * 0.7 } },
+        { 0,   { max_scale * 0.4, max_scale * 0.4 } },
+        { 0.3, { max_scale * 0.5, max_scale * 0.5 } },
+        { 0.6, { max_scale * 0.6, max_scale * 0.6 } },
+        { 1,   { max_scale * 0.7, max_scale * 0.7 } },
     }
     EnvelopeManager:AddVector2Envelope(SCALE_ENVELOPE_NAME, scale_envelope)
 
@@ -84,7 +84,7 @@ local function fn()
     local num_to_emit = 0
     local sphere_emitter = CreateSphereEmitter(0.2)
     inst.last_pos = inst:GetPosition()
- 
+
     -- 添加一个发射器到EmitterManager，该发射器根据物体移动的距离调整每tick发射的数量
     EmitterManager:AddEmitter(inst, nil, function()
         local dist_moved = (inst:GetPosition() - inst.last_pos):Length()

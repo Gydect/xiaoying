@@ -25,8 +25,8 @@ local TTL_wanly_damage = Class(function(self, inst)
         "fx", "smashable", "totooria"
     }
     self.immune_targets = {
-        "archive_centipede_husk", "crabking_icewall", "worm_boss_dirt","worm_boss_shadow_dirt",
-        "sora_sign","vault_crawler"
+        "archive_centipede_husk", "crabking_icewall", "worm_boss_dirt", "worm_boss_shadow_dirt",
+        "sora_sign", "vault_crawler"
     }
 
     -- debuff开关配置
@@ -40,7 +40,7 @@ local TTL_wanly_damage = Class(function(self, inst)
     self.onremove_handler = function() self:OnRemoveEntity() end
     inst:ListenForEvent("onremove", self.onremove_handler)
 
-    inst:ListenForEvent("onattackother", function (inst,data)
+    inst:ListenForEvent("onattackother", function(inst, data)
         if not inst or not data or not data.target then return end
         inst.alreadydoattack = true
         self:DoAttack(data.target)
@@ -99,7 +99,6 @@ function TTL_wanly_damage:_SafeCancelDebuff(target)
     -- 清理引用
     self.active_debuffs[target] = nil
 end
-
 
 -- ======================
 -- 配置方法
@@ -309,11 +308,11 @@ local function CalculateWanlyDamage(target, attacker)
     -- 应用随机伤害浮动
     total_damage = ttrandom_damage(attacker, total_damage)
 
-    
+
     -- 应用伤害
 
-    if total_damage > 0 then 
-        damage_component:ApplyTTL_wanly_damage(target, total_damage,true)
+    if total_damage > 0 then
+        damage_component:ApplyTTL_wanly_damage(target, total_damage, true)
     end
 end
 
@@ -425,7 +424,7 @@ function TTL_wanly_damage:_ApplyDebuff(target)
     local useNum = TTT.TTGetusenum(self.inst)
 
     if useNum >= 15 then
-        reduce = 0.75 - 0.74 * ((useNum -15) / 485)
+        reduce = 0.75 - 0.74 * ((useNum - 15) / 485)
 
         if reduce <= 0.01 then
             reduce = 0.01
@@ -438,7 +437,7 @@ function TTL_wanly_damage:_ApplyDebuff(target)
     if target:HasTag("structure") or target:HasTag("playerghost") then return end
 
     -- 检查目标是否有战斗组件且不是特定实体
-    if not target.components.combat or target.prefab == "archive_centipede_husk"  then
+    if not target.components.combat or target.prefab == "archive_centipede_husk" then
         return
     end
 
@@ -511,7 +510,7 @@ function TTL_wanly_damage:ApplyDebuffOnly(target, duration)
     end
 
     -- 使用安全的弱引用事件监听
-    local weak_self = setmetatable({self = self}, {__mode = "v"})
+    local weak_self = setmetatable({ self = self }, { __mode = "v" })
     local function onTargetRemoved()
         local real_self = weak_self.self
         if real_self and real_self.inst:IsValid() then
@@ -605,7 +604,7 @@ function TTL_wanly_damage:ApplyTemporaryDamage(target, damage, options)
     actual_damage = ttrandom_damage(self.inst, actual_damage)
 
     -- 应用伤害
-    local success, result = self:_ApplyTTL_wanly_damageInternal(target, actual_damage, cause, afflicter,overtime)
+    local success, result = self:_ApplyTTL_wanly_damageInternal(target, actual_damage, cause, afflicter, overtime)
 
     return success, result
 end
@@ -682,7 +681,7 @@ function TTL_wanly_damage:_ApplyTTL_wanly_damageInternal(target, damage, cause, 
     CCSUTL.ttlrealhealth(afflicter, target, -0.000001, "xianshi", afflicter)
 
     -- 实际变化量
-    local actual_amount = new_health - old_health  -- 负数
+    local actual_amount = new_health - old_health -- 负数
     local new_percent = health:GetPercent()
 
     -- healthdelta 事件
@@ -700,7 +699,7 @@ function TTL_wanly_damage:_ApplyTTL_wanly_damageInternal(target, damage, cause, 
         health.ondelta(target, old_percent, new_percent, overtime or false, cause, afflicter, actual_amount)
     end
 
-    --============ 死亡处理（原版 SetVal 的死亡分支）============
+    -- ============ 死亡处理（原版 SetVal 的死亡分支）============
     if old_health > 0 and new_health <= 0 and (target.prefab == "xd_ziyunboss" or not target.ttkillover_) then
         if not (target.IsUnchained and not target:IsUnchained()) then
             target.ttkillover_ = true
@@ -779,11 +778,11 @@ function TTL_wanly_damage:_ApplyTTL_wanly_damageInternal(target, damage, cause, 
         end)
     end
 
-    return true, -actual_amount  -- 返回实际扣血量（正数）
+    return true, -actual_amount -- 返回实际扣血量（正数）
 end
 
-function TTL_wanly_damage:ApplyTTL_wanly_damage(target, damage,overtime)
-    return self:_ApplyTTL_wanly_damageInternal(target, damage, self.inst.prefab, self.inst,overtime)
+function TTL_wanly_damage:ApplyTTL_wanly_damage(target, damage, overtime)
+    return self:_ApplyTTL_wanly_damageInternal(target, damage, self.inst.prefab, self.inst, overtime)
 end
 
 -- ======================
@@ -995,8 +994,8 @@ end
 function TTL_wanly_damage:_IsWeaponRanged(weapon)
     if not weapon then return false end
     if weapon:HasTag("rangedweapon") or
-       weapon:HasTag("ranged") or
-       weapon:HasTag("projectile") then
+        weapon:HasTag("ranged") or
+        weapon:HasTag("projectile") then
         return true
     end
     if weapon.components.projectile then

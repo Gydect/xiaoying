@@ -24,10 +24,10 @@ end)
 
 function ccs_followerBrain:OnStart()
     local root =
-    PriorityNode({
-        Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
-        FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
-    }, 0.1)
+        PriorityNode({
+            Follow(self.inst, function() return self.inst.components.follower.leader end, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),
+            FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn),
+        }, 0.1)
     self.bt = BT(self.inst, root)
 end
 

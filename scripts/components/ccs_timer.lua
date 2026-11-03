@@ -1,6 +1,6 @@
 local TTL_TIMER = Class(function(self, inst)
     self.inst = inst
-    self._timers = {}  -- key -> { cooldown, last, real, _end_cb, _end_task, _permanent }
+    self._timers = {} -- key -> { cooldown, last, real, _end_cb, _end_task, _permanent }
 end)
 
 local function GetNow(real)
@@ -53,7 +53,7 @@ end
 function TTL_TIMER:Try(key)
     local timer = self._timers[key]
     if not timer then
-        --print(string.format("[TTL_TIMER] Try 键值 [%s] 未配置定时器，直接允许执行。", tostring(key)))
+        -- print(string.format("[TTL_TIMER] Try 键值 [%s] 未配置定时器，直接允许执行。", tostring(key)))
         return true
     end
     local now = GetNow(timer.real)
@@ -62,11 +62,11 @@ function TTL_TIMER:Try(key)
         if timer._end_cb and timer._permanent and not timer._end_task then
             StartEndCheck(self, key)
         end
-        --print(string.format("[TTL_TIMER] Try 键值 [%s] 冷却结束，允许执行。", tostring(key)))
+        -- print(string.format("[TTL_TIMER] Try 键值 [%s] 冷却结束，允许执行。", tostring(key)))
         return true
     end
     local remaining = timer.last + timer.cooldown - now
-    --print(string.format("[TTL_TIMER] Try 键值 [%s] 还在冷却中，剩余 %.2f 秒。", tostring(key), remaining))
+    -- print(string.format("[TTL_TIMER] Try 键值 [%s] 还在冷却中，剩余 %.2f 秒。", tostring(key), remaining))
     return false
 end
 

@@ -5,9 +5,9 @@ local assets =
     Asset("ANIM", "anim/butterfly_basic.zip"),
     Asset("ANIM", "anim/ccs_butterfly.zip"),
     Asset("ANIM", "anim/ccs_butterfly2.zip"),
-	Asset("IMAGE", "images/inventoryimages/ccs_butterfly.tex"), --物品栏贴图
-	Asset("ATLAS", "images/inventoryimages/ccs_butterfly.xml"),
-    Asset("ATLAS_BUILD", "images/inventoryimages/ccs_butterfly.xml",256),
+    Asset("IMAGE", "images/inventoryimages/ccs_butterfly.tex"), -- 物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_butterfly.xml"),
+    Asset("ATLAS_BUILD", "images/inventoryimages/ccs_butterfly.xml", 256),
 }
 
 local prefabs =
@@ -67,7 +67,7 @@ local function OnDeploy(inst, pt, deployer)
         flower.Transform:SetPosition(pt:Get())
         inst.components.stackable:Get():Remove()
         AwardPlayerAchievement("growfrombutterfly", deployer)
-        TheWorld:PushEvent("CHEVO_growfrombutterfly",{target=flower,doer=deployer})
+        TheWorld:PushEvent("CHEVO_growfrombutterfly", { target = flower, doer = deployer })
         if deployer and deployer.SoundEmitter then
             deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
         end
@@ -75,22 +75,22 @@ local function OnDeploy(inst, pt, deployer)
 end
 
 local function OnMutate(inst, transformed_inst)
-	if transformed_inst ~= nil then
-		transformed_inst.sg:GoToState("idle")
-	end
+    if transformed_inst ~= nil then
+        transformed_inst.sg:GoToState("idle")
+    end
 end
 
 local function fn()
     local inst = CreateEntity()
 
-    --Core components
+    -- Core components
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddDynamicShadow()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
-    --Initialize physics
+    -- Initialize physics
     MakeTinyFlyingCharacterPhysics(inst, 1, .5)
 
     inst:AddTag("ccs_butterfly")
@@ -102,7 +102,7 @@ local function fn()
     inst:AddTag("wildfireprotected")
     inst:AddTag("deployedplant")
 
-    --pollinator (from pollinator component) added to pristine state for optimization
+    -- pollinator (from pollinator component) added to pristine state for optimization
     inst:AddTag("pollinator")
 
     inst.Transform:SetTwoFaced()
@@ -133,7 +133,7 @@ local function fn()
     ---------------------
     inst:AddComponent("stackable")
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_butterfly.xml"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_butterfly.xml"
     inst.components.inventoryitem.canbepickedup = false
     inst.components.inventoryitem.canbepickedupalive = true
     inst.components.inventoryitem.nobounce = true
@@ -161,8 +161,8 @@ local function fn()
 
     ----------------
     inst:AddComponent("lootdropper")
-	inst.components.lootdropper:SetLoot({"petals","butterflywings"})
-	inst.components.lootdropper.numrandomloot = 1
+    inst.components.lootdropper:SetLoot({ "petals", "butterflywings" })
+    inst.components.lootdropper.numrandomloot = 1
 
     ------------------
     inst:AddComponent("workable")
@@ -191,10 +191,10 @@ local function fn()
 
     MakeFeedableSmallLivestock(inst, TUNING.BUTTERFLY_PERISH_TIME, OnPickedUp, OnDropped)
 
-	inst:AddComponent("halloweenmoonmutable")
-	inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly")
-	inst.components.halloweenmoonmutable:SetOnMutateFn(OnMutate)
-	inst.components.halloweenmoonmutable.push_attacked_on_new_inst = false
+    inst:AddComponent("halloweenmoonmutable")
+    inst.components.halloweenmoonmutable:SetPrefabMutated("moonbutterfly")
+    inst.components.halloweenmoonmutable:SetOnMutateFn(OnMutate)
+    inst.components.halloweenmoonmutable.push_attacked_on_new_inst = false
 
     return inst
 end

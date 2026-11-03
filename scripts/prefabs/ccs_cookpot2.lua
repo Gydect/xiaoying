@@ -2,7 +2,7 @@ require "prefabutil"
 local assets = {
     Asset("ANIM", "anim/ccs_cookpot2.zip"),
     Asset("ANIM", "anim/ui_sandclock.zip"),
-    Asset("ATLAS", "images/inventoryimages/ccs_cookpot2.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_cookpot2.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_cookpot2.tex"),
 
 }
@@ -141,7 +141,7 @@ params["ccs_cookpot2"]["itemtestfn"] = function(container, item, slot)
     return true
 end
 
---_state 对应的容器界面，1 或未列出的为默认界面
+-- _state 对应的容器界面，1 或未列出的为默认界面
 local STATE_WIDGETS = {
     [2] = "ui_ccs_cookpot2_skin_xiaoke",
     [3] = "ui_ccs_cookpot2_skin_xingmian",
@@ -154,7 +154,7 @@ local function oncontainer_change(inst)
     inst.replica.container:WidgetSetup(STATE_WIDGETS[inst._state:value()] or "ccs_cookpot2")
 end
 
---靠近动画（星冕皮肤）：玩家靠近播放 proximity_pre 再循环 proximity_loop，远离播放 proximity_pst 再循环 idle
+-- 靠近动画（星冕皮肤）：玩家靠近播放 proximity_pre 再循环 proximity_loop，远离播放 proximity_pst 再循环 idle
 local function onplayernear(inst)
     inst.AnimState:PlayAnimation("proximity_pre")
     inst.AnimState:PushAnimation("proximity_loop", true)
@@ -205,17 +205,16 @@ end
 
 local function onhit(inst)
     if not inst:HasTag("burnt") then
-
         if inst.components.container ~= nil then
             if inst.components.container:IsOpen() then
                 inst.components.container:Close()
             end
             inst.components.container:DropEverything()
-            --onclose will trigger sfx already
+        -- onclose will trigger sfx already
         else
             inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_close")
         end
-        if not inst.ccs_nohitanim then --星冕皮肤没有受击动画，被敲时保持当前动画
+        if not inst.ccs_nohitanim then -- 星冕皮肤没有受击动画，被敲时保持当前动画
             inst.AnimState:PlayAnimation("hit")
             inst.AnimState:PushAnimation("idle", true)
         end
@@ -223,37 +222,37 @@ local function onhit(inst)
 end
 
 local function fn(Sim)
-	local inst = CreateEntity()
+    local inst = CreateEntity()
 
-	inst.entity:AddTransform()
+    inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddNetwork()
 
 
     inst:AddTag("structure")
-	inst:AddTag("multfoods_cookpot")
-	inst.AnimState:SetBank("ccs_cookpot2")
-	inst.AnimState:SetBuild("ccs_cookpot2")
-	inst.AnimState:PlayAnimation("place")
+    inst:AddTag("multfoods_cookpot")
+    inst.AnimState:SetBank("ccs_cookpot2")
+    inst.AnimState:SetBuild("ccs_cookpot2")
+    inst.AnimState:PlayAnimation("place")
     inst.AnimState:PushAnimation("idle", true)
     MakeInventoryPhysics(inst)
     MakeInventoryFloatable(inst, "med", 0.3, 0.8)
 
 
-	inst.entity:SetPristine()
-	inst._state = net_smallbyte(inst.GUID, "ccs_cookpot2._state", "container_change")
+    inst.entity:SetPristine()
+    inst._state = net_smallbyte(inst.GUID, "ccs_cookpot2._state", "container_change")
 
-	if not TheWorld.ismastersim then
-		inst.OnEntityReplicated = function(inst)
-			oncontainer_change(inst)
+    if not TheWorld.ismastersim then
+        inst.OnEntityReplicated = function(inst)
+            oncontainer_change(inst)
         end
         inst:ListenForEvent("container_change", oncontainer_change)
         return inst
-	end
+    end
     inst._state:set(1)
     CCSAPI.CcsItemInit(inst)
-	inst:AddComponent("lootdropper")
+    inst:AddComponent("lootdropper")
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.HAMMER)
     inst.components.workable:SetWorkLeft(2)
@@ -261,12 +260,12 @@ local function fn(Sim)
     inst.components.workable:SetOnWorkCallback(onhit)
 
 
-	inst:AddComponent("container")
-	inst.components.container:WidgetSetup("ccs_cookpot2")
+    inst:AddComponent("container")
+    inst.components.container:WidgetSetup("ccs_cookpot2")
     inst.components.container.skipclosesnd = true
     inst.components.container.skipopensnd = true
 
-	return inst
+    return inst
 end
-return Prefab( "ccs_cookpot2", fn, assets),
-MakePlacer( "ccs_cookpot2_placer", "ccs_cookpot2", "ccs_cookpot2", "idle" )
+return Prefab("ccs_cookpot2", fn, assets),
+    MakePlacer("ccs_cookpot2_placer", "ccs_cookpot2", "ccs_cookpot2", "idle")

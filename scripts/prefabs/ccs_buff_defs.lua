@@ -42,7 +42,9 @@ local function OnDetached_dp(inst)
         target.components.talker:Say("地牌强化失效")
         target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_card_dp")
         target.components.combat.externaldamagetakenmultipliers:RemoveModifier("ccs_card_dp")
-        if inst._fx ~= nil then inst._fx:kill_fx(); inst._fx = nil end
+        if inst._fx ~= nil then
+            inst._fx:kill_fx(); inst._fx = nil
+        end
     end
     inst:Remove()
 end
@@ -65,7 +67,9 @@ local function OnAttached_dp1(inst, target, followsymbol, followoffset, data)
     inst.entity:SetParent(target.entity)
     inst.Transform:SetPosition(0, 0, 0)
     ApplyEarthBonus(inst, target, data)
-    if inst._fx ~= nil then inst._fx:Remove(); inst._fx = nil end
+    if inst._fx ~= nil then
+        inst._fx:Remove(); inst._fx = nil
+    end
     inst._fx = SpawnPrefab("ccs_lizifx_ranibowspark")
     inst._fx.entity:AddFollower()
     inst._fx.entity:SetParent(target.entity)
@@ -78,7 +82,9 @@ local function OnDetached_dp1(inst)
         target.components.talker:Say("地牌强化失效")
         target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_card_dp")
         target.components.combat.externaldamagetakenmultipliers:RemoveModifier("ccs_card_dp")
-        if inst._fx ~= nil then inst._fx:Remove(); inst._fx = nil end
+        if inst._fx ~= nil then
+            inst._fx:Remove(); inst._fx = nil
+        end
     end
     inst:Remove()
 end
@@ -111,7 +117,9 @@ local function OnAttached_dp2(inst, target, followsymbol, followoffset, data)
     inst.entity:SetParent(target.entity)
     inst.Transform:SetPosition(0, 0, 0)
     ApplyEarthBonus(inst, target, data)
-    if target._fx ~= nil then target._fx:Cancel(); target._fx = nil end
+    if target._fx ~= nil then
+        target._fx:Cancel(); target._fx = nil
+    end
     target._fx = target:DoPeriodicTask(.25, Tick1)
     if target._ccsbondlevel then
         if not target._ccsbondlevel:value() then target._ccsbondlevel:set(true) else target._ccsbondlevel:set(false) end
@@ -129,7 +137,9 @@ local function OnDetached_dp2(inst)
         target.components.talker:Say("地牌强化失效")
         target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_card_dp")
         target.components.combat.externaldamagetakenmultipliers:RemoveModifier("ccs_card_dp")
-        if target._fx ~= nil then target._fx:Cancel(); target._fx = nil end
+        if target._fx ~= nil then
+            target._fx:Cancel(); target._fx = nil
+        end
     end
     inst:Remove()
 end
@@ -160,7 +170,9 @@ local function OnAttached_dp3(inst, target, followsymbol, followoffset, data)
     inst.entity:SetParent(target.entity)
     inst.Transform:SetPosition(0, 0, 0)
     ApplyEarthBonus(inst, target, data)
-    if inst._fx ~= nil then inst._fx:Remove(); inst._fx = nil end
+    if inst._fx ~= nil then
+        inst._fx:Remove(); inst._fx = nil
+    end
     inst._fx = SpawnPrefab("cane_candy_fx")
     inst._fx.entity:AddFollower()
     inst._fx.entity:SetParent(target.entity)
@@ -173,7 +185,9 @@ local function OnDetached_dp3(inst)
         target.components.talker:Say("地牌强化失效")
         target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_card_dp")
         target.components.combat.externaldamagetakenmultipliers:RemoveModifier("ccs_card_dp")
-        if inst._fx ~= nil then inst._fx:Remove(); inst._fx = nil end
+        if inst._fx ~= nil then
+            inst._fx:Remove(); inst._fx = nil
+        end
     end
     inst:Remove()
 end
@@ -238,16 +252,15 @@ local function OnAttached_fp24(inst, target)
     inst._fx.AnimState:SetBuild("ccs_shield_fx")
     inst._fx.entity:SetParent(target.entity)
     inst._fx.Transform:SetPosition(0, 0.2, 0)
-    inst._fx.AnimState:SetAddColour(0/255, 212/255, 255/255, 1)
-    
-    local ccm = CCSUTL.ccsgetcm(target)
-    if ccm  then 
-        ccm:ManageCounter("ccs_card_fp",1,function ()
-            CCSUTL.ttlSetTreadWaterCollides(target,true)
-            ccm:SetInstanceProperty("ccs_no_drown",true)
-        end,nil)
-    end
+    inst._fx.AnimState:SetAddColour(0 / 255, 212 / 255, 255 / 255, 1)
 
+    local ccm = CCSUTL.ccsgetcm(target)
+    if ccm then
+        ccm:ManageCounter("ccs_card_fp", 1, function()
+            CCSUTL.ttlSetTreadWaterCollides(target, true)
+            ccm:SetInstanceProperty("ccs_no_drown", true)
+        end, nil)
+    end
 end
 
 local function OnDetached_fp24(inst)
@@ -256,14 +269,16 @@ local function OnDetached_fp24(inst)
         target.components.talker:Say("浮牌强化失效了")
         target.components.locomotor:RemoveExternalSpeedMultiplier(target, "ccs_card_fp")
         local ccm = CCSUTL.ccsgetcm(target)
-        if ccm  then 
-             ccm:ManageCounter("ccs_card_fp",-1,nil,function ()
-                 CCSUTL.ttlSetTreadWaterCollides(target,false)
-                 ccm:SetInstanceProperty("ccs_no_drown",nil)
-             end)
+        if ccm then
+            ccm:ManageCounter("ccs_card_fp", -1, nil, function()
+                CCSUTL.ttlSetTreadWaterCollides(target, false)
+                ccm:SetInstanceProperty("ccs_no_drown", nil)
+            end)
         end
     end
-    if inst._fx ~= nil then inst._fx:kill_fx(); inst._fx = nil end
+    if inst._fx ~= nil then
+        inst._fx:kill_fx(); inst._fx = nil
+    end
     inst:Remove()
 end
 
@@ -292,22 +307,22 @@ local function RecoverFromFakeDeath(inst)
             end
         end
         if inst.components.age then inst.components.age:ResumeAging() end
-    
+
         if inst.components.playercontroller then
             inst.components.playercontroller:Enable(true)
         end
         inst:ShowActions(true)
-    
+
         if inst.components.locomotor then
-            inst.components.locomotor:Stop()   
+            inst.components.locomotor:Stop()
             inst.components.locomotor:Clear()
-            inst:EnableMovementPrediction(true)  
+            inst:EnableMovementPrediction(true)
         end
-    
+
         if inst.components.playeractionpicker then
-            ex_fns.ConfigurePlayerActions(inst) 
+            ex_fns.ConfigurePlayerActions(inst)
         end
-    
+
         if inst.Hide then inst:Show() end
         if inst.DynamicShadow then inst.DynamicShadow:Enable(true) end
     end
@@ -324,17 +339,16 @@ local defs = {
         time = 30,
         OnAttached = function(inst, target)
             if target then
-               target:AddTag("lock_blooding")
-               target:AddTag("ccs_nohealth_x")
-               target.components.health.minhealth = 1
-               target.components.health:SetInvincible(true)
+                target:AddTag("lock_blooding")
+                target:AddTag("ccs_nohealth_x")
+                target.components.health.minhealth = 1
+                target.components.health:SetInvincible(true)
 
-               if target.RecoverFromFakeDeath == nil then 
-                   target.RecoverFromFakeDeath = target:DoPeriodicTask(0.1,function()
-                       RecoverFromFakeDeath(target)
-                   end)
-               end
-               
+                if target.RecoverFromFakeDeath == nil then
+                    target.RecoverFromFakeDeath = target:DoPeriodicTask(0.1, function()
+                        RecoverFromFakeDeath(target)
+                    end)
+                end
             end
         end,
         OnDetached = function(inst, target)
@@ -348,7 +362,6 @@ local defs = {
                     target.RecoverFromFakeDeath:Cancel()
                     target.RecoverFromFakeDeath = nil
                 end
-
             end
             inst:Remove()
         end,
@@ -358,29 +371,28 @@ local defs = {
     {
         prefab = "ccs_card_fp_max",
         name = "浮牌强化-2级",
-        tags = {'indefinite'},
+        tags = { 'indefinite' },
         time = -1,
         OnAttached = function(inst, target)
             if target then
-               local ccm = CCSUTL.ccsgetcm(target)
-               if ccm  then 
-                ccm:ManageCounter("ccs_card_fp",1,function ()
-                    CCSUTL.ttlSetTreadWaterCollides(target,true)
-                    ccm:SetInstanceProperty("ccs_no_drown",true)
-
-                end,nil)
-               end
+                local ccm = CCSUTL.ccsgetcm(target)
+                if ccm then
+                    ccm:ManageCounter("ccs_card_fp", 1, function()
+                        CCSUTL.ttlSetTreadWaterCollides(target, true)
+                        ccm:SetInstanceProperty("ccs_no_drown", true)
+                    end, nil)
+                end
             end
         end,
         OnDetached = function(inst, target)
             if target then
                 local ccm = CCSUTL.ccsgetcm(target)
-               if ccm  then 
-                    ccm:ManageCounter("ccs_card_fp",-1,nil,function ()
-                        CCSUTL.ttlSetTreadWaterCollides(target,false)
-                        ccm:SetInstanceProperty("ccs_no_drown",nil)
+                if ccm then
+                    ccm:ManageCounter("ccs_card_fp", -1, nil, function()
+                        CCSUTL.ttlSetTreadWaterCollides(target, false)
+                        ccm:SetInstanceProperty("ccs_no_drown", nil)
                     end)
-               end
+                end
             end
             inst:Remove()
         end,
@@ -405,25 +417,23 @@ local defs = {
         time = 480,
         OnAttached = function(inst, target)
             if target and inst then
-               local ccm = CCSUTL.ccsgetcm(target)
-               if ccm  then 
-                ccm:ManageCounter("ccs_card_fp",1,function ()
-                    CCSUTL.ttlSetTreadWaterCollides(target,true)
-                    ccm:SetInstanceProperty("ccs_no_drown",true)
-                    
-                end,nil)
-               end
-
+                local ccm = CCSUTL.ccsgetcm(target)
+                if ccm then
+                    ccm:ManageCounter("ccs_card_fp", 1, function()
+                        CCSUTL.ttlSetTreadWaterCollides(target, true)
+                        ccm:SetInstanceProperty("ccs_no_drown", true)
+                    end, nil)
+                end
             end
         end,
         OnDetached = function(inst, target)
             if target and inst then
                 local ccm = CCSUTL.ccsgetcm(target)
-                if ccm  then 
-                        ccm:ManageCounter("ccs_card_fp",-1,nil,function ()
-                            CCSUTL.ttlSetTreadWaterCollides(target,false)
-                            ccm:SetInstanceProperty("ccs_no_drown",nil)
-                        end)
+                if ccm then
+                    ccm:ManageCounter("ccs_card_fp", -1, nil, function()
+                        CCSUTL.ttlSetTreadWaterCollides(target, false)
+                        ccm:SetInstanceProperty("ccs_no_drown", nil)
+                    end)
                 end
                 inst:Remove()
             end
@@ -439,7 +449,7 @@ local defs = {
         time = 480,
         OnAttached = function(inst, target)
             if target then
-               target:AddTag("css_yinsheng")
+                target:AddTag("css_yinsheng")
             end
         end,
         OnDetached = function(inst, target)
@@ -459,14 +469,13 @@ local defs = {
         time = 480,
         OnAttached = function(inst, target)
             if inst and target and target.components.combat then
-                
-               target.components.combat.externaldamagemultipliers:SetModifier("ccs_tea1", 1.3) 	
+                target.components.combat.externaldamagemultipliers:SetModifier("ccs_tea1", 1.3)
             end
         end,
         OnDetached = function(inst, target)
             if inst and target and target.components.combat then
-               target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_tea1")
-               inst:Remove()
+                target.components.combat.externaldamagemultipliers:RemoveModifier("ccs_tea1")
+                inst:Remove()
             end
         end,
         OnExtended = OnExtended_dp3,
@@ -475,34 +484,33 @@ local defs = {
     {
         prefab = "buff_magicrocking",
         name = "魔法摇椅",
-        tags = {'indefinite'},
+        tags = { 'indefinite' },
         time = -1,
         OnAttached = function(inst, target)
             if target then
-                if target.components.ccs_magic ~= nil and target.magicrocking_task == nil then 
-                    target.magicrocking_task = target:DoPeriodicTask(1,function()
+                if target.components.ccs_magic ~= nil and target.magicrocking_task == nil then
+                    target.magicrocking_task = target:DoPeriodicTask(1, function()
                         target.components.ccs_magic:DoDelta(2)
                     end)
                 end
                 if target.components.hunger ~= nil then
-                    target.components.hunger.burnratemodifiers:SetModifier(inst, 0,"buff_magicrocking")
+                    target.components.hunger.burnratemodifiers:SetModifier(inst, 0, "buff_magicrocking")
                 end
-			end
+            end
         end,
         OnDetached = function(inst, target)
             if inst and target then
-
-                if target.magicrocking_task then 
+                if target.magicrocking_task then
                     target.magicrocking_task:Cancel()
                     target.magicrocking_task = nil
                 end
 
-				if target.components.hunger ~= nil then
-                    target.components.hunger.burnratemodifiers:RemoveModifier(inst,"buff_magicrocking")
+                if target.components.hunger ~= nil then
+                    target.components.hunger.burnratemodifiers:RemoveModifier(inst, "buff_magicrocking")
                 end
 
                 inst:Remove()
-			end
+            end
         end,
     },
 
@@ -513,13 +521,12 @@ local defs = {
         time_extend = 480,
         time_max = 4800,
         OnAttached = function(inst, target)
-            if inst and target then 
+            if inst and target then
                 target.components.ccs_magic:SetConsume_bf(0.5)
             end
-
         end,
         OnDetached = function(inst, target)
-            if inst and target then 
+            if inst and target then
                 if target and target.components.ccs_magic ~= nil then
                     target.components.ccs_magic:SetConsume_bf(0)
                 end
@@ -531,7 +538,7 @@ local defs = {
     {
         prefab = "ccs_card_fp2",
         chname = "浮牌强化-1级",
-        tags = {"time"},
+        tags = { "time" },
         time = 240,
         OnAttached = OnAttached_fp24,
         OnDetached = OnDetached_fp24,
@@ -542,7 +549,7 @@ local defs = {
     {
         prefab = "ccs_card_dp",
         chname = "地牌强化",
-        tags = {"time"},
+        tags = { "time" },
         time = 480,
         OnAttached = OnAttached_dp,
         OnDetached = OnDetached_dp,
@@ -554,7 +561,7 @@ local defs = {
     {
         prefab = "ccs_card_dp1",
         chname = "地牌强化",
-        tags = {"time"},
+        tags = { "time" },
         time = 480,
         OnAttached = OnAttached_dp1,
         OnDetached = OnDetached_dp1,
@@ -566,7 +573,7 @@ local defs = {
     {
         prefab = "ccs_card_dp2",
         chname = "地牌强化",
-        tags = {"time"},
+        tags = { "time" },
         time = 480,
         OnAttached = OnAttached_dp2,
         OnDetached = OnDetached_dp2,
@@ -578,7 +585,7 @@ local defs = {
     {
         prefab = "ccs_card_dp3",
         chname = "地牌强化",
-        tags = {"time"},
+        tags = { "time" },
         time = 480,
         OnAttached = OnAttached_dp3,
         OnDetached = OnDetached_dp3,
@@ -590,14 +597,14 @@ local defs = {
     {
         prefab = "ccs_card_bp",
         chname = "冰牌强化",
-        tags = {"time"},
+        tags = { "time" },
         time = 480,
         OnAttached = OnAttached_bp,
         OnDetached = OnDetached_bp,
-        OnExtended = OnExtended_dp,          -- 复用重置逻辑
+        OnExtended = OnExtended_dp, -- 复用重置逻辑
         OnTimerDone = OnTimerDone_bp,
     },
-    
+
 }
 
 -- 自动注册中文名

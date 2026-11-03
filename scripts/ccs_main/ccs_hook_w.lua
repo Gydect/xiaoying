@@ -1,25 +1,25 @@
 local CCSUTL = require("utils/ccs_wanly_utils")
 local upvaluehelper = require("utils/ccsupvaluehelper")
 
---不打滑
+-- 不打滑
 AddStategraphPostInit("wilson", function(sg)
     CCSUTL.ttlFnDecorator(sg.events["feetslipped"], "fn", function(inst)
-        return nil,inst.components.ccs_flying and inst.components.ccs_flying.isfly 
+        return nil, inst.components.ccs_flying and inst.components.ccs_flying.isfly
     end)
 end)
 
---不落水
+-- 不落水
 AddComponentPostInit("drownable", function(self)
     local oldShouldX_InternalCheck = self.ShouldX_InternalCheck
-	self.ShouldX_InternalCheck=function(self, ...)
-		if self.inst:HasTag('css_nodrown') or self.inst:HasTag('css_nodrown_box') or self.inst.ccs_no_drown then
+    self.ShouldX_InternalCheck = function(self, ...)
+        if self.inst:HasTag('css_nodrown') or self.inst:HasTag('css_nodrown_box') or self.inst.ccs_no_drown then
             return false
         end
-		return oldShouldX_InternalCheck and oldShouldX_InternalCheck(self, ...)
-	end
+        return oldShouldX_InternalCheck and oldShouldX_InternalCheck(self, ...)
+    end
 end)
 
---隐身
+-- 隐身
 AddComponentPostInit("combat", function(self)
     local old_ttSetRetargetFunction = self.SetRetargetFunction
     function self:SetRetargetFunction(...)
@@ -52,7 +52,7 @@ end)
 -- ACTIONS.PICKUP.fn = function(act)
 --     if act.invobject == nil and act.target ~= nil and act.doer and act.doer:HasTag("ccs_isfly") then
 --         print("1111111")
---         if act.target.prefab == "goldnugget" then 
+--         if act.target.prefab == "goldnugget" then
 --             act.target:Remove()
 --             print("2222222")
 --             return true
@@ -65,21 +65,21 @@ end)
 local ToggleOnPhysics = nil
 AddStategraphPostInit("wilson", function(sg)
     if ToggleOnPhysics == nil then
-		if sg.states.jumpout then
-			local oldonexit = sg.states.jumpout.onexit
-			if oldonexit ~= nil then
-				ToggleOnPhysics = upvaluehelper.Get(oldonexit, "ToggleOnPhysics")
-				if ToggleOnPhysics ~= nil then
-					upvaluehelper.Set(oldonexit,"ToggleOnPhysics",function(inst)
-						ToggleOnPhysics(inst)
-						if inst and (inst.ccs_no_drown or inst:HasTag('css_nodrown') or inst:HasTag('css_nodrown_box') ) then
-							CCSUTL.ttlSetTreadWaterCollides(inst,true)
-						end
-					end)
-				end
-			end
-		end
-	end
+        if sg.states.jumpout then
+            local oldonexit = sg.states.jumpout.onexit
+            if oldonexit ~= nil then
+                ToggleOnPhysics = upvaluehelper.Get(oldonexit, "ToggleOnPhysics")
+                if ToggleOnPhysics ~= nil then
+                    upvaluehelper.Set(oldonexit, "ToggleOnPhysics", function(inst)
+                        ToggleOnPhysics(inst)
+                        if inst and (inst.ccs_no_drown or inst:HasTag('css_nodrown') or inst:HasTag('css_nodrown_box')) then
+                            CCSUTL.ttlSetTreadWaterCollides(inst, true)
+                        end
+                    end)
+                end
+            end
+        end
+    end
 end)
 
 local function CanAccess(inst, doer)
@@ -87,7 +87,7 @@ local function CanAccess(inst, doer)
     if comp ~= nil then
         return comp:IsAllowed(doer)
     end
-    return true 
+    return true
 end
 
 
@@ -224,7 +224,7 @@ ChatHistory.GenerateChatMessage = function(self, chat_type, sender_userid, sende
         icondata = custom.icondata or "default"
         sender_name = custom.sender_name or sender_name
         message = custom.message or message
-        colour = custom.s_colour or custom.m_colour or {1,1,1}
+        colour = custom.s_colour or custom.m_colour or { 1, 1, 1 }
     end
 
     local ret = old_Generate(self, chat_type, sender_userid, sender_netid, sender_name, message, colour, icondata, whisper, localonly, text_filter_context)
@@ -274,7 +274,7 @@ function TOTORIA_Whisper(target_player, params)
     end
 end
 
-GLOBAL.CCSWHISPER = TOTORIA_Whisper 
+GLOBAL.CCSWHISPER = TOTORIA_Whisper
 
 
 AddStategraphPostInit("wilson", function(self)
@@ -317,7 +317,7 @@ AddComponentPostInit("health", function(self)
 
         --     return result
         -- end
-        
+
         return _DoDelta(self, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...)
     end
 
@@ -358,9 +358,9 @@ AddStategraphPostInit("wilson", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-            if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
-				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
+                inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
             end
         end
     end
@@ -372,8 +372,8 @@ AddStategraphPostInit("wilson", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-            if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
             end
         end
     end
@@ -385,8 +385,8 @@ AddStategraphPostInit("wilson", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-             if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
             end
         end
     end
@@ -400,9 +400,9 @@ AddStategraphPostInit("wilson_client", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-             if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
-				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
+                inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
             end
         end
     end
@@ -414,8 +414,8 @@ AddStategraphPostInit("wilson_client", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-			 if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
             end
         end
     end
@@ -427,15 +427,15 @@ AddStategraphPostInit("wilson_client", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-			 if inst:HasTag("ccs_cgl") then  
-				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
-                --inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+            if inst:HasTag("ccs_cgl") then
+                inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
+                -- inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
             end
         end
     end
 end)
 
---修复克雷容器残留问题
+-- 修复克雷容器残留问题
 local ContainerWidget = require "widgets/containerwidget"
 local oldClose = ContainerWidget.Close
 function ContainerWidget:Close(...)
@@ -444,8 +444,8 @@ function ContainerWidget:Close(...)
         else
             self.bganim.inst:ListenForEvent("animover", function()
                 self.bganim:Hide()
-                --理论上正常来说.3的时候应该被移除了，但快速装卸背包会导致可能不被正常移除
-                --这里把它移除掉
+                -- 理论上正常来说.3的时候应该被移除了，但快速装卸背包会导致可能不被正常移除
+                -- 这里把它移除掉
                 self.bganim.inst:DoSimTaskInTime(.3, function()
                     self:Kill()
                 end)
@@ -455,26 +455,24 @@ function ContainerWidget:Close(...)
     return oldClose(self, ...)
 end
 
-
---栅栏击剑旋转
+-- 栅栏击剑旋转
 AddComponentPostInit("fencerotator", function(self)
-	local oldRotate = self.Rotate
-	self.Rotate=function(self, target, delta, ...)
-		--自定义旋转角度，转出风采，转出水平！
-		if target ~= nil and target.fencerotator_delta then
-			delta = target.fencerotator_delta
-		end
-		if oldRotate then
-			oldRotate(self, target, delta, ...)
-		end
-	end
+    local oldRotate = self.Rotate
+    self.Rotate = function(self, target, delta, ...)
+        -- 自定义旋转角度，转出风采，转出水平！
+        if target ~= nil and target.fencerotator_delta then
+            delta = target.fencerotator_delta
+        end
+        if oldRotate then
+            oldRotate(self, target, delta, ...)
+        end
+    end
 end)
 
 
 AddClassPostConstruct('widgets/containerwidget', function(self, ...)
-    
     local old_Open = self.Open
-    
+
     function self:Open(container, doer, ...)
         if old_Open then
             old_Open(self, container, doer, ...)
@@ -495,9 +493,7 @@ AddClassPostConstruct('widgets/containerwidget', function(self, ...)
                     bg:SetScale(0.95, 0.95, 1)
                 end
             end
-
         end
-        
     end
 end)
 

@@ -26,51 +26,76 @@ end
 
 
 local skin = {
-	{name = "ccs_xk_item_skins1",skin = "ccs_xk_skins1"},
-	{name = "ccs_xk_item_skins2",skin = "skeletonxk",anim = "animation",scale = 2},
-	{name = "ccs_xk_item_skins3",skin = "skeletonxk2",anim = "animation",scale = 2},
-	{name = "ccs_xk_item_sxz_skins1",skin = "skeletonjy",anim = "animation",scale = 0.5},
-	{name = "ccs_xk_item_sxz_skins2",skin = "skeletonjy2",anim = "animation",scale = 0.5}, 
-	{name = "ccs_xk_item_sxz_skins3",skin = "skeletonwsq",anim = "animation",scale = 0.5},
-	{name = "ccs_xk_item_sxz_skins4",skin = "skeletonwsq2",anim = "animation",scale = 0.5}, 
-	{name = "ccs_xk_item_sxz_skins5",skin = "skeletonxb",anim = "animation",scale = 0.5},
-	{name = "ccs_xk_item_sxz_skins6",skin = "skeletonxb2",anim = "animation",scale = 0.5}, 
-	{name = "ccs_xk_item_skins7",skin = "ccs_sb_item_skins7",anim = "animation"}, 
-	{name = "ccs_xk_item_skins8",skin = "ccs_sb_item_skins8",anim = "animation"}, 
-    {name = "ccs_xk_item_skins9",skin = "ccs_sb_item_skins9",anim = "animation"}, 
-    {name = "ccs_xk_item_skins10",skin = "ccs_sb_item_skins10",anim = "animation"}, 
-    {name = "ccs_xk_item_skins11",skin = "ccs_sb_item_skins11",anim = "animation"}, 
-    {name = "ccs_xk_item_skins12",skin = "ccs_sb_item_skins12",anim = "animation",scale = 0.5}, 
-    {name = "ccs_xk_item_skins13",skin = "ccs_sb_item_skins13",anim = "animation"}, 
-    {name = "ccs_xk_item_skins14",skin = "ccs_xk_item_skins14",anim = "animation",scale = 1.5}, 
-    {name = "ccs_xk_item_skins15",skin = "ccs_sb_item_skins15",anim = "animation"}, 
-    {name = "ccs_xk_item_skins16",skin = "ccs_sb_item_skins16",anim = "animation"}, 
-    {name = "ccs_xk_item_skins17",skin = "ccs_sb_item_skins17",anim = "animation",state = 2,container = "ccs_bluepet"}, 
-    {name = "ccs_xk_item_skins18",skin = "ccs_sb_item_skins18",anim = "animation",state = 3,container = "ccs_blackpet"}, 
-    {name = "ccs_xk_item_skins21",skin = "ccs_sb_item_skins21",bank = "kitcoon",anim = "idle_loop",state = 6,container = "ccs_meimeipet",initfn = function (inst) inst.Transform:SetSixFaced() end},
-    {name = "ccs_xk_item_skins22",skin = "ccs_sb_item_skins22",bank = "kitcoon",anim = "idle_loop",state = 7,container = "ccs_xuexuepet",initfn = function (inst) inst.Transform:SetSixFaced() end},
-    {name = "ccs_sbxk_item_tusi",skin = "ccs_sbxk_item_tusi",anim = "animation",scale = 0.7},
-    { name = "ccs_xk_item_skins_balloon", skin = "ccs_xk_item_skins_balloon", anim = "animation" },
-    { name = "ccs_xk_item_skins_snowy",    skin = "ccs_xk_item_skins_snowy",    anim = "animation",  scale = 0.8},
-    { name = "ccs_xk_item_skins_fox",      skin = "ccs_sb_item_skins_fox",     anim = "animation" },
-    { name = "ccs_xk_item_skins_windbell", skin = "ccs_sb_item_skins_windbell", anim = "animation",  scale = 0.8},
+    { name = "ccs_xk_item_skins1",     skin = "ccs_xk_skins1" },
+    { name = "ccs_xk_item_skins2",     skin = "skeletonxk",          anim = "animation", scale = 2 },
+    { name = "ccs_xk_item_skins3",     skin = "skeletonxk2",         anim = "animation", scale = 2 },
+    { name = "ccs_xk_item_sxz_skins1", skin = "skeletonjy",          anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_sxz_skins2", skin = "skeletonjy2",         anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_sxz_skins3", skin = "skeletonwsq",         anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_sxz_skins4", skin = "skeletonwsq2",        anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_sxz_skins5", skin = "skeletonxb",          anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_sxz_skins6", skin = "skeletonxb2",         anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_skins7",     skin = "ccs_sb_item_skins7",  anim = "animation" },
+    { name = "ccs_xk_item_skins8",     skin = "ccs_sb_item_skins8",  anim = "animation" },
+    { name = "ccs_xk_item_skins9",     skin = "ccs_sb_item_skins9",  anim = "animation" },
+    { name = "ccs_xk_item_skins10",    skin = "ccs_sb_item_skins10", anim = "animation" },
+    { name = "ccs_xk_item_skins11",    skin = "ccs_sb_item_skins11", anim = "animation" },
+    { name = "ccs_xk_item_skins12",    skin = "ccs_sb_item_skins12", anim = "animation", scale = 0.5 },
+    { name = "ccs_xk_item_skins13",    skin = "ccs_sb_item_skins13", anim = "animation" },
+    { name = "ccs_xk_item_skins14",    skin = "ccs_xk_item_skins14", anim = "animation", scale = 1.5 },
+    { name = "ccs_xk_item_skins15",    skin = "ccs_sb_item_skins15", anim = "animation" },
+    { name = "ccs_xk_item_skins16",    skin = "ccs_sb_item_skins16", anim = "animation" },
+    { name = "ccs_xk_item_skins17",    skin = "ccs_sb_item_skins17", anim = "animation", state = 2,  container = "ccs_bluepet" },
+    { name = "ccs_xk_item_skins18",    skin = "ccs_sb_item_skins18", anim = "animation", state = 3,  container = "ccs_blackpet" },
+    {
+        name = "ccs_xk_item_skins21",
+        skin = "ccs_sb_item_skins21",
+        bank = "kitcoon",
+        anim = "idle_loop",
+        state = 6,
+        container = "ccs_meimeipet",
+        initfn = function(
+            inst)
+            inst.Transform:SetSixFaced()
+        end
+    },
+    {
+        name = "ccs_xk_item_skins22",
+        skin = "ccs_sb_item_skins22",
+        bank = "kitcoon",
+        anim = "idle_loop",
+        state = 7,
+        container = "ccs_xuexuepet",
+        initfn = function(
+            inst)
+            inst.Transform:SetSixFaced()
+        end
+    },
+    { name = "ccs_sbxk_item_tusi",         skin = "ccs_sbxk_item_tusi",         anim = "animation", scale = 0.7 },
+    { name = "ccs_xk_item_skins_balloon",  skin = "ccs_xk_item_skins_balloon",  anim = "animation" },
+    { name = "ccs_xk_item_skins_snowy",    skin = "ccs_xk_item_skins_snowy",    anim = "animation", scale = 0.8 },
+    { name = "ccs_xk_item_skins_fox",      skin = "ccs_sb_item_skins_fox",      anim = "animation" },
+    { name = "ccs_xk_item_skins_windbell", skin = "ccs_sb_item_skins_windbell", anim = "animation", scale = 0.8 },
     { name = "ccs_xk_item_skins_sdz",      skin = "ccs_sb_item_skins_sdz",      anim = "animation" },
     { name = "ccs_xk_item_skins23",        skin = "ccs_sb_item_skins23",        anim = "animation" },
     { name = "ccs_xk_item_skins24",        skin = "ccs_sb_item_skins24",        anim = "animation" },
     { name = "ccs_xk_item_skins25",        skin = "ccs_sb_item_skins25",        anim = "animation" },
-    { name = "ccs_xk_item_skins26",skin = "ccs_sb_item_skins26",bank = "kitcoon",anim = "idle_loop",initfn = function (inst) inst.Transform:SetSixFaced() end},
-    { name = "ccs_xk_item_skin_baozi",     skin = "ccs_sb_item_skin_baozi",     anim = "animation" ,container = "ui_ccs_sb_item_baozi", state = 11},
-    { name = "ccs_xk_item_skin_daohe",     skin = "ccs_sb_item_skin_daohe",     anim = "idle_loop", initfn = function (inst) inst.Transform:SetFourFaced() end  ,scale = 0.5  },
-    { name = "ccs_xk_item_skin_xingye",    skin = "ccs_sb_item_skin_xingye",    bank = "kitcoon", anim = "idle_loop", initfn = function (inst) inst.Transform:SetSixFaced() end },
+    { name = "ccs_xk_item_skins26",        skin = "ccs_sb_item_skins26",        bank = "kitcoon",   anim = "idle_loop",                                        initfn = function(inst) inst.Transform:SetSixFaced() end },
+    { name = "ccs_xk_item_skin_baozi",     skin = "ccs_sb_item_skin_baozi",     anim = "animation", container = "ui_ccs_sb_item_baozi",                        state = 11 },
+    { name = "ccs_xk_item_skin_daohe",     skin = "ccs_sb_item_skin_daohe",     anim = "idle_loop", initfn = function(inst) inst.Transform:SetFourFaced() end, scale = 0.5 },
+    { name = "ccs_xk_item_skin_xingye",    skin = "ccs_sb_item_skin_xingye",    bank = "kitcoon",   anim = "idle_loop",                                        initfn = function(inst) inst.Transform:SetSixFaced() end },
     { name = "ccs_xk_item_skin_ckln",      skin = "ccs_sb_item_skin_ckln",      anim = "animation", scale = 0.75 },
     { name = "ccs_xk_item_skin_daergou",   skin = "ccs_sb_item_skin_daergou",   anim = "animation" },
-    { name = "ccs_xk_item_skin_baihe",     skin = "ccs_sb_item_skin_baihe",     anim = "animation",  scale = 0.5 },
+    { name = "ccs_xk_item_skin_baihe",     skin = "ccs_sb_item_skin_baihe",     anim = "animation", scale = 0.5 },
     { name = "ccs_xk_item_skin_xuekeke",   skin = "ccs_xk_item_skin_xuekeke",   anim = "animation" },
-    { name = "ccs_xk_item_szn",            skin = "ccs_sb_item_szn",            anim = "animation",  scale = 0.8},
-    { name = "ccs_xk_item_skin_rzym",      skin = "ccs_sb_item_skin_rzym",      anim = "animation", container = "ui_ccs_sb_item_skin_rzym", state = 8 },
+    { name = "ccs_xk_item_szn",            skin = "ccs_sb_item_szn",            anim = "animation", scale = 0.8 },
+    { name = "ccs_xk_item_skin_rzym",      skin = "ccs_sb_item_skin_rzym",      anim = "animation", container = "ui_ccs_sb_item_skin_rzym",                    state = 8 },
 }
 local function onuse(inst, doer)
-	if not doer:HasTag("ccs") then doer.components.talker:Say("只有小樱才可以召唤小可") return false end
+    if not doer:HasTag("ccs") then
+        doer.components.talker:Say("只有小樱才可以召唤小可")
+        return false
+    end
     if inst.ccs_xk and inst.ccs_xk:IsValid() and doer:HasTag("ccs") then
         uninit(inst)
         if doer and doer.components.talker then
@@ -84,19 +109,19 @@ local function onuse(inst, doer)
             end
             return false
         end
-		local skinname = inst:GetSkinName()
+        local skinname = inst:GetSkinName()
         inst.components.rechargeable:Discharge(99999999)
         local ccs_xk = SpawnAt("ccs_xk", doer)
-		
-		if skinname then
-			for k,v in pairs(skin) do
-				if skinname == v.name then
-					ccs_xk.AnimState:SetBank(v.bank or v.skin) 	
-					ccs_xk.AnimState:SetBuild(v.skin)	
-					if v.anim then
-						ccs_xk.AnimState:PlayAnimation(v.anim, true)
-						local scale = v.scale or 1
-						ccs_xk.AnimState:SetScale(scale, scale,scale)
+
+        if skinname then
+            for k, v in pairs(skin) do
+                if skinname == v.name then
+                    ccs_xk.AnimState:SetBank(v.bank or v.skin)
+                    ccs_xk.AnimState:SetBuild(v.skin)
+                    if v.anim then
+                        ccs_xk.AnimState:PlayAnimation(v.anim, true)
+                        local scale = v.scale or 1
+                        ccs_xk.AnimState:SetScale(scale, scale, scale)
                         if v.state then
                             ccs_xk._state:set(v.state)
                         end
@@ -107,11 +132,11 @@ local function onuse(inst, doer)
                         if v.initfn then
                             v.initfn(ccs_xk)
                         end
-					end
-				end
-			end
-		end
-		
+                    end
+                end
+            end
+        end
+
         local save = inst.components.ccssavecmp:GetSave("ccs_xk")
         if save and save.data then
             ccs_xk:SetPersistData(save.data, save.refs)
@@ -119,16 +144,15 @@ local function onuse(inst, doer)
         ccs_xk.components.container.canbeopened = true
         ccs_xk.components.ccsfollewer:Init(doer)
 
-        if TUNING.CCS_ALLOWED_OTHER then 
-
-            if not ccs_xk.components.ccs_items then 
+        if TUNING.CCS_ALLOWED_OTHER then
+            if not ccs_xk.components.ccs_items then
                 ccs_xk:AddComponent("ccs_items")
             end
             ccs_xk.components.ccs_items:TryBind(doer)
         end
 
 
-		ccs_xk.item = inst
+        ccs_xk.item = inst
         doer.ccs_xk = ccs_xk
         inst.ccs_xk = ccs_xk
         if doer and doer.components.talker then
@@ -246,8 +270,8 @@ local function makexk_item()
         end
         CCSAPI.CcsItemInit(inst)
         inst:AddComponent("inventoryitem")
-		inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_xk_item.xml"
-		inst.components.inventoryitem.imagename = "ccs_xk_item"
+        inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_xk_item.xml"
+        inst.components.inventoryitem.imagename = "ccs_xk_item"
         inst.components.inventoryitem.canonlygoinpocket = true
 
         inst:AddComponent("ccsuseable")
@@ -305,24 +329,24 @@ local catbrain = require "brains/ccs_followerbrain"
 -- 	 inst.sg:GoToState("close")
 -- end
 
-local function itemget(inst,data)
-	inst:DoTaskInTime(0,function()
-		if data and data.item then
-			if data.slot == 1 and data.item.components.temperature then
-				data.item.components.temperature.current = 99 
-			end
-			if data.slot == 2 and data.item.components.temperature then
-				data.item.components.temperature.current = -99 
-			end
-		end		
-	end)
+local function itemget(inst, data)
+    inst:DoTaskInTime(0, function()
+        if data and data.item then
+            if data.slot == 1 and data.item.components.temperature then
+                data.item.components.temperature.current = 99
+            end
+            if data.slot == 2 and data.item.components.temperature then
+                data.item.components.temperature.current = -99
+            end
+        end
+    end)
 end
 
 local function oncontainer_change(inst)
     local num = inst._state:value()
     if num == 2 then
         inst.replica.container:WidgetSetup("ccs_bluepet")
-	elseif num == 3 then
+    elseif num == 3 then
         inst.replica.container:WidgetSetup("ccs_blackpet")
     elseif num == 6 then
         inst.replica.container:WidgetSetup("ccs_meimeipet")
@@ -343,9 +367,9 @@ local function onopen(inst)
     end
 end
 local function makexk()
-	local asstes = {
-		Asset("ANIM", "anim/ccs_xk.zip"), 
-	}
+    local asstes = {
+        Asset("ANIM", "anim/ccs_xk.zip"),
+    }
     local function lightflier_catfn()
         local inst = CreateEntity()
         inst.entity:AddTransform()
@@ -378,9 +402,9 @@ local function makexk()
 
         inst._state = net_smallbyte(inst.GUID, "ccs_xk._state", "container_change")
         if not TheWorld.ismastersim then
-			inst.OnEntityReplicated = function(inst)
-				inst.replica.container:WidgetSetup("chester")
-			end
+            inst.OnEntityReplicated = function(inst)
+                inst.replica.container:WidgetSetup("chester")
+            end
             inst:ListenForEvent("container_change", oncontainer_change)
             return inst
         end
@@ -390,7 +414,7 @@ local function makexk()
         inst.components.container:WidgetSetup("chester")
         inst.components.container.canbeopened = false
         inst.components.container.onopenfn = onopen
-       -- inst.components.container:EnableInfiniteStackSize(true)
+        -- inst.components.container:EnableInfiniteStackSize(true)
         inst:AddComponent("preserver")
         inst.components.preserver:SetPerishRateMultiplier(-5000)
         inst:DoTaskInTime(0, function()
@@ -412,10 +436,10 @@ local function makexk()
         inst:AddComponent("scaler")
         inst.components.scaler:SetScale(1.25)
         inst:AddComponent("ccsfollewer")
-		
-		-- inst:ListenForEvent("onopen", onopen)
-		-- inst:ListenForEvent("onclose", onclose)
-		inst:ListenForEvent("itemget", itemget)
+
+        -- inst:ListenForEvent("onopen", onopen)
+        -- inst:ListenForEvent("onclose", onclose)
+        inst:ListenForEvent("itemget", itemget)
         inst:WatchWorldState("cycles", onopen)
         inst.magicfx = SpawnPrefab("cane_victorian_fx")
         if inst.magicfx then
@@ -426,7 +450,7 @@ local function makexk()
         inst.persists = false
         return inst
     end
-    return Prefab("ccs_xk", lightflier_catfn,asstes)
+    return Prefab("ccs_xk", lightflier_catfn, asstes)
 end
 
 table.insert(All, makexk())

@@ -1,4 +1,3 @@
-
 local function hidehmj(self, owner)
     local ToggleGoggles_old = self.ToggleGoggles
     self.ToggleGoggles = function(self, show, ...)
@@ -16,7 +15,6 @@ AddPlayerPostInit(function(inst)
         inst.entity:AddFollower()
         inst.AnimState:AddOverrideBuild("brc_hotspring_ying")
     end
-    
 end)
 local seal = {
     "dragonfly",
@@ -26,62 +24,62 @@ local seal = {
     "deerclops",
     "crabking",
     "shadow_bishop",
-	"shadow_rook",
+    "shadow_rook",
     "alterguardian_phase3",
     "leif",
-    "beequeen",   
+    "beequeen",
     "bishop",
     "bishop_nightmare",
-	"bat",
+    "bat",
 
     "panflute",
     "ruins_bat",
     "greenamulet",
-	"orangestaff",
-	"orangeamulet",
-	"malbatross",
+    "orangestaff",
+    "orangeamulet",
+    "malbatross",
 }
 
 if TUNING.CCS_CARD14_ENBLE then
-	table.insert(seal,"pocketwatch_revive")
+    table.insert(seal, "pocketwatch_revive")
 end
 
 for k, v in pairs(seal) do
     AddPrefabPostInit(v, function(inst)
         inst:AddTag("ccs_canseal")
-		if not TheWorld.ismastersim then
-			return inst
-		end
-		inst:AddComponent("ccs_canseal")
+        if not TheWorld.ismastersim then
+            return inst
+        end
+        inst:AddComponent("ccs_canseal")
     end)
 end
 
---蝙蝠形态不播放走路声音
+-- 蝙蝠形态不播放走路声音
 local Old_PlayFootstep = GLOBAL.PlayFootstep
 GLOBAL.PlayFootstep = function(inst, volume, ispredicted)
     if inst.prefab == "ccs" and (inst:HasTag("isbf") or inst:HasTag("ccs_cgl") or inst:HasTag("ccs_flyrun") or inst:HasTag("ccs_flyrun2")) then
-		return 
-	end
-	return Old_PlayFootstep(inst, volume, ispredicted)
+        return
+    end
+    return Old_PlayFootstep(inst, volume, ispredicted)
 end
 
-AddComponentPostInit("armor", function(self)	
-	function self:Ccs_SetPercent(amount)
-		local amount = self.maxcondition * amount
-		self.condition = amount
-		self.inst:PushEvent("percentusedchange", { percent = self:GetPercent() })
-	end
+AddComponentPostInit("armor", function(self)
+    function self:Ccs_SetPercent(amount)
+        local amount = self.maxcondition * amount
+        self.condition = amount
+        self.inst:PushEvent("percentusedchange", { percent = self:GetPercent() })
+    end
 end)
 
 CHARACTER_INGREDIENT.CCS_MAGIC = "ccs_magic"
-local oldIsCharacterIngredient = GLOBAL.IsCharacterIngredient 
-if oldIsCharacterIngredient ~= nil then  
-	GLOBAL.IsCharacterIngredient =  function(ingredienttype)  
-		if ingredienttype and ingredienttype == "ccs_magic" then
-			return true
-		end
-		return oldIsCharacterIngredient(ingredienttype)
-	end
+local oldIsCharacterIngredient = GLOBAL.IsCharacterIngredient
+if oldIsCharacterIngredient ~= nil then
+    GLOBAL.IsCharacterIngredient = function(ingredienttype)
+        if ingredienttype and ingredienttype == "ccs_magic" then
+            return true
+        end
+        return oldIsCharacterIngredient(ingredienttype)
+    end
 end
 STRINGS.NAMES[string.upper("ccs_magic")] = "魔法"
 
@@ -113,18 +111,18 @@ local function dostew(inst, self)
         local recipe = cooking.GetRecipe(inst.prefab, self.product)
         local prep_perishtime = (recipe ~= nil and (recipe.cookpot_perishtime or recipe.perishtime)) or 0
         if prep_perishtime > 0 then
-			local prod_spoil = self.product_spoilage or 1
-			self.spoiltime = prep_perishtime * prod_spoil
-			self.targettime =  GetTime() + self.spoiltime
-			self.task = self.inst:DoTaskInTime(self.spoiltime, dospoil, self)
-		end
+            local prod_spoil = self.product_spoilage or 1
+            self.spoiltime = prep_perishtime * prod_spoil
+            self.targettime = GetTime() + self.spoiltime
+            self.task = self.inst:DoTaskInTime(self.spoiltime, dospoil, self)
+        end
     end
 
     self.done = true
 end
 
 local function IsPotTwo(inst)
-	--[[local hand = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.NECK)
+    --[[local hand = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.NECK)
 	local hand2 = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.BODY)
 	if hand then
 		if hand.prefab == "ccs_card_box" then
@@ -148,121 +146,121 @@ local function IsPotTwo(inst)
 			end
 		end
 	end--]]
-	if inst.components.inventory:EquipHasTag("ccs_cards_20_enble") then
-		return true
-	end
-	return false
+    if inst.components.inventory:EquipHasTag("ccs_cards_20_enble") then
+        return true
+    end
+    return false
 end
 
 AddComponentPostInit("stewer", function(self)
-	self.inst:AddComponent("ccs_card_magic")
-	self.inst:AddTag("ccs_card_magic_20")
-	--hook烹饪时间
+    self.inst:AddComponent("ccs_card_magic")
+    self.inst:AddTag("ccs_card_magic_20")
+    -- hook烹饪时间
     local OldStartCooking = self.StartCooking
-	self.StartCooking = function(self, doer,...)
-		if OldStartCooking then
-			OldStartCooking(self, doer,...)	
-			if self.inst.components.container ~= nil then
-				if self.inst.components.ccs_card_magic and self.inst.components.ccs_card_magic.card_20_enble then
-					if self.task ~= nil then
-						self.task:Cancel()
-					end
-					self.task = self.inst:DoTaskInTime(0, dostew, self)
-				end
-			end
-		end
-	end
-	--双倍收锅
-	local OldHarvest = self.Harvest 
-	self.Harvest = function (self,picker,...)
-		if not picker then
-			return OldHarvest(self,picker,...)
-		end
-        if picker:HasTag("ccs") and self.inst then
-            picker:PushEvent("ccs_cookitem", { cookpot = self.inst })	
-        end
-        
-        local rec = cooking.GetRecipe(self.inst.prefab, self.product)
-		local sta = rec and rec.stacksize or 1    
-		local istwo = IsPotTwo(picker)
-		if self.done and istwo then
-			if self.product ~= nil then
-				local loot = GLOBAL.SpawnPrefab(self.product)
-				if loot ~= nil then
-					if sta > 1 then
-						loot.components.stackable:SetStackSize(sta)
-					end
-					if picker ~= nil and picker.components.inventory ~= nil then
-						picker.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
-                    else
-						GLOBAL.LaunchAt(loot, self.inst, nil, 1, 1)
+    self.StartCooking = function(self, doer, ...)
+        if OldStartCooking then
+            OldStartCooking(self, doer, ...)
+            if self.inst.components.container ~= nil then
+                if self.inst.components.ccs_card_magic and self.inst.components.ccs_card_magic.card_20_enble then
+                    if self.task ~= nil then
+                        self.task:Cancel()
                     end
-				end
-			end
-		end
-		return OldHarvest(self,picker)
-	end
+                    self.task = self.inst:DoTaskInTime(0, dostew, self)
+                end
+            end
+        end
+    end
+    -- 双倍收锅
+    local OldHarvest = self.Harvest
+    self.Harvest = function(self, picker, ...)
+        if not picker then
+            return OldHarvest(self, picker, ...)
+        end
+        if picker:HasTag("ccs") and self.inst then
+            picker:PushEvent("ccs_cookitem", { cookpot = self.inst })
+        end
+
+        local rec = cooking.GetRecipe(self.inst.prefab, self.product)
+        local sta = rec and rec.stacksize or 1
+        local istwo = IsPotTwo(picker)
+        if self.done and istwo then
+            if self.product ~= nil then
+                local loot = GLOBAL.SpawnPrefab(self.product)
+                if loot ~= nil then
+                    if sta > 1 then
+                        loot.components.stackable:SetStackSize(sta)
+                    end
+                    if picker ~= nil and picker.components.inventory ~= nil then
+                        picker.components.inventory:GiveItem(loot, nil, self.inst:GetPosition())
+                    else
+                        GLOBAL.LaunchAt(loot, self.inst, nil, 1, 1)
+                    end
+                end
+            end
+        end
+        return OldHarvest(self, picker)
+    end
 end)
 
 local fx = {
-"explosivehit",
+    "explosivehit",
 }
 
-for k,v in pairs(fx) do		
-	AddPrefabPostInit(v,function(inst)
-		inst:ListenForEvent("animover",function(inst) 
-			--inst:PushEvent("endloop")
-			--inst = nil		
-			inst:Remove()				
-		end)
-	end)
+for k, v in pairs(fx) do
+    AddPrefabPostInit(v, function(inst)
+        inst:ListenForEvent("animover", function(inst)
+            -- inst:PushEvent("endloop")
+            -- inst = nil		
+            inst:Remove()
+        end)
+    end)
 end
 
 
 local ccs_card_collection = TUNING.CCS_CARD_COLLECTION
 local gl = 0.01
 if ccs_card_collection == 1 then
-	gl = gl * 10
+    gl = gl * 10
 end
 
---双牌
+-- 双牌
 AddComponentPostInit("builder", function(self)
-	local old_DoBuild = self.DoBuild
-	self.DoBuild = function(self,recname, pt, rotation, skin,...)
-		local recipe = GetValidRecipe(recname)
-		if recipe and recipe.product and (self:IsBuildBuffered(recname) or self:HasIngredients(recipe)) then
-			if self.inst and self.inst.components.inventory then
-				if self.inst.components.inventory:EquipHasTag("ccs_cards_17_enble") and math.random() <= .1 then 
-					local item = SpawnPrefab(recipe.product)
-					if item.components.inventoryitem then
-						self.inst.components.inventory:GiveItem(item)
-					else
-						item:Remove()
-					end
-				end
-				if math.random() <= gl and self.inst:HasTag("ccs") and string.sub(recname,1,10) ~= "ccs_cards_" then
-					local card = SpawnPrefab("ccs_cards_22")
-					card.components.ccs_card_level:SetMaster(self.inst.name,self.inst.userid)
-					self.inst.components.inventory:GiveItem(card)
-				end
-				if self.inst.ccs_cards_28_bd == nil then
-					self.inst.ccs_cards_28_bd = 0
-				end
-				if recname == "reviver" then
-					self.inst.ccs_cards_28_bd = self.inst.ccs_cards_28_bd + 1
-				end
-				if (math.random() <= 0.05 or self.inst.ccs_cards_28_bd == 20) and self.inst:HasTag("ccs") and recname == "reviver" then
-					self.inst.ccs_cards_28_bd = 0
-					local card = SpawnPrefab("ccs_cards_28")
-					card.components.ccs_card_level:SetMaster(self.inst.name,self.inst.userid)
-					self.inst.components.inventory:GiveItem(card)
-				end
-			end
-		end	
-		return old_DoBuild(self,recname, pt, rotation, skin,...)
-	end
-	
-	--[[local old_KnowsRecipe = self.KnowsRecipe
+    local old_DoBuild = self.DoBuild
+    self.DoBuild = function(self, recname, pt, rotation, skin, ...)
+        local recipe = GetValidRecipe(recname)
+        if recipe and recipe.product and (self:IsBuildBuffered(recname) or self:HasIngredients(recipe)) then
+            if self.inst and self.inst.components.inventory then
+                if self.inst.components.inventory:EquipHasTag("ccs_cards_17_enble") and math.random() <= .1 then
+                    local item = SpawnPrefab(recipe.product)
+                    if item.components.inventoryitem then
+                        self.inst.components.inventory:GiveItem(item)
+                    else
+                        item:Remove()
+                    end
+                end
+                if math.random() <= gl and self.inst:HasTag("ccs") and string.sub(recname, 1, 10) ~= "ccs_cards_" then
+                    local card = SpawnPrefab("ccs_cards_22")
+                    card.components.ccs_card_level:SetMaster(self.inst.name, self.inst.userid)
+                    self.inst.components.inventory:GiveItem(card)
+                end
+                if self.inst.ccs_cards_28_bd == nil then
+                    self.inst.ccs_cards_28_bd = 0
+                end
+                if recname == "reviver" then
+                    self.inst.ccs_cards_28_bd = self.inst.ccs_cards_28_bd + 1
+                end
+                if (math.random() <= 0.05 or self.inst.ccs_cards_28_bd == 20) and self.inst:HasTag("ccs") and recname == "reviver" then
+                    self.inst.ccs_cards_28_bd = 0
+                    local card = SpawnPrefab("ccs_cards_28")
+                    card.components.ccs_card_level:SetMaster(self.inst.name, self.inst.userid)
+                    self.inst.components.inventory:GiveItem(card)
+                end
+            end
+        end
+        return old_DoBuild(self, recname, pt, rotation, skin, ...)
+    end
+
+    --[[local old_KnowsRecipe = self.KnowsRecipe
 	self.KnowsRecipe = function(self,recipe, ignore_tempbonus,...)
 		if type(recipe) == "string" then
 			recipe = GetValidRecipe(recipe)
@@ -280,7 +278,7 @@ AddComponentPostInit("builder", function(self)
 		end
 		if recipe.level.CCS_PIANO > 0 then
 			local x,y,z = self.inst:GetPosition():Get()
-			local piano = TheSim:FindEntities(x, y,z, 8,{"ccs_piano"}) 
+			local piano = TheSim:FindEntities(x, y,z, 8,{"ccs_piano"})
 			if #piano >= 1 then
 				return true
 			end
@@ -289,85 +287,85 @@ AddComponentPostInit("builder", function(self)
 	end--]]
 end)
 
---掉落卡牌战利品时绑定主人ID
+-- 掉落卡牌战利品时绑定主人ID
 AddComponentPostInit("lootdropper", function(self)
-	local old_SpawnLootPrefab = self.SpawnLootPrefab
-	self.SpawnLootPrefab = function(self,lootprefab, pt, linked_skinname, skin_id, userid ,doer,...)
-		if lootprefab ~= nil and string.sub(lootprefab,1,8) == "ccs_card" then
-			local loot = SpawnPrefab( lootprefab, linked_skinname, skin_id, userid )
-			if loot ~= nil then
-				if loot:HasTag("ccs_card") and doer then
-					loot.components.ccs_card_level:SetMaster(doer.name,doer.userid)
-					if loot.components.inventoryitem ~= nil then
-						if self.inst.components.inventoryitem ~= nil then
-							loot.components.inventoryitem:InheritMoisture(self.inst.components.inventoryitem:GetMoisture(), self.inst.components.inventoryitem:IsWet())
-						else
-							loot.components.inventoryitem:InheritWorldWetnessAtTarget(self.inst)
-						end
-					end
-					self:FlingItem(loot, pt)
-					loot:PushEvent("on_loot_dropped", {dropper = self.inst})
-					self.inst:PushEvent("loot_prefab_spawned", {loot = loot})
-					return loot
-				end
-			end
-		end
-		return old_SpawnLootPrefab(self,lootprefab, pt, linked_skinname, skin_id, userid ,...)
-	end
+    local old_SpawnLootPrefab = self.SpawnLootPrefab
+    self.SpawnLootPrefab = function(self, lootprefab, pt, linked_skinname, skin_id, userid, doer, ...)
+        if lootprefab ~= nil and string.sub(lootprefab, 1, 8) == "ccs_card" then
+            local loot = SpawnPrefab(lootprefab, linked_skinname, skin_id, userid)
+            if loot ~= nil then
+                if loot:HasTag("ccs_card") and doer then
+                    loot.components.ccs_card_level:SetMaster(doer.name, doer.userid)
+                    if loot.components.inventoryitem ~= nil then
+                        if self.inst.components.inventoryitem ~= nil then
+                            loot.components.inventoryitem:InheritMoisture(self.inst.components.inventoryitem:GetMoisture(), self.inst.components.inventoryitem:IsWet())
+                        else
+                            loot.components.inventoryitem:InheritWorldWetnessAtTarget(self.inst)
+                        end
+                    end
+                    self:FlingItem(loot, pt)
+                    loot:PushEvent("on_loot_dropped", { dropper = self.inst })
+                    self.inst:PushEvent("loot_prefab_spawned", { loot = loot })
+                    return loot
+                end
+            end
+        end
+        return old_SpawnLootPrefab(self, lootprefab, pt, linked_skinname, skin_id, userid, ...)
+    end
 end)
 
---飞牌皮肤：卡牌皮肤名 -> 飞行动画、build、飞行时需要额外显示的图层
+-- 飞牌皮肤：卡牌皮肤名 -> 飞行动画、build、飞行时需要额外显示的图层
 CCS_FLY_SKINS = {
-	default = {anim = "ccs_fly", build = "ccs_fly", symbols = {"hand2"}},
-	ccs_cards_26_skin_zhimeng = {anim = "ccs_fly_zhimeng", build = "ccs_fly_zhimeng", symbols = {"yue", "yun", "diao", "yy"}},
+    default = { anim = "ccs_fly", build = "ccs_fly", symbols = { "hand2" } },
+    ccs_cards_26_skin_zhimeng = { anim = "ccs_fly_zhimeng", build = "ccs_fly_zhimeng", symbols = { "yue", "yun", "diao", "yy" } },
 }
 
 function GetCcsFlySkinData(skin)
-	return CCS_FLY_SKINS[skin] or CCS_FLY_SKINS.default
+    return CCS_FLY_SKINS[skin] or CCS_FLY_SKINS.default
 end
 
---先清掉所有飞牌皮肤的图层覆盖，再按当前皮肤覆盖；skin 为 false 时只清除（降落）
+-- 先清掉所有飞牌皮肤的图层覆盖，再按当前皮肤覆盖；skin 为 false 时只清除（降落）
 function CcsFlyApplySymbols(inst, skin)
-	for _, v in pairs(CCS_FLY_SKINS) do
-		for _, sym in ipairs(v.symbols) do
-			inst.AnimState:ClearOverrideSymbol(sym)
-		end
-	end
-	if skin ~= false then
-		local data = GetCcsFlySkinData(skin)
-		for _, sym in ipairs(data.symbols) do
-			inst.AnimState:OverrideSymbol(sym, data.build, sym)
-		end
-	end
+    for _, v in pairs(CCS_FLY_SKINS) do
+        for _, sym in ipairs(v.symbols) do
+            inst.AnimState:ClearOverrideSymbol(sym)
+        end
+    end
+    if skin ~= false then
+        local data = GetCcsFlySkinData(skin)
+        for _, sym in ipairs(data.symbols) do
+            inst.AnimState:OverrideSymbol(sym, data.build, sym)
+        end
+    end
 end
 
---降落时若还在播放飞行动画，立即切回正常动画
---（飞行动画是循环的，官方 idle 用 PushAnimation 排队时永远轮不到；服务端由 Land 调用，客户端由 isfly 同步时调用）
+-- 降落时若还在播放飞行动画，立即切回正常动画
+-- （飞行动画是循环的，官方 idle 用 PushAnimation 排队时永远轮不到；服务端由 Land 调用，客户端由 isfly 同步时调用）
 function CcsFlyEndAnim(inst)
-	if inst.sg == nil or inst.sg:HasStateTag("dead") then
-		return
-	end
-	local playing = false
-	for _, v in pairs(CCS_FLY_SKINS) do
-		if inst.AnimState:IsCurrentAnimation(v.anim) then
-			playing = true
-			break
-		end
-	end
-	if not playing then
-		return
-	end
-	if inst.sg:HasStateTag("moving") then
-		inst.sg:GoToState("run")
-	elseif inst.sg:HasStateTag("idle") then
-		inst.sg:GoToState("idle")
-	else
-		inst.AnimState:PlayAnimation("idle_loop", true)
-	end
+    if inst.sg == nil or inst.sg:HasStateTag("dead") then
+        return
+    end
+    local playing = false
+    for _, v in pairs(CCS_FLY_SKINS) do
+        if inst.AnimState:IsCurrentAnimation(v.anim) then
+            playing = true
+            break
+        end
+    end
+    if not playing then
+        return
+    end
+    if inst.sg:HasStateTag("moving") then
+        inst.sg:GoToState("run")
+    elseif inst.sg:HasStateTag("idle") then
+        inst.sg:GoToState("idle")
+    else
+        inst.AnimState:PlayAnimation("idle_loop", true)
+    end
 end
 
 local function GetFlySkin(inst)
-	return inst.replica.ccs_flying and inst.replica.ccs_flying:GetSkin() or nil
+    return inst.replica.ccs_flying and inst.replica.ccs_flying:GetSkin() or nil
 end
 
 AddStategraphPostInit("wilson", function(self)
@@ -379,12 +377,12 @@ AddStategraphPostInit("wilson", function(self)
                 old_enter(inst, ...)
             end
             if inst.components.ccs_flying then
-				if inst.components.ccs_flying.isfly then
-					local skin = GetFlySkin(inst)
-					CcsFlyApplySymbols(inst, skin)
-					inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
-					inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
-				end
+                if inst.components.ccs_flying.isfly then
+                    local skin = GetFlySkin(inst)
+                    CcsFlyApplySymbols(inst, skin)
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                    inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+                end
             end
         end
     end
@@ -397,9 +395,9 @@ AddStategraphPostInit("wilson", function(self)
                 old_enter(inst, ...)
             end
             if inst.components.ccs_flying then
-				if inst.components.ccs_flying.isfly then
-					inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
-				end
+                if inst.components.ccs_flying.isfly then
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                end
             end
         end
     end
@@ -411,44 +409,44 @@ AddStategraphPostInit("wilson", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-			if inst.components.ccs_flying then
-				if inst.components.ccs_flying.isfly then
-					inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
-				end
+            if inst.components.ccs_flying then
+                if inst.components.ccs_flying.isfly then
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                end
             end
         end
     end
 
-	local old_idle = self.states.idle
+    local old_idle = self.states.idle
     if old_idle then
         local old_idle_enter = old_idle.onenter
         function old_idle.onenter(inst, ...)
             if old_idle_enter then
                 old_idle_enter(inst, ...)
             end
-			if inst.components.ccs_flying then
-				if inst.components.ccs_flying.isfly then
-					local skin = GetFlySkin(inst)
-					CcsFlyApplySymbols(inst, skin)
-					inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim,true)
-				end
+            if inst.components.ccs_flying then
+                if inst.components.ccs_flying.isfly then
+                    local skin = GetFlySkin(inst)
+                    CcsFlyApplySymbols(inst, skin)
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                end
             end
         end
     end
 
-	--飞行时采集/拾取：省略 pickup 动作，保持飞行动画（状态 10 帧后超时回到 idle）
-	local doshortaction = self.states.doshortaction
+    -- 飞行时采集/拾取：省略 pickup 动作，保持飞行动画（状态 10 帧后超时回到 idle）
+    local doshortaction = self.states.doshortaction
     if doshortaction then
         local old_enter = doshortaction.onenter
         function doshortaction.onenter(inst, ...)
             if old_enter then
                 old_enter(inst, ...)
             end
-			if inst.components.ccs_flying and inst.components.ccs_flying.isfly then
-				local skin = GetFlySkin(inst)
-				CcsFlyApplySymbols(inst, skin)
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
-			end
+            if inst.components.ccs_flying and inst.components.ccs_flying.isfly then
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+            end
         end
     end
 end)
@@ -462,10 +460,10 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				local skin = GetFlySkin(inst)
-				CcsFlyApplySymbols(inst, skin)
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
-				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
             end
         end
     end
@@ -477,8 +475,8 @@ AddStategraphPostInit("wilson_client", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+            if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
             end
         end
     end
@@ -490,77 +488,77 @@ AddStategraphPostInit("wilson_client", function(self)
             if old_enter then
                 old_enter(inst, ...)
             end
-			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+            if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
             end
         end
     end
 
-	local old_idle = self.states.idle
+    local old_idle = self.states.idle
     if old_idle then
         local old_idle_enter = old_idle.onenter
         function old_idle.onenter(inst, ...)
             if old_idle_enter then
                 old_idle_enter(inst, ...)
             end
-			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				local skin = GetFlySkin(inst)
-				CcsFlyApplySymbols(inst, skin)
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim,true)
+            if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
             end
         end
     end
 
-	--飞行时采集/拾取（客户端预测）：同样保持飞行动画；退出时官方会进 idle，由上面的 idle 钩子接回飞行动画
-	local doshortaction = self.states.doshortaction
+    -- 飞行时采集/拾取（客户端预测）：同样保持飞行动画；退出时官方会进 idle，由上面的 idle 钩子接回飞行动画
+    local doshortaction = self.states.doshortaction
     if doshortaction then
         local old_enter = doshortaction.onenter
         function doshortaction.onenter(inst, ...)
             if old_enter then
                 old_enter(inst, ...)
             end
-			if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-				local skin = GetFlySkin(inst)
-				CcsFlyApplySymbols(inst, skin)
-				inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
-			end
+            if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+            end
         end
     end
 end)
 
-local function onnewstate(inst,data)
-	local isfly = inst.components.ccs_flying.isfly
-	local action = inst.components.ccs_flying.action
-	if isfly then
-		local enble = table.contains(action,data.statename)
-		if enble == false then
-			inst.components.ccs_flying:Land()
-		end
-	end
+local function onnewstate(inst, data)
+    local isfly = inst.components.ccs_flying.isfly
+    local action = inst.components.ccs_flying.action
+    if isfly then
+        local enble = table.contains(action, data.statename)
+        if enble == false then
+            inst.components.ccs_flying:Land()
+        end
+    end
 end
 
 AddPrefabPostInit("ccs", function(inst)
     if not TheWorld.ismastersim then
         return inst
-	end
-	
-	--inst:ListenForEvent("newstate",onnewstate)
-	--飞行时不进入不兼容的sg，因为没动画
-	local old_GoToState = inst.sg.GoToState
-	function inst.sg.GoToState(self,statename, params,...) 
-		local isfly = inst.components.ccs_flying.isfly
-		local action = inst.components.ccs_flying.action
-		if isfly then
-			local enble = table.contains(action,statename)
-			if enble == false then
-				return inst.sg:GoToState('idle')
-			end
-		end
-		return old_GoToState(self,statename, params,...)
-	end
+    end
+
+    -- inst:ListenForEvent("newstate",onnewstate)
+    -- 飞行时不进入不兼容的sg，因为没动画
+    local old_GoToState = inst.sg.GoToState
+    function inst.sg.GoToState(self, statename, params, ...)
+        local isfly = inst.components.ccs_flying.isfly
+        local action = inst.components.ccs_flying.action
+        if isfly then
+            local enble = table.contains(action, statename)
+            if enble == false then
+                return inst.sg:GoToState('idle')
+            end
+        end
+        return old_GoToState(self, statename, params, ...)
+    end
 end)
 
---大牌
+-- 大牌
 
 local DESTROYSTUFF_CANT_TAGS = { "INLIMBO", "NET_workable" }
 local function destroystuff(inst)
@@ -568,7 +566,7 @@ local function destroystuff(inst)
     local ents = TheSim:FindEntities(x, y, z, 5, nil, DESTROYSTUFF_CANT_TAGS)
     for i, v in ipairs(ents) do
         if v:IsValid() and
-            v.components.workable ~= nil and v.components.container == nil and 
+            v.components.workable ~= nil and v.components.container == nil and
             v.components.workable:CanBeWorked() and
             v.components.workable.action ~= ACTIONS.NET then
             SpawnPrefab("collapse_small").Transform:SetPosition(v.Transform:GetWorldPosition())
@@ -577,29 +575,29 @@ local function destroystuff(inst)
     end
 end
 
-AddStategraphPostInit("wilson", function(sg)    
-	local run = sg.states.run
+AddStategraphPostInit("wilson", function(sg)
+    local run = sg.states.run
     if run then
         local old_enter = run.onenter
         function run.onenter(inst, ...)
             if old_enter then
                 old_enter(inst, ...)
             end
-            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then		
-				destroystuff(inst)
+            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then
+                destroystuff(inst)
             end
         end
     end
-	
-	local run_start = sg.states.run_start
+
+    local run_start = sg.states.run_start
     if run_start then
         local old_enter = run_start.onenter
         function run_start.onenter(inst, ...)
             if old_enter then
                 old_enter(inst, ...)
             end
-            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then		
-				destroystuff(inst)
+            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then
+                destroystuff(inst)
             end
         end
     end
@@ -611,21 +609,21 @@ AddStategraphPostInit("wilson", function(sg)
             if old_enter then
                 old_enter(inst, ...)
             end
-            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then			
-				destroystuff(inst)
+            if inst.ccs_card24_enble and TUNING.CCS_CARD24_ENBLE then
+                destroystuff(inst)
             end
         end
     end
 end)
 
 local ccs_exclusive_item = {
-	"ccs_magic_wand3",
-	"ccs_bag",
-	"ccs_card_box",
-	"ccs_hat1",
-	"ccs_magic_wand2",
-	"ccs_amulet",
-	"ccs_skirt1",
+    "ccs_magic_wand3",
+    "ccs_bag",
+    "ccs_card_box",
+    "ccs_hat1",
+    "ccs_magic_wand2",
+    "ccs_amulet",
+    "ccs_skirt1",
 }
 
 local function IsWrongCcsOwner(item, owner)
@@ -648,6 +646,7 @@ AddComponentPostInit("container", function(self)
         if IsWrongCcsOwner(item, owner) then return false end
         return oldCanTakeItemInSlot(self, item, slot, ...)
     end
+
     local function OnCardsChanged()
         local owner = self.inst.components.inventoryitem and self.inst.components.inventoryitem:GetGrandOwner()
         if owner ~= nil and owner:HasTag("ccs") then owner:PushEvent("ccs_carried_cards_changed") end
@@ -656,31 +655,31 @@ AddComponentPostInit("container", function(self)
     self.inst:ListenForEvent("itemlose", OnCardsChanged)
 end)
 
-for k,v in pairs(ccs_exclusive_item) do
-	AddPrefabPostInit(v,function(inst)
-		inst:AddTag("ccs_exclusive")
-	end)
+for k, v in pairs(ccs_exclusive_item) do
+    AddPrefabPostInit(v, function(inst)
+        inst:AddTag("ccs_exclusive")
+    end)
 end
 
---卡牌专属
+-- 卡牌专属
 local function OnPutInInventory(fn_old)
     return function(inst, owner)
         if fn_old ~= nil then
             fn_old(inst, owner)
         end
-		if inst.prefab == "ccs_amulet" then return end
+        if inst.prefab == "ccs_amulet" then return end
         inst:DoTaskInTime(0, function()
-            if owner ~= nil and owner.components.inventory ~= nil and owner:HasTag("player")then
-				if not owner:HasTag("ccs") and owner.components.inventory then
-					owner.components.inventory:DropItem(inst)
-					owner.components.talker:Say("这是小樱的东西")
-				end
-				if inst.components.ccs_card_level then
-					if inst.components.ccs_card_level.masterid ~= nil and inst.components.ccs_card_level.masterid ~= owner.userid then
-						owner.components.inventory:DropItem(inst)
-						owner.components.talker:Say("这是别人的东西")
-					end
-				end
+            if owner ~= nil and owner.components.inventory ~= nil and owner:HasTag("player") then
+                if not owner:HasTag("ccs") and owner.components.inventory then
+                    owner.components.inventory:DropItem(inst)
+                    owner.components.talker:Say("这是小樱的东西")
+                end
+                if inst.components.ccs_card_level then
+                    if inst.components.ccs_card_level.masterid ~= nil and inst.components.ccs_card_level.masterid ~= owner.userid then
+                        owner.components.inventory:DropItem(inst)
+                        owner.components.talker:Say("这是别人的东西")
+                    end
+                end
             end
         end)
     end
@@ -699,16 +698,16 @@ AddPrefabPostInitAny(function(inst)
     end
 end)
 
---花老师动作兼容
+-- 花老师动作兼容
 local needchange = true
 local PlayerActionPicker = require("components/playeractionpicker")
 if PlayerActionPicker.myth_changed then
-    needchange = false --如果别的mod也加了这个修改那么就不需要再改一次了
+    needchange = false -- 如果别的mod也加了这个修改那么就不需要再改一次了
 end
 PlayerActionPicker.myth_changed = true
 if needchange then
     AddComponentPostInit(
-        "playeractionpicker", 
+        "playeractionpicker",
         function(self)
             local old_HasAOETargeting = self.HasAOETargeting
             function self:HasAOETargeting()
@@ -720,7 +719,7 @@ if needchange then
         end
     )
 
-    function PlayerActionPicker:GetRightClickActions(position, target,spellbook)
+    function PlayerActionPicker:GetRightClickActions(position, target, spellbook)
         if self.disable_right_click then
             return {}
         end
@@ -736,11 +735,11 @@ if needchange then
             return steering_actions
         end
 
-		local cannon_aim_actions = self:GetCannonAimActions(self.inst, position, true)
-		if cannon_aim_actions ~= nil then
-			return cannon_aim_actions
-		end
-	
+        local cannon_aim_actions = self:GetCannonAimActions(self.inst, position, true)
+        if cannon_aim_actions ~= nil then
+            return cannon_aim_actions
+        end
+
         local actions = nil
         local useitem = self.inst.replica.inventory:GetActiveItem()
         local equipitem = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -754,9 +753,9 @@ if needchange then
                     actions = self:GetInventoryActions(useitem, true)
                 elseif
                     target ~= nil and
-                        (not target:HasTag("walkableplatform") or
-                            (useitem:HasTag("repairer") and not useitem:HasTag("deployable")))
-                 then
+                    (not target:HasTag("walkableplatform") or
+                        (useitem:HasTag("repairer") and not useitem:HasTag("deployable")))
+                then
                     actions = self:GetUseItemActions(target, useitem, true)
                 else
                     actions = self:GetPointActions(position, useitem, true)
@@ -776,47 +775,47 @@ if needchange then
             end
             if actions == nil or #actions == 0 then
                 actions = self:GetSceneActions(target, true)
-				if (#actions == 0 or (#actions == 1 and actions[1].action == ACTIONS.LOOKAT)) and target:HasTag("walkableperipheral") then
-					if equipitem ~= nil and equipitem:IsValid() then
-						local alwayspassable, allowwater--, deployradius
-						local aoetargeting = equipitem.components.aoetargeting
-						if aoetargeting ~= nil and aoetargeting:IsEnabled() then
-							alwayspassable = aoetargeting.alwaysvalid
-							allowwater = aoetargeting.allowwater
-							--deployradius = aoetargeting.deployradius
-						end
-						alwayspassable = alwayspassable or equipitem:HasTag("allow_action_on_impassable")
-						--V2C: just do passable check here, componentactions tends to redo the full check
-						--if self.map:CanCastAtPoint(position, alwayspassable, allowwater, deployradius) then
-						if alwayspassable or self.map:IsPassableAtPoint(position.x, 0, position.z, allowwater) then
-							actions = self:GetPointActions(position, equipitem, true, target)
-						end
-					end
-				end
+                if (#actions == 0 or (#actions == 1 and actions[1].action == ACTIONS.LOOKAT)) and target:HasTag("walkableperipheral") then
+                    if equipitem ~= nil and equipitem:IsValid() then
+                        local alwayspassable, allowwater -- , deployradius
+                        local aoetargeting = equipitem.components.aoetargeting
+                        if aoetargeting ~= nil and aoetargeting:IsEnabled() then
+                            alwayspassable = aoetargeting.alwaysvalid
+                            allowwater = aoetargeting.allowwater
+                            -- deployradius = aoetargeting.deployradius
+                        end
+                        alwayspassable = alwayspassable or equipitem:HasTag("allow_action_on_impassable")
+                        -- V2C: just do passable check here, componentactions tends to redo the full check
+                        -- if self.map:CanCastAtPoint(position, alwayspassable, allowwater, deployradius) then
+                        if alwayspassable or self.map:IsPassableAtPoint(position.x, 0, position.z, allowwater) then
+                            actions = self:GetPointActions(position, equipitem, true, target)
+                        end
+                    end
+                end
             end
         elseif
             equipitem ~= nil and equipitem:IsValid() and spellbook == nil and
-                (ispassable or equipitem:HasTag("allow_action_on_impassable") or (equipitem.components.aoetargeting ~= nil and equipitem.components.aoetargeting.alwaysvalid and
-                        equipitem.components.aoetargeting:IsEnabled()))
-         then
+            (ispassable or equipitem:HasTag("allow_action_on_impassable") or (equipitem.components.aoetargeting ~= nil and equipitem.components.aoetargeting.alwaysvalid and
+                equipitem.components.aoetargeting:IsEnabled()))
+        then
             actions = self:GetPointActions(position, equipitem, true)
-		else
-			local item = spellbook or equipitem
-			if item ~= nil and item:IsValid() then
-				local alwayspassable, allowwater--, deployradius
-				local aoetargeting = item.components.aoetargeting
-				if aoetargeting ~= nil and aoetargeting:IsEnabled() then
-					alwayspassable = item.components.aoetargeting.alwaysvalid
-					allowwater = item.components.aoetargeting.allowwater
-					--deployradius = item.components.aoetargeting.deployradius
-				end
-				alwayspassable = alwayspassable or item:HasTag("allow_action_on_impassable")
-				--V2C: just do passable check here, componentactions tends to redo the full check
-				--if self.map:CanCastAtPoint(position, alwayspassable, allowwater, deployradius) then
-				if alwayspassable or self.map:IsPassableAtPoint(position.x, 0, position.z, allowwater) then
-					actions = self:GetPointActions(position, item, true, target)
-				end
-			end		
+        else
+            local item = spellbook or equipitem
+            if item ~= nil and item:IsValid() then
+                local alwayspassable, allowwater -- , deployradius
+                local aoetargeting = item.components.aoetargeting
+                if aoetargeting ~= nil and aoetargeting:IsEnabled() then
+                    alwayspassable = item.components.aoetargeting.alwaysvalid
+                    allowwater = item.components.aoetargeting.allowwater
+                    -- deployradius = item.components.aoetargeting.deployradius
+                end
+                alwayspassable = alwayspassable or item:HasTag("allow_action_on_impassable")
+                -- V2C: just do passable check here, componentactions tends to redo the full check
+                -- if self.map:CanCastAtPoint(position, alwayspassable, allowwater, deployradius) then
+                if alwayspassable or self.map:IsPassableAtPoint(position.x, 0, position.z, allowwater) then
+                    actions = self:GetPointActions(position, item, true, target)
+                end
+            end
         end
 
         if (actions == nil or #actions <= 0) and (target == nil or target:HasTag("walkableplatform")) and ispassable then
@@ -826,7 +825,7 @@ if needchange then
         return actions or {}
     end
 
-    function PlayerActionPicker:DoGetMouseActions(position, target,spellbook)
+    function PlayerActionPicker:DoGetMouseActions(position, target, spellbook)
         local isaoetargeting = false
         local wantsaoetargeting = false
         if position == nil then
@@ -835,19 +834,18 @@ if needchange then
             end
             isaoetargeting = self.inst.components.playercontroller:IsAOETargeting()
             wantsaoetargeting = not isaoetargeting and self.inst.components.playercontroller:HasAOETargeting()
-			
-			if isaoetargeting then
-				position = self.inst.components.playercontroller:GetAOETargetingPos()
-				spellbook = spellbook or self.inst.components.playercontroller:GetActiveSpellBook()
 
-			else
-				if target == nil then
-					target = TheInput:GetWorldEntityUnderMouse()
-					position = self.inst.components.playercontroller:GetAOETargetingPos() or
-					TheInput:GetWorldPosition()
-				end
+            if isaoetargeting then
+                position = self.inst.components.playercontroller:GetAOETargetingPos()
+                spellbook = spellbook or self.inst.components.playercontroller:GetActiveSpellBook()
+            else
+                if target == nil then
+                    target = TheInput:GetWorldEntityUnderMouse()
+                    position = self.inst.components.playercontroller:GetAOETargetingPos() or
+                        TheInput:GetWorldPosition()
+                end
             end
-			
+
             local cansee
             if target == nil then
                 local x, y, z = position:Get()
@@ -863,15 +861,15 @@ if needchange then
                     for i, v in ipairs(lmbs) do
                         if (v.action == ACTIONS.DROP and self.inst:GetDistanceSqToPoint(position:Get()) < 16) or
                             v.action == ACTIONS.SET_HEADING or
-							v.action == ACTIONS.BOAT_CANNON_SHOOT then
-							lmb = v
+                            v.action == ACTIONS.BOAT_CANNON_SHOOT then
+                            lmb = v
                         end
                     end
 
                     local rmbs = self:GetRightClickActions(position, nil, spellbook)
                     for i, v in ipairs(rmbs) do
                         if (v.action == ACTIONS.STOP_STEERING_BOAT) or
-							v.action == ACTIONS.BOAT_CANNON_STOP_AIMING then
+                            v.action == ACTIONS.BOAT_CANNON_STOP_AIMING then
                             rmb = v
                         end
                     end
@@ -896,62 +894,62 @@ if needchange then
         return lmb, rmb ~= nil and (lmb == nil or lmb.action ~= rmb.action) and rmb or nil
     end
 end
---免疫火
+-- 免疫火
 AddComponentPostInit("health", function(self)
-	local old_DoFireDamage = self.DoFireDamage
-	function self:DoFireDamage(...) 
-	if self.inst.components.inventory and self.inst.components.inventory:EquipHasTag("ccs_no_huo") then			
-		return
-	end
-		return old_DoFireDamage(self, ...)
-	end
+    local old_DoFireDamage = self.DoFireDamage
+    function self:DoFireDamage(...)
+        if self.inst.components.inventory and self.inst.components.inventory:EquipHasTag("ccs_no_huo") then
+            return
+        end
+        return old_DoFireDamage(self, ...)
+    end
 end)
 
---睡觉回复魔力
-AddComponentPostInit("sleepingbaguser",function (self)
-    local oldDoSleep = self.DoSleep
-    self.DoSleep = function (s,bed,...)
-		if bed.prefab == "ccs_tent" then
-			local x,y,z = self.inst.Transform:GetWorldPosition()
-			if TheSim:CountEntities(x, y, z, 12, { "ccs_tent" }) > 0 then
-				if not s.ccs_magic and s.inst.prefab == "ccs" then
-					s.inst.components.ccs_magic:SetMagicRecovery(30/60)
-					s.ccs_magic = true
-				end
-			end
-		end
-        return oldDoSleep(s,bed,...)
+-- 睡觉回复魔力
+AddComponentPostInit("sleepingbaguser", function(self)
+    local oldDoSleep  = self.DoSleep
+    self.DoSleep      = function(s, bed, ...)
+        if bed.prefab == "ccs_tent" then
+            local x, y, z = self.inst.Transform:GetWorldPosition()
+            if TheSim:CountEntities(x, y, z, 12, { "ccs_tent" }) > 0 then
+                if not s.ccs_magic and s.inst.prefab == "ccs" then
+                    s.inst.components.ccs_magic:SetMagicRecovery(30 / 60)
+                    s.ccs_magic = true
+                end
+            end
+        end
+        return oldDoSleep(s, bed, ...)
     end
     local oldDoWakeUp = self.DoWakeUp
-    self.DoWakeUp  = function (s,nostatechange,...)
-		if s.ccs_magic and s.inst.prefab == "ccs" then
-			s.inst.components.ccs_magic:SetMagicRecovery(-30/60)
-			s.ccs_magic = false
-		end
-        return oldDoWakeUp(s,nostatechange,...)
+    self.DoWakeUp     = function(s, nostatechange, ...)
+        if s.ccs_magic and s.inst.prefab == "ccs" then
+            s.inst.components.ccs_magic:SetMagicRecovery(-30 / 60)
+            s.ccs_magic = false
+        end
+        return oldDoWakeUp(s, nostatechange, ...)
     end
 end)
 
---封印怪不掉落战利品
+-- 封印怪不掉落战利品
 AddComponentPostInit("lootdropper", function(self)
-	local old_DropLoot = self.DropLoot
-	self.DropLoot = function(self,pt,...)
-		if self and self.inst and self.inst:HasTag("ccs_no_droploot") then			
-			return
-		end
-		return old_DropLoot(self,pt,...)
-	end
+    local old_DropLoot = self.DropLoot
+    self.DropLoot = function(self, pt, ...)
+        if self and self.inst and self.inst:HasTag("ccs_no_droploot") then
+            return
+        end
+        return old_DropLoot(self, pt, ...)
+    end
 end)
 
---去除沙漠目镜的显示效果
-local function hidehmj(self,owner)
+-- 去除沙漠目镜的显示效果
+local function hidehmj(self, owner)
     local ToggleGoggles_old = self.ToggleGoggles
     self.ToggleGoggles = function(self, show, ...)
-		ToggleGoggles_old(self, show, ...)
-		if self.owner and self.owner.replica.inventory:EquipHasTag("ccs_hat1") then
+        ToggleGoggles_old(self, show, ...)
+        if self.owner and self.owner.replica.inventory:EquipHasTag("ccs_hat1") then
             self.inst.entity:Hide(false)
-		end
-	end
+        end
+    end
 end
 AddClassPostConstruct("widgets/gogglesover", hidehmj)
 
@@ -1003,8 +1001,8 @@ AddClassPostConstruct("widgets/gogglesover", hidehmj)
 --             end
 --         end
 --     end
-	
---     local portal_jumpout = self.states.portal_jumpout  
+
+--     local portal_jumpout = self.states.portal_jumpout
 --     if portal_jumpout then
 --         local old_enter = portal_jumpout.onenter
 --         function portal_jumpout.onenter(inst, data,...)
@@ -1057,7 +1055,7 @@ function IsModEnable(name)
     return false
 end
 
-function GLOBAL.CcsMakeWidgetMovable(s, name, pos, data) -- 使UI可移动 
+function GLOBAL.CcsMakeWidgetMovable(s, name, pos, data) -- 使UI可移动
     -- 第一个参数为UI实体 第二个参数为 位置存档的名称 注意如果是一个UI的多个实体 记得不同名称
     -- 第三个参数为默认位置 要求为Vector3 或者为空
     -- 第四个参数为扩展属性 是一个table 或者 nil 描述了实体的对齐的问题
@@ -1121,8 +1119,8 @@ function GLOBAL.CcsMakeWidgetMovable(s, name, pos, data) -- 使UI可移动
             pos = x
         end
         local self_scale = self:GetScale()
-        local offset = data and data.drag_offset or 1 -- 偏移修正(容器是0.6)
-        local newpos = self.ppos + (pos - self.mousepos) / (self_scale.x / offset) -- 修正偏移值       
+        local offset = data and data.drag_offset or 1                              -- 偏移修正(容器是0.6)
+        local newpos = self.ppos + (pos - self.mousepos) / (self_scale.x / offset) -- 修正偏移值
         s.SetPosition(self, newpos)
     end
     m.FollowMouse = function(self)
@@ -1145,59 +1143,59 @@ function GLOBAL.CcsMakeWidgetMovable(s, name, pos, data) -- 使UI可移动
             m.followhandler = nil
         end
         local newpos = self:GetPosition()
-        --print("结束save", string.format("return Vector3(%f,%f,%f)", newpos:Get()))
+        -- print("结束save", string.format("return Vector3(%f,%f,%f)", newpos:Get()))
         TheSim:SetPersistentString(m.name, string.format("return Vector3(%f,%f,%f)", newpos:Get()), false)
     end
 end
 
-    --给容器组件添加一些事件
-    local function containerwidgetapi(self)
-        local oldOpen = self.Open
-        self.Open = function(self,...)
-            oldOpen(self,...)
-            if self.container and self.container.replica.container then
-                local widget = self.container.replica.container:GetWidget()
-                if widget and widget.OnOpenFn then 
-                    widget.OnOpenFn(self,...)
-                end
-            end
-        end
-        local oldClose = self.Close
-        self.Close = function(self,...)
-            if self.container and self.container.replica.container then
-                local widget = self.container.replica.container:GetWidget()
-                if widget and widget.OnCloseFn then 
-                    widget.OnCloseFn(self,...)
-                end
-            end
-            oldClose(self,...)
-        end
-        local oldRefresh = self.Refresh
-        self.Refresh = function(self,...)
-            oldRefresh(self,...)
-            if self.container and self.container.replica.container then
-                local widget = self.container.replica.container:GetWidget()
-                if widget and widget.OnRefreshFn then 
-                    widget.OnRefreshFn(self,...)
-                end
+-- 给容器组件添加一些事件
+local function containerwidgetapi(self)
+    local oldOpen = self.Open
+    self.Open = function(self, ...)
+        oldOpen(self, ...)
+        if self.container and self.container.replica.container then
+            local widget = self.container.replica.container:GetWidget()
+            if widget and widget.OnOpenFn then
+                widget.OnOpenFn(self, ...)
             end
         end
     end
-    AddClassPostConstruct("widgets/containerwidget", containerwidgetapi)
-	
+    local oldClose = self.Close
+    self.Close = function(self, ...)
+        if self.container and self.container.replica.container then
+            local widget = self.container.replica.container:GetWidget()
+            if widget and widget.OnCloseFn then
+                widget.OnCloseFn(self, ...)
+            end
+        end
+        oldClose(self, ...)
+    end
+    local oldRefresh = self.Refresh
+    self.Refresh = function(self, ...)
+        oldRefresh(self, ...)
+        if self.container and self.container.replica.container then
+            local widget = self.container.replica.container:GetWidget()
+            if widget and widget.OnRefreshFn then
+                widget.OnRefreshFn(self, ...)
+            end
+        end
+    end
+end
+AddClassPostConstruct("widgets/containerwidget", containerwidgetapi)
+
 -- 弹出消息
 local messages = {}
 local PopupDialogScreen = require "screens/redux/popupdialog"
 function CcsPushPopupDialog(title, message, button, fn)
     if not (ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls) then
-        table.insert(messages, {title, message, button, fn})
+        table.insert(messages, { title, message, button, fn })
     end
     local buttonstr = button or STRINGS.UI.POPUPDIALOG.OK
     local scr
     local function doclose()
         TheFrontEnd:PopScreen(scr)
     end
-    scr = PopupDialogScreen(title, message, {{
+    scr = PopupDialogScreen(title, message, { {
         text = buttonstr,
         cb = function()
             doclose()
@@ -1205,7 +1203,7 @@ function CcsPushPopupDialog(title, message, button, fn)
                 fn()
             end
         end
-    }})
+    } })
     TheFrontEnd:PushScreen(scr)
     local screen = TheFrontEnd:GetActiveScreen()
     if screen then
@@ -1213,6 +1211,7 @@ function CcsPushPopupDialog(title, message, button, fn)
     end
     return scr
 end
+
 AddClassPostConstruct("widgets/controls", function(self)
     self.inst:DoTaskInTime(3, function()
         if next(messages) then
@@ -1241,7 +1240,7 @@ end
 
 -- userdata = require "utils/ccsuserdatahook"
 
---[[AddBrainPostInit("crittersbrain",function(inst) 
+--[[AddBrainPostInit("crittersbrain",function(inst)
 	for k,v in pairs(inst.behaviourqueue) do
 		print(k,v,"啊")
 	end
@@ -1251,7 +1250,7 @@ local function LinkPet(self, pet)
     self.pets[pet] = pet
 
     self.numpets = self.numpets + 1
-	
+
     self.inst:ListenForEvent("onremove", self._onremovepet, pet)
     pet.persists = false
 
@@ -1262,34 +1261,34 @@ end
 
 
 AddComponentPostInit("petleash", function(self)
-	function self:CcsSpawnPetAt(x, y, z, prefaboverride, skin)
-		local pet = SpawnPrefab(prefaboverride, skin, nil, self.inst.userid)
-		if pet ~= nil then
-			LinkPet(self, pet)
-			if pet.Physics ~= nil then
-				pet.Physics:Teleport(x, y, z)
-			elseif pet.Transform ~= nil then
-				pet.Transform:SetPosition(x, y, z)
-			end
-	
-			if self.onspawnfn ~= nil then
-				self.onspawnfn(self.inst, pet)
-			end
-		end
-		return pet
-	end
+    function self:CcsSpawnPetAt(x, y, z, prefaboverride, skin)
+        local pet = SpawnPrefab(prefaboverride, skin, nil, self.inst.userid)
+        if pet ~= nil then
+            LinkPet(self, pet)
+            if pet.Physics ~= nil then
+                pet.Physics:Teleport(x, y, z)
+            elseif pet.Transform ~= nil then
+                pet.Transform:SetPosition(x, y, z)
+            end
+
+            if self.onspawnfn ~= nil then
+                self.onspawnfn(self.inst, pet)
+            end
+        end
+        return pet
+    end
 end)
 
 
 AddPlayerPostInit(function(inst)
     if not TheWorld.ismastersim then
         return inst
-	end
-	inst:AddComponent("ccs_valid")
-	if inst:HasTag("ccs") then
-		inst.components.ccs_valid:InIt()
-	end
-	--[[inst:DoPeriodicTask(3, function()  
+    end
+    inst:AddComponent("ccs_valid")
+    if inst:HasTag("ccs") then
+        inst.components.ccs_valid:InIt()
+    end
+    --[[inst:DoPeriodicTask(3, function()
 		inst:PushEvent("refreshcrafting")
 	end)	--]]
 end)
@@ -1312,91 +1311,91 @@ AddComponentPostInit("locomotor", function(self)
 end)
 
 AddComponentPostInit("inventory", function(self)
-    self.Ccs_GetEuipItemTag = function(self,tag)
-		for k, v in pairs(self.equipslots) do
-			if v and v:HasTag(tag) then
-				return v
-			end
-		end
-		return nil
+    self.Ccs_GetEuipItemTag = function(self, tag)
+        for k, v in pairs(self.equipslots) do
+            if v and v:HasTag(tag) then
+                return v
+            end
+        end
+        return nil
     end
 end)
 
---猪王旁生成樱花祈愿站
+-- 猪王旁生成樱花祈愿站
 AddPrefabPostInit("pigking", function(inst)
-	if not TheWorld.ismastersim then
-		return inst
-	end
-	inst:AddComponent("ccs_valid")
-	inst:DoTaskInTime(1,function()
-		inst.components.ccs_valid:Ccs_Light_Init()
-	end)
+    if not TheWorld.ismastersim then
+        return inst
+    end
+    inst:AddComponent("ccs_valid")
+    inst:DoTaskInTime(1, function()
+        inst.components.ccs_valid:Ccs_Light_Init()
+    end)
 end)
 
---霸体
-AddStategraphPostInit("wilson", function(sg)    
-	if sg.events and sg.events.attacked then
-		local oldattackedfn = sg.events.attacked.fn
-		sg.events.attacked.fn = function(inst, data)
-			if inst.components.inventory then
-				local guard = inst.components.inventory:Has("ccs_guard",1)
-				if guard then
-					return
-				end
-			end        
-			return oldattackedfn(inst, data)
+-- 霸体
+AddStategraphPostInit("wilson", function(sg)
+    if sg.events and sg.events.attacked then
+        local oldattackedfn = sg.events.attacked.fn
+        sg.events.attacked.fn = function(inst, data)
+            if inst.components.inventory then
+                local guard = inst.components.inventory:Has("ccs_guard", 1)
+                if guard then
+                    return
+                end
+            end
+            return oldattackedfn(inst, data)
         end
-	end
+    end
 end)
 
---免疫精神控制
+-- 免疫精神控制
 AddComponentPostInit("debuffable", function(self)
     local OldAddDebuff = self.AddDebuff
-    self.AddDebuff = function(self,name, prefab, data,...)	
+    self.AddDebuff = function(self, name, prefab, data, ...)
         if name then
-			if name == "mindcontroller" and self.inst.components.inventory then
-				local guard = self.inst.components.inventory:Has("ccs_guard",1)
-				if guard then
-					return
-				end
-			end
+            if name == "mindcontroller" and self.inst.components.inventory then
+                local guard = self.inst.components.inventory:Has("ccs_guard", 1)
+                if guard then
+                    return
+                end
+            end
         end
-		return OldAddDebuff(self,name, prefab, data,...)
-	end
-end)
-
---免疫催眠
-AddComponentPostInit("grogginess", function(self)
-	local OldAddGrogginess = self.AddGrogginess
-	self.AddGrogginess = function(self,grogginess,...)
-		if self.inst.components.inventory then
-			local guard = self.inst.components.inventory:Has("ccs_guard",1)
-			if guard then
-				return
-			end
-		end
-		return OldAddGrogginess(self,grogginess,...)
-	end
-end)
-
---快采
-AddStategraphPostInit("wilson", function(sg)         
-    local old_HARVEST = sg.actionhandlers[ACTIONS.HARVEST].deststate
-    sg.actionhandlers[ACTIONS.HARVEST].deststate = function(inst, action,...)
-        if inst:HasTag("ccs")  then 
-			return "doshortaction"
-        end 
-        return old_HARVEST(inst, action,...)
+        return OldAddDebuff(self, name, prefab, data, ...)
     end
 end)
 
-AddStategraphPostInit("wilson_client", function(sg)        
+-- 免疫催眠
+AddComponentPostInit("grogginess", function(self)
+    local OldAddGrogginess = self.AddGrogginess
+    self.AddGrogginess = function(self, grogginess, ...)
+        if self.inst.components.inventory then
+            local guard = self.inst.components.inventory:Has("ccs_guard", 1)
+            if guard then
+                return
+            end
+        end
+        return OldAddGrogginess(self, grogginess, ...)
+    end
+end)
+
+-- 快采
+AddStategraphPostInit("wilson", function(sg)
     local old_HARVEST = sg.actionhandlers[ACTIONS.HARVEST].deststate
-    sg.actionhandlers[ACTIONS.HARVEST].deststate = function(inst, action,...)
-        if inst:HasTag("ccs")  then 
-			return "doshortaction"
-        end 
-        return old_HARVEST(inst, action,...)
+    sg.actionhandlers[ACTIONS.HARVEST].deststate = function(inst, action, ...)
+        if inst:HasTag("ccs") then
+            return "doshortaction"
+        end
+        return old_HARVEST(inst, action, ...)
+    end
+end)
+
+AddStategraphPostInit("wilson_client", function(sg)
+    local old_HARVEST = sg.actionhandlers[ACTIONS.HARVEST].deststate
+    sg.actionhandlers[ACTIONS.HARVEST].deststate = function(inst, action, ...)
+        if inst:HasTag("ccs") then
+            return "doshortaction"
+        end
+        return old_HARVEST(inst, action, ...)
     end
 end)
 
@@ -1435,48 +1434,48 @@ end
 
 AddClassPostConstruct("widgets/containerwidget", containerwidgetapi)
 
-AddComponentPostInit("unwrappable", function(self)	
-	function self:Ccs_Unwrap(doer)
-		local pos = self.inst:GetPosition()
-		pos.y = 0
-		if self.itemdata ~= nil then
-			if doer ~= nil and
-				self.inst.components.inventoryitem ~= nil and
-				self.inst.components.inventoryitem:GetGrandOwner() == doer then
-				local doerpos = doer:GetPosition()
-				local offset = FindWalkableOffset(doerpos, doer.Transform:GetRotation() * DEGREES, 1, 8, false, true, NoHoles)
-				if offset ~= nil then
-					pos.x = doerpos.x + offset.x
-					pos.z = doerpos.z + offset.z
-				else
-					pos.x, pos.z = doerpos.x, doerpos.z
-				end
-			end
-			local creator = self.origin ~= nil and TheWorld.meta.session_identifier ~= self.origin and { sessionid = self.origin } or nil
-			for i, v in ipairs(self.itemdata) do
-				local item = SpawnPrefab(v.prefab, v.skinname, v.skin_id, creator)
-				if item ~= nil and item:IsValid() then
-					if item.Physics ~= nil then
-						item.Physics:Teleport(pos:Get())
-					else
-						item.Transform:SetPosition(pos:Get())
-					end
-					item:SetPersistData(v.data)
-					if item.components.inventoryitem ~= nil then
-						if doer.components.container then
-							doer.components.container:GiveItem(item)
-						else
-							item.components.inventoryitem:OnDropped(true, .5)
-						end
-					end
-				end
-			end
-			self.itemdata = nil
-		end
-		if self.onunwrappedfn ~= nil then
-			self.onunwrappedfn(self.inst, pos, doer)
-		end
-	end
+AddComponentPostInit("unwrappable", function(self)
+    function self:Ccs_Unwrap(doer)
+        local pos = self.inst:GetPosition()
+        pos.y = 0
+        if self.itemdata ~= nil then
+            if doer ~= nil and
+                self.inst.components.inventoryitem ~= nil and
+                self.inst.components.inventoryitem:GetGrandOwner() == doer then
+                local doerpos = doer:GetPosition()
+                local offset = FindWalkableOffset(doerpos, doer.Transform:GetRotation() * DEGREES, 1, 8, false, true, NoHoles)
+                if offset ~= nil then
+                    pos.x = doerpos.x + offset.x
+                    pos.z = doerpos.z + offset.z
+                else
+                    pos.x, pos.z = doerpos.x, doerpos.z
+                end
+            end
+            local creator = self.origin ~= nil and TheWorld.meta.session_identifier ~= self.origin and { sessionid = self.origin } or nil
+            for i, v in ipairs(self.itemdata) do
+                local item = SpawnPrefab(v.prefab, v.skinname, v.skin_id, creator)
+                if item ~= nil and item:IsValid() then
+                    if item.Physics ~= nil then
+                        item.Physics:Teleport(pos:Get())
+                    else
+                        item.Transform:SetPosition(pos:Get())
+                    end
+                    item:SetPersistData(v.data)
+                    if item.components.inventoryitem ~= nil then
+                        if doer.components.container then
+                            doer.components.container:GiveItem(item)
+                        else
+                            item.components.inventoryitem:OnDropped(true, .5)
+                        end
+                    end
+                end
+            end
+            self.itemdata = nil
+        end
+        if self.onunwrappedfn ~= nil then
+            self.onunwrappedfn(self.inst, pos, doer)
+        end
+    end
 end)
 
 local upvaluehelper = require "utils/ccsupvaluehelper"
@@ -1500,56 +1499,56 @@ local function GetSpawnPoint(player)
     return next(flowers) ~= nil and flowers[math.random(1, #flowers)] or nil
 end
 
-AddClassPostConstruct("components/butterflyspawner", function(self) 
-	local spawn_fn = upvaluehelper.Get(self.OnPostInit,"SpawnButterflyForPlayer")
-	if spawn_fn then
-		upvaluehelper.Set(self.OnPostInit,"SpawnButterflyForPlayer",function(player, reschedule)
-			spawn_fn(player, reschedule)
-			local pt = player:GetPosition()
-			local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, BUTTERFLY_TAGS)
-			if #ents < _maxbutterflies then
-				local spawnflower = GetSpawnPoint(player)
-				if spawnflower ~= nil then
-					local butterfly = SpawnPrefab("ccs_butterfly")
-					if butterfly.components.pollinator ~= nil then
-						butterfly.components.pollinator:Pollinate(spawnflower)
-					end
-					butterfly.components.homeseeker:SetHome(spawnflower)
-					-- KAJ: TODO: Butterflies can be despawned before getting to the rest of the logic if this is above the homeseeker
-					butterfly.Physics:Teleport(spawnflower.Transform:GetWorldPosition())
-				end
-			end
-			reschedule(player)
-		end)				
-	end
+AddClassPostConstruct("components/butterflyspawner", function(self)
+    local spawn_fn = upvaluehelper.Get(self.OnPostInit, "SpawnButterflyForPlayer")
+    if spawn_fn then
+        upvaluehelper.Set(self.OnPostInit, "SpawnButterflyForPlayer", function(player, reschedule)
+            spawn_fn(player, reschedule)
+            local pt = player:GetPosition()
+            local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 64, BUTTERFLY_TAGS)
+            if #ents < _maxbutterflies then
+                local spawnflower = GetSpawnPoint(player)
+                if spawnflower ~= nil then
+                    local butterfly = SpawnPrefab("ccs_butterfly")
+                    if butterfly.components.pollinator ~= nil then
+                        butterfly.components.pollinator:Pollinate(spawnflower)
+                    end
+                    butterfly.components.homeseeker:SetHome(spawnflower)
+                    -- KAJ: TODO: Butterflies can be despawned before getting to the rest of the logic if this is above the homeseeker
+                    butterfly.Physics:Teleport(spawnflower.Transform:GetWorldPosition())
+                end
+            end
+            reschedule(player)
+        end)
+    end
 end)
 
 
 local showmeneed = {
     "ccs_chest2",
-	"ccs_ice_box",
-	"ccs_light3",
+    "ccs_ice_box",
+    "ccs_light3",
     "ccs_treasurechest"
 }
 
 for k, mod in pairs(ModManager.mods) do
-    if mod and _G.rawget(mod, "SHOWME_STRINGS") then --showme特有的全局变量
+    if mod and _G.rawget(mod, "SHOWME_STRINGS") then -- showme特有的全局变量
         if
             mod.postinitfns and mod.postinitfns.PrefabPostInit and
             mod.postinitfns.PrefabPostInit.treasurechest
         then
-            for _,v in ipairs(showmeneed) do
-				mod.postinitfns.PrefabPostInit[v] = mod.postinitfns.PrefabPostInit.treasurechest
-			end
+            for _, v in ipairs(showmeneed) do
+                mod.postinitfns.PrefabPostInit[v] = mod.postinitfns.PrefabPostInit.treasurechest
+            end
         end
         break
     end
 end
 
---showme优先级如果比本mod低，那么这部分代码会生效
+-- showme优先级如果比本mod低，那么这部分代码会生效
 TUNING.MONITOR_CHESTS = TUNING.MONITOR_CHESTS or {}
 for _, v in ipairs(showmeneed) do
-	TUNING.MONITOR_CHESTS[v] = true
+    TUNING.MONITOR_CHESTS[v] = true
 end
 
 -- local function emptyfn() end
@@ -1573,22 +1572,22 @@ end
 --     end
 -- end)
 
---成组交易
+-- 成组交易
 AddComponentPostInit("trader", function(Trader)
     local oldAcceptGift = Trader.AcceptGift
     function Trader:AcceptGift(giver, item, count)
         if self.inst:HasTag("ccstrader") and item.components.stackable and count == nil then
             count = self.inst.cantrader and self.inst:cantrader(giver, item) or item.components.stackable.stacksize
-            count = math.max(count or 1, 1) 
+            count = math.max(count or 1, 1)
         end
         return oldAcceptGift(self, giver, item, count)
     end
 end)
 
---弓的连射形态
-AddComponentPostInit("weapon",function (weapon)
+-- 弓的连射形态
+AddComponentPostInit("weapon", function(weapon)
     local oldLaunchProjectile = weapon.LaunchProjectile
-    weapon.LaunchProjectile = function (self,attacker, target,...)
+    weapon.LaunchProjectile = function(self, attacker, target, ...)
         if self.inst:HasTag("ccs_bow") then
             for i = -1, 1, 1 do
                 local proj = SpawnPrefab(self.projectile)
@@ -1604,28 +1603,27 @@ AddComponentPostInit("weapon",function (weapon)
                             local dir = (target:GetPosition() - Vector3(x, y, z)):Normalize()
                             dir = dir * self.projectile_offset
 
-                            proj.Transform:SetPosition(x + dir.x , y, z + dir.z)
+                            proj.Transform:SetPosition(x + dir.x, y, z + dir.z)
                         else
-                            local offset_x,offset_z
-                            if  i == 0 then
+                            local offset_x, offset_z
+                            if i == 0 then
                                 offset_x = 0
                                 offset_z = 0
                             else
                                 local dist = attacker:GetDistanceSqToInst(target)
                                 local target_pos = target:GetPosition()
-                                local sin = math.sqrt ((z - target_pos.z)^ 2 / dist)
-                                local cos = math.sqrt ((x - target_pos.x)^ 2 / dist)
-                                offset_z = sin * math.cos(PI /2 * i) +  cos * math.sin(PI/2 * i)
-                                offset_x = cos * math.cos(PI/2 * i) - sin * math.sin(PI/2 * i)
+                                local sin = math.sqrt((z - target_pos.z) ^ 2 / dist)
+                                local cos = math.sqrt((x - target_pos.x) ^ 2 / dist)
+                                offset_z = sin * math.cos(PI / 2 * i) + cos * math.sin(PI / 2 * i)
+                                offset_x = cos * math.cos(PI / 2 * i) - sin * math.sin(PI / 2 * i)
                             end
-                            proj.Transform:SetPosition(x +  offset_x ,y,z+ offset_z )
+                            proj.Transform:SetPosition(x + offset_x, y, z + offset_z)
                         end
                         proj.components.projectile:Throw(self.inst, target, attacker)
                         if self.inst.projectiledelay ~= nil then
                             proj.components.projectile:DelayVisibility(self.inst.projectiledelay)
                         end
                     elseif proj.components.complexprojectile ~= nil then
-
                         proj.Transform:SetPosition(attacker.Transform:GetWorldPosition())
                         proj.components.complexprojectile:Launch(target:GetPosition(), attacker, self.inst)
                     end
@@ -1637,19 +1635,19 @@ AddComponentPostInit("weapon",function (weapon)
             end
             return
         end
-        return oldLaunchProjectile(self,attacker, target,...)
+        return oldLaunchProjectile(self, attacker, target, ...)
     end
 end)
 
---免疫冰冻
+-- 免疫冰冻
 AddComponentPostInit("freezable", function(self)
     local OldAddColdness = self.AddColdness
-	self.AddColdness = function(s,...)
-		if  self.inst.components.inventory and s.inst.components.inventory:EquipHasTag('ccs_block_freezable') then
-			return false
-		end
-		return OldAddColdness(s,...)
-	end
+    self.AddColdness = function(s, ...)
+        if self.inst.components.inventory and s.inst.components.inventory:EquipHasTag('ccs_block_freezable') then
+            return false
+        end
+        return OldAddColdness(s, ...)
+    end
     local OldFreeze = self.Freeze
     self.Freeze = function(self, freezetime, ...)
         if self.inst.components.inventory and self.inst.components.inventory:EquipHasTag('ccs_block_freezable') then
@@ -1704,11 +1702,11 @@ local function ccsflyrun(self)
     end
 end
 
-AddStategraphPostInit('wilson',function (sg)
+AddStategraphPostInit('wilson', function(sg)
     ccsflyrun(sg)
 end
 )
-AddStategraphPostInit('wilson_client',function(sg)
+AddStategraphPostInit('wilson_client', function(sg)
     ccsflyrun(sg)
 end
 )
@@ -1721,7 +1719,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
---             if inst:HasTag("Tomiya_Rin") then  
+--             if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
 -- 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
 --             end
@@ -1735,7 +1733,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
---             if inst:HasTag("Tomiya_Rin") then  
+--             if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
 --             end
 --         end
@@ -1748,7 +1746,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
---              if inst:HasTag("Tomiya_Rin") then  
+--              if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
 --             end
 --         end
@@ -1763,7 +1761,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
---              if inst:HasTag("Tomiya_Rin") then  
+--              if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_loop", true)
 -- 				inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
 --             end
@@ -1777,7 +1775,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
--- 			 if inst:HasTag("Tomiya_Rin") then  
+-- 			 if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pre")
 --             end
 --         end
@@ -1790,7 +1788,7 @@ end
 --             if old_enter then
 --                 old_enter(inst, ...)
 --             end
--- 			 if inst:HasTag("Tomiya_Rin") then  
+-- 			 if inst:HasTag("Tomiya_Rin") then
 -- 				inst.AnimState:PlayAnimation("Tomiya_Rin_fly_pst")
 --                 --inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
 --             end
@@ -1801,19 +1799,18 @@ end
 -- --飞行不播放走路声音
 -- local Old_PlayFootstep = GLOBAL.PlayFootstep
 -- GLOBAL.PlayFootstep = function(inst, volume, ispredicted)
--- 	if inst:HasTag("Tomiya_Rin") then  
--- 		return 
+-- 	if inst:HasTag("Tomiya_Rin") then
+-- 		return
 -- 	end
 -- 	return Old_PlayFootstep(inst, volume, ispredicted)
 -- end
 
---工作牌快速制作
+-- 工作牌快速制作
 local function quick_build(self, action)
     if self and self.actionhandlers and self.actionhandlers[action] then
         local old = self.actionhandlers[action].deststate
         self.actionhandlers[action].deststate = function(inst, action, ...)
             if action and action.doer and action.doer.replica.inventory and action.doer.replica.inventory:EquipHasTag("ccs_cards_7_enble") then
-                
                 return "doshortaction"
             end
             if type(old) == "string" then
@@ -1832,7 +1829,7 @@ AddStategraphPostInit("wilson_client", function(self)
 end)
 
 
---让原版的草叉可以叉起地毯
+-- 让原版的草叉可以叉起地毯
 -- local function removethrone(inst)
 --     inst:AddComponent("ccs_thronepuller")
 --     if inst.components.finiteuses ~= nil then
@@ -1845,8 +1842,8 @@ end)
 -- AddPrefabPostInit("goldenpitchfork", removethrone)
 
 
---锅兼容
-AddSimPostInit(function ()
+-- 锅兼容
+AddSimPostInit(function()
     if rawget(_G, "AddCookingPot") then
         _G.AddCookingPot("ccs_cookpot")
     end
@@ -1855,8 +1852,8 @@ local cookware_morphs = {
     cookpot = {
         ccs_cookpot = true,
     },
-    portablecookpot = { -- What morph is it (one of [cookpot, portablecookpot, portablespicer])
-    ccs_cookpot = true, -- Your cookware name
+    portablecookpot = {     -- What morph is it (one of [cookpot, portablecookpot, portablespicer])
+        ccs_cookpot = true, -- Your cookware name
     }
 }
 local AUTO_COOKING_COOKWARES = rawget(_G, "AUTO_COOKING_COOKWARES") or {}
@@ -1865,10 +1862,10 @@ for base, morphs in pairs(cookware_morphs) do
     AUTO_COOKING_COOKWARES[base] = shallowcopy(morphs, AUTO_COOKING_COOKWARES[base])
 end
 
---料理锁san
+-- 料理锁san
 AddComponentPostInit("sanity", function(sanity)
-	local oldDoDelta = sanity.DoDelta
-    sanity.DoDelta = function (self, delta, overtime)
+    local oldDoDelta = sanity.DoDelta
+    sanity.DoDelta = function(self, delta, overtime)
         if self.inst and self.inst.ccs_sanlock == true then
             return
         end
@@ -1877,42 +1874,42 @@ AddComponentPostInit("sanity", function(sanity)
 end)
 
 AddModRPCHandler("Ccs", "Ccs_Equip_show_set", function(player)
-	if player then
-		--local yj = SpawnPrefab("wardrobe") 
-		local yj = SpawnPrefab("ccs_fx5") 
-		yj:AddComponent("wardrobe")
-		yj.yj = true
-		yj.Transform:SetPosition(player.Transform:GetWorldPosition())
-		yj.components.wardrobe.onclosefn = function (inst)
-			inst.yj = false
-		end
-		player:DoTaskInTime(.1,function() 
-			if yj.components.wardrobe:CanBeginChanging(player) then
-				yj.components.wardrobe:BeginChanging(player)
-			end
-		end) 
-	end
+    if player then
+        -- local yj = SpawnPrefab("wardrobe")
+        local yj = SpawnPrefab("ccs_fx5")
+        yj:AddComponent("wardrobe")
+        yj.yj = true
+        yj.Transform:SetPosition(player.Transform:GetWorldPosition())
+        yj.components.wardrobe.onclosefn = function(inst)
+            inst.yj = false
+        end
+        player:DoTaskInTime(.1, function()
+            if yj.components.wardrobe:CanBeginChanging(player) then
+                yj.components.wardrobe:BeginChanging(player)
+            end
+        end)
+    end
 end)
 
 local saya_equip_set = require("widgets/ccs_equip_set")
 
 local function AddSaya_equip_set(self)
-	if self.owner and self.owner:HasTag("ccs") then
-		self.saya_equip_set = self:AddChild(saya_equip_set(self.owner))
-	end
+    if self.owner and self.owner:HasTag("ccs") then
+        self.saya_equip_set = self:AddChild(saya_equip_set(self.owner))
+    end
 end
 
 AddClassPostConstruct("widgets/inventorybar", AddSaya_equip_set)
 
---免疫冰冻
+-- 免疫冰冻
 AddComponentPostInit("freezable", function(self)
     local OldAddColdness = self.AddColdness
-	self.AddColdness = function(s,...)
+    self.AddColdness = function(s, ...)
         if self.inst.components.inventory and (s.inst.components.inventory:EquipHasTag('ccs_cards_2_level2') or s.inst.components.inventory:HasItemWithTag("ccs_amulet", 1)) then
-			return false
-		end
-		return OldAddColdness(s,...)
-	end
+            return false
+        end
+        return OldAddColdness(s, ...)
+    end
     local OldFreeze = self.Freeze
     self.Freeze = function(s, freezetime, ...)
         if self.inst.components.inventory and (s.inst.components.inventory:EquipHasTag('ccs_cards_2_level2') or s.inst.components.inventory:HasItemWithTag("ccs_amulet", 1)) then
@@ -1922,16 +1919,16 @@ AddComponentPostInit("freezable", function(self)
     end
 end)
 
-AddComponentPostInit("temperature",function (self)
+AddComponentPostInit("temperature", function(self)
     local oldSetTemperature = self.SetTemperature
-    self.SetTemperature = function (s,value,...)
+    self.SetTemperature = function(s, value, ...)
         if value and value < 5 and self.inst.components.inventory and self.inst.components.inventory:EquipHasTag('ccs_cards_2') then
             value = 30
         end
         if value and value > 60 and self.inst.components.inventory and self.inst.components.inventory:EquipHasTag('ccs_cards_11_enble') then
             value = 30
         end
-        return oldSetTemperature(s, value,...)
+        return oldSetTemperature(s, value, ...)
     end
 end)
 
@@ -2068,7 +2065,7 @@ AddComponentPostInit("pickable", function(self)
     end
 end)
 
---猴子诅咒免疫
+-- 猴子诅咒免疫
 AddComponentPostInit("cursable", function(self)
     local oldIsCursable = self.IsCursable
     function self:IsCursable(item, ...)
@@ -2101,11 +2098,11 @@ end)
 local function IsDevouring(inst)
     return inst ~= nil
         and inst:IsValid()
-        and (inst.sg ~= nil and inst.sg:HasStateTag("devoured")                                   --被吞得sg
-            or inst.components.playercontroller and not inst.components.playercontroller:IsEnabled()) --无法控制状态
+        and (inst.sg ~= nil and inst.sg:HasStateTag("devoured")                                       -- 被吞得sg
+            or inst.components.playercontroller and not inst.components.playercontroller:IsEnabled()) -- 无法控制状态
 end
 
---免疫击退
+-- 免疫击退
 AddStategraphPostInit('wilson', function(sg)
     if sg.events and sg.events.attacked then
         local oldattackedfn = sg.events.attacked.fn
@@ -2141,7 +2138,7 @@ AddComponentPostInit("pinnable", function(self)
 end)
 
 AddComponentPostInit("health", function(self)
-    --禁疗
+    -- 禁疗
     local oldDoDelta = self.DoDelta
     function self:DoDelta(amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb, ...)
         if self.inst then
@@ -2206,7 +2203,6 @@ local function fixcactus(inst)
                 else
                     return onregenfn(self)
                 end
-                
             end
 
             local oldonpickedfn = inst.components.pickable.onpickedfn
@@ -2240,17 +2236,16 @@ local function fixcactus(inst)
                     return oldonpickedfn(self, picker, ...)
                 end
             end
-            
         end
     end
 end
-AddPrefabPostInit("cactus", function (inst)
+AddPrefabPostInit("cactus", function(inst)
     if not TheWorld.ismastersim then
         return inst
     end
     fixcactus(inst)
 end)
-AddPrefabPostInit("oasis_cactus", function (inst)
+AddPrefabPostInit("oasis_cactus", function(inst)
     if not TheWorld.ismastersim then
         return inst
     end
@@ -2301,12 +2296,10 @@ local function OnWorked_evergreen_sparse(inst, data)
     end
 end
 local function FnSet_evergreen(inst)
-    --workable.onfinish 容易被官方逻辑替换掉，所以用事件机制更保险
-    --"workfinished"事件在 workable.onfinish执行后才触发，inst已经是被remove的状态，没法执行我的逻辑了
+    -- workable.onfinish 容易被官方逻辑替换掉，所以用事件机制更保险
+    -- "workfinished"事件在 workable.onfinish执行后才触发，inst已经是被remove的状态，没法执行我的逻辑了
     inst:ListenForEvent("worked", OnWorked_evergreen_sparse)
 end
 for _, v in pairs(trees) do
     AddPrefabPostInit(v, FnSet_evergreen)
 end
-
-

@@ -35,44 +35,46 @@ local function oninuse(self, inuse)
         self.inst:RemoveTag("ccsinuse")
     end
 end
---require "config/debug"
+-- require "config/debug"
 local ccsuseable = Class(function(self, inst)
-	self.inst = inst
-	self.onusefn = nil
-	self.inuse = false
-	self.stopuseevents = nil
-end,nil,{inuse = oninuse})
+    self.inst = inst
+    self.onusefn = nil
+    self.inuse = false
+    self.stopuseevents = nil
+end, nil, { inuse = oninuse })
 
 function ccsuseable:OnRemoveFromEntity()
-	self.inst:RemoveTag("ccsinuse")
+    self.inst:RemoveTag("ccsinuse")
 end
 
 function ccsuseable:SetOnUseFn(fn)
-	self.onusefn = fn
+    self.onusefn = fn
 end
+
 function ccsuseable:SetOnStopUseFn(fn)
-	self.onstopusefn = fn
+    self.onstopusefn = fn
 end
+
 function ccsuseable:CanInteract()
     return not self.inuse
 end
 
 function ccsuseable:StartUsingItem(doer)
-	self.inuse = true
-	if self.onusefn then
-		self.inuse = self.onusefn(self.inst,doer) ~= false
-	end
+    self.inuse = true
+    if self.onusefn then
+        self.inuse = self.onusefn(self.inst, doer) ~= false
+    end
 
-	if self.stopuseevents then
-		self.stopuseevents(self.inst,doer)
-	end
+    if self.stopuseevents then
+        self.stopuseevents(self.inst, doer)
+    end
 end
 
 function ccsuseable:StopUsingItem()
-	self.inuse = false
-	if self.onstopusefn then
-		self.onstopusefn(self.inst)
-	end
+    self.inuse = false
+    if self.onstopusefn then
+        self.onstopusefn(self.inst)
+    end
 end
 
 return ccsuseable

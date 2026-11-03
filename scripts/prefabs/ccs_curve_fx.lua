@@ -104,11 +104,11 @@ local function emit_smoke_fn(effect, sphere_emitter, adjust_vec)
 
     effect:AddRotatingParticle(
         0,
-        lifetime,           -- lifetime
-        px, py + .5, pz,    -- position
-        vx, vy, vz,         -- velocity
-        math.random() * 360,--* TWOPI, -- angle
-        UnitRand() * 2      -- angle velocity
+        lifetime,            -- lifetime
+        px, py + .5, pz,     -- position
+        vx, vy, vz,          -- velocity
+        math.random() * 360, -- * TWOPI, -- angle
+        UnitRand() * 2       -- angle velocity
     )
 end
 
@@ -127,17 +127,17 @@ local function emit_spark_fn(effect, sphere_emitter, adjust_vec)
 
     effect:AddRotatingParticleUV(
         1,
-        lifetime,           -- lifetime
-        px, py + .4, pz,    -- position
-        0, 0, 0,            -- velocity
-        angle, ang_vel,     -- angle, angular_velocity
-        uv_offset, 0        -- uv offset
+        lifetime,        -- lifetime
+        px, py + .4, pz, -- position
+        0, 0, 0,         -- velocity
+        angle, ang_vel,  -- angle, angular_velocity
+        uv_offset, 0     -- uv offset
     )
 end
 
 local function emit_ember_fn(effect, sphere_emitter, adjust_vec, direction)
     local sz = 0.18
-    local vx, vy, vz = sz * UnitRand(), 3*sz * UnitRand(), sz * UnitRand()
+    local vx, vy, vz = sz * UnitRand(), 3 * sz * UnitRand(), sz * UnitRand()
     vx = vx + direction.x
     vy = vy + direction.y
     vz = vz + direction.z
@@ -154,10 +154,10 @@ local function emit_ember_fn(effect, sphere_emitter, adjust_vec, direction)
 
     effect:AddParticleUV(
         2,
-        lifetime,           -- lifetime
-        px, py + .4, pz,    -- position
-        vx, vy, vz,          -- velocity
-        uv_offset, 0        -- uv offset
+        lifetime,        -- lifetime
+        px, py + .4, pz, -- position
+        vx, vy, vz,      -- velocity
+        uv_offset, 0     -- uv offset
     )
 end
 
@@ -173,7 +173,7 @@ local function fn()
 
     inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
+    -- Dedicated server does not need to spawn local particle fx
     if TheNet:IsDedicated() then
         return inst
     elseif InitEnvelope ~= nil then
@@ -183,7 +183,7 @@ local function fn()
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(3)
 
-    --SMOKE
+    -- SMOKE
     effect:SetRenderResources(0, ANIM_SMOKE_TEXTURE, REVEAL_SHADER)
     effect:SetMaxNumParticles(0, 32)
     effect:SetRotationStatus(0, true)
@@ -193,10 +193,10 @@ local function fn()
     effect:SetBlendMode(0, BLENDMODE.AlphaBlended)
     effect:SetSortOrder(0, 0)
     effect:SetSortOffset(0, 0)
-    effect:SetRadius(0, 3) --only needed on a single emitter
+    effect:SetRadius(0, 3) -- only needed on a single emitter
     effect:SetDragCoefficient(0, .1)
 
-    --Sparkle
+    -- Sparkle
     effect:SetRenderResources(1, SPARK_TEXTURE, ADD_SHADER)
     effect:SetMaxNumParticles(1, 6)
     effect:SetRotationStatus(1, true)
@@ -210,7 +210,7 @@ local function fn()
     effect:SetSortOffset(1, 0)
     effect:SetDragCoefficient(1, .11)
 
-    --EMBER
+    -- EMBER
     effect:SetRenderResources(2, EMBER_TEXTURE, ADD_SHADER)
     effect:SetMaxNumParticles(2, 128)
     effect:SetMaxLifetime(2, EMBER_MAX_LIFETIME)
@@ -247,25 +247,25 @@ local function fn()
 
                 if attack_playing then
                     if anim_time > 0.13 and burst_state == 0 then
-                        burst_state = 1 --do burst
+                        burst_state = 1 -- do burst
                     end
                 elseif lunge_playing then
                     if anim_time > 0.1 and burst_state == 0 then
-                        burst_state = 1 --do burst
+                        burst_state = 1 -- do burst
                     end
                 else
-                    burst_state = 0 --wait for atk anim
+                    burst_state = 0 -- wait for atk anim
                 end
 
                 if burst_state == 1 then
-                    burst_state = 2 --wait for new atk
+                    burst_state = 2 -- wait for new atk
                     local num_to_emit_smoke = 15
                     local num_to_emit_spark = 1
                     local num_to_emit_ember = 25
 
                     local adjust_vec = nil
                     if parent.AnimState:GetCurrentFacing() == 1 then
-                        --Do custom positioning
+                        -- Do custom positioning
                         adjust_vec = TheCamera:GetRightVec() * NIGHTSWORD_FX_OFFSETS.RIGHT - TheCamera:GetDownVec() * NIGHTSWORD_FX_OFFSETS.DOWN
                     end
 

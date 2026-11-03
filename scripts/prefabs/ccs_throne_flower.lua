@@ -1,9 +1,9 @@
 local assets =
 {
-    Asset("ATLAS", "images/inventoryimages/ccs_throne_flower.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_throne_flower.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_throne_flower.tex"),
     Asset("ANIM", "anim/ccs_throne_flower.zip"),
-    Asset("ATLAS", "images/inventoryimages/ccs_throne_flower_skin1.xml"), --加载物品栏贴图
+    Asset("ATLAS", "images/inventoryimages/ccs_throne_flower_skin1.xml"), -- 加载物品栏贴图
     Asset("IMAGE", "images/inventoryimages/ccs_throne_flower_skin1.tex"),
     Asset("ANIM", "anim/ccs_throne_flower_skin1.zip"),
 }
@@ -23,7 +23,7 @@ end
 
 local function onhammered_regular(inst, worker)
     onhammered_common(inst, worker)
-    TheWorld:PushEvent("onthronedestroyed", {throne = inst})
+    TheWorld:PushEvent("onthronedestroyed", { throne = inst })
     inst:Remove()
 end
 
@@ -42,9 +42,9 @@ local function fn()
     inst.AnimState:SetBuild("ccs_throne_flower")
     inst.AnimState:PlayAnimation("idle")
 
-    inst.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )
-    inst.AnimState:SetLayer( LAYER_BACKGROUND )
-    inst.AnimState:SetSortOrder( 3 )
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
 
     inst.entity:SetPristine()
 
@@ -85,14 +85,14 @@ CCSAPI.MakeItemSkin(
         atlas = "images/inventoryimages/ccs_throne_flower.xml",
         image = "ccs_throne_flower",
         build = "ccs_throne_flower",
-        bank =  "ccs_throne_flower",
+        bank = "ccs_throne_flower",
         basebuild = "ccs_throne_flower",
-        basebank =  "ccs_throne_flower",
-        clear_fn = function (inst)
-            inst.Transform:SetScale(1,1,1)
+        basebank = "ccs_throne_flower",
+        clear_fn = function(inst)
+            inst.Transform:SetScale(1, 1, 1)
         end,
-        init_fn = function (inst)
-            inst.Transform:SetScale(1.35,1.35,1.35)
+        init_fn = function(inst)
+            inst.Transform:SetScale(1.35, 1.35, 1.35)
         end,
     }
 )
@@ -104,9 +104,9 @@ CCSAPI.MakeItemSkin(
         atlas = "images/inventoryimages/ccs_throne_flower_skin1.xml",
         image = "ccs_throne_flower_skin1",
         build = "ccs_throne_flower_skin1",
-        bank =  "ccs_throne_flower",
+        bank = "ccs_throne_flower",
         basebuild = "ccs_throne_flower",
-        basebank =  "ccs_throne_flower",
+        basebank = "ccs_throne_flower",
     }
 )
 CCSAPI.MakeItemSkin(
@@ -117,17 +117,17 @@ CCSAPI.MakeItemSkin(
         atlas = "images/inventoryimages/ccs_throne_flower_skin1.xml",
         image = "ccs_throne_flower_skin1",
         build = "ccs_throne_flower_skin1",
-        bank =  "ccs_throne_flower",
+        bank = "ccs_throne_flower",
         basebuild = "ccs_throne_flower",
-        basebank =  "ccs_throne_flower",
-        clear_fn = function (inst)
-            inst.Transform:SetScale(1,1,1)
+        basebank = "ccs_throne_flower",
+        clear_fn = function(inst)
+            inst.Transform:SetScale(1, 1, 1)
         end,
-        init_fn = function (inst)
-            inst.Transform:SetScale(1.35,1.35,1.35)
+        init_fn = function(inst)
+            inst.Transform:SetScale(1.35, 1.35, 1.35)
         end,
     }
 )
 
-return  Prefab("ccs_throne_flower", fn, assets),
-        MakePlacer("ccs_throne_flower_placer", "ccs_throne_flower", "ccs_throne_flower", "idle", true)
+return Prefab("ccs_throne_flower", fn, assets),
+    MakePlacer("ccs_throne_flower_placer", "ccs_throne_flower", "ccs_throne_flower", "idle", true)

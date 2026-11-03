@@ -17,7 +17,7 @@ local MAX_WANDER_DIST_BEE_BEACON = 6
 
 local Ccs_BeeBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
-    --self.lastbeebeacon = nil
+    -- self.lastbeebeacon = nil
     self.beebeacontime = GetTime() + math.random()
 end)
 
@@ -38,8 +38,8 @@ local function FindBeeBeacon(self)
         self.beebeacontime = t + 2 + math.random()
     elseif self.lastbeebeacon ~= nil
         and not (self.lastbeebeacon:IsValid() and
-                self.lastbeebeacon:HasTag("beebeacon") and
-                self.inst:IsNear(self.lastbeebeacon, 30)) then
+            self.lastbeebeacon:HasTag("beebeacon") and
+            self.inst:IsNear(self.lastbeebeacon, 30)) then
         self.lastbeebeacon = nil
     end
     return self.lastbeebeacon
@@ -52,27 +52,29 @@ end
 
 function Ccs_BeeBrain:OnStart()
     local root = PriorityNode(
-    {
-		BrainCommon.PanicTrigger(self.inst),
+        {
+            BrainCommon.PanicTrigger(self.inst),
 
-        WhileNode( function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end, "AttackMomentarily", ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST)) ),
-        WhileNode( function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge", RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST) ),
+            WhileNode(function() return self.inst.components.combat.target == nil or not self.inst.components.combat:InCooldown() end, "AttackMomentarily",
+                ChaseAndAttack(self.inst, SpringCombatMod(MAX_CHASE_TIME), SpringCombatMod(MAX_CHASE_DIST))),
+            WhileNode(function() return self.inst.components.combat.target and self.inst.components.combat:InCooldown() end, "Dodge",
+                RunAway(self.inst, function() return self.inst.components.combat.target end, RUN_AWAY_DIST, STOP_RUN_AWAY_DIST)),
 
-        --ChaseAndAttack(self.inst, beecommon.MAX_CHASE_TIME),
-        WhileNode( function() return IsHomeOnFire(self.inst) end, "HomeOnFire", Panic(self.inst)),
-        IfNode(function() return not TheWorld.state.iscaveday or not self.inst:IsInLight() end, "IsNight",
-            DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),
-        IfNode(function() return self.inst.components.pollinator:HasCollectedEnough() end, "IsFullOfPollen",
-            DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),
-        -- IfNode(function() return TheWorld.state.iswinter end, "IsWinter",
+            -- ChaseAndAttack(self.inst, beecommon.MAX_CHASE_TIME),
+            WhileNode(function() return IsHomeOnFire(self.inst) end, "HomeOnFire", Panic(self.inst)),
+            IfNode(function() return not TheWorld.state.iscaveday or not self.inst:IsInLight() end, "IsNight",
+                DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true)),
+            IfNode(function() return self.inst.components.pollinator:HasCollectedEnough() end, "IsFullOfPollen",
+                DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true)),
+            -- IfNode(function() return TheWorld.state.iswinter end, "IsWinter",
             -- DoAction(self.inst, function() return beecommon.GoHomeAction(self.inst) end, "go home", true )),
 
-        IfNode(function() return FindBeeBeacon(self) ~= nil end, "bee beacon",
-            Wander(self.inst, function() return GetBeeBeaconPos(self) end, MAX_WANDER_DIST_BEE_BEACON)),
+            IfNode(function() return FindBeeBeacon(self) ~= nil end, "bee beacon",
+                Wander(self.inst, function() return GetBeeBeaconPos(self) end, MAX_WANDER_DIST_BEE_BEACON)),
 
-        FindFlower(self.inst),
-        Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, beecommon.MAX_WANDER_DIST)
-    }, 1)
+            FindFlower(self.inst),
+            Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, beecommon.MAX_WANDER_DIST)
+        }, 1)
 
     self.bt = BT(self.inst, root)
 end
