@@ -165,9 +165,9 @@ local function fn(Sim)
     return inst
 end
 
-local function ondeploy(inst, pt, deployer)
+local function ondeploy(inst, pt, deployer, rot)
     if inst.components.ccs_pack then
-        inst.components.ccs_pack:Unpack(pt)
+        inst.components.ccs_pack:Unpack(pt, rot)
         inst:Remove()
     end
 end

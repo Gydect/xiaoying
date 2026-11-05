@@ -383,19 +383,19 @@ AddRecipe2("ccs_mushroomgreen_item", { Ingredient("green_cap", 3), Ingredient("p
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroomred_stump.xml", "ccs_mushroomred_stump.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroomred_picked.xml", "ccs_mushroomred_picked.tex")
 AddRecipe2("ccs_mushroomred_stump", { Ingredient("ccs_mushroomred_picked", 3), Ingredient("boards", 2) },
-    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroomred_stump_placer", min_spacing = 2.5 })
+    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroomred_stump_placer", min_spacing = 1 })
 
 -- 紫色蘑菇
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroompurple_stump.xml", "ccs_mushroompurple_stump.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroompurple_picked.xml", "ccs_mushroompurple_picked.tex")
 AddRecipe2("ccs_mushroompurple_stump", { Ingredient("ccs_mushroompurple_picked", 3), Ingredient("boards", 2) },
-    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroompurple_stump_placer", min_spacing = 2.5 })
+    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroompurple_stump_placer", min_spacing = 1 })
 
 -- 绿色蘑菇
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroomgreen_stump.xml", "ccs_mushroomgreen_stump.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_mushroomgreen_picked.xml", "ccs_mushroomgreen_picked.tex")
 AddRecipe2("ccs_mushroomgreen_stump", { Ingredient("ccs_mushroomgreen_picked", 3), Ingredient("boards", 2) },
-    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroomgreen_stump_placer", min_spacing = 2.5 })
+    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_mushroomgreen_stump_placer", min_spacing = 1 })
 
 
 -- 栅栏
@@ -455,19 +455,19 @@ AddRecipe2("ccs_shipwrecked", { Ingredient("boards", 10), Ingredient("manrabbit_
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_plantflower_fhh.xml", "ccs_plantflower_fhh.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_butterfly.xml", "ccs_butterfly.tex")
 AddRecipe2("ccs_plantflower_fhh", { Ingredient("ccs_butterfly", 1) },
-    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_fhh_placer", min_spacing = 2 })
+    TECH.CCS_PIANO_ONE, { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_fhh_placer", min_spacing = 1 })
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_plantflower_jzj.xml", "ccs_plantflower_jzj.tex")
 AddRecipe2("ccs_plantflower_jzj", { Ingredient("ccs_butterfly", 1) },
     TECH.CCS_PIANO_ONE,
-    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_jzj_placer", min_spacing = 2 })
+    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_jzj_placer", min_spacing = 1 })
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_plantflower_ss.xml", "ccs_plantflower_ss.tex")
 AddRecipe2("ccs_plantflower_ss", { Ingredient("ccs_butterfly", 1) },
     TECH.CCS_PIANO_ONE,
-    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_ss_placer", min_spacing = 2 })
+    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_ss_placer", min_spacing = 1 })
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_plantflower_www.xml", "ccs_plantflower_www.tex")
 AddRecipe2("ccs_plantflower_www", { Ingredient("ccs_butterfly", 1) },
     TECH.CCS_PIANO_ONE,
-    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_www_placer", min_spacing = 2 })
+    { nounlock = false, no_deconstruction = true, placer = "ccs_plantflower_www_placer", min_spacing = 1 })
 
 -- 水中花（装饰）
 RegisterInventoryItemAtlas("images/inventoryimages/ccs_bunny_fluorescen2.xml", "ccs_bunny_fluorescen2.tex")

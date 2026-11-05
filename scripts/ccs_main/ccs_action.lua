@@ -526,6 +526,7 @@ CCS_PACK.str = "打包"
 CCS_PACK.fn = function(act)
     local target = act.target
     local doer = act.doer
+    local magic_cost = act.invobject and act.invobject.prefab == "ccs_amulet" and 5 or 20
     -- if not doer:HasTag("ccs") then
     -- 	if doer.components and doer.components.talker then
     -- 		doer.components.talker:Say("只有小樱才可以使用")
@@ -534,7 +535,7 @@ CCS_PACK.fn = function(act)
     -- end
     local can_spell = false
     if doer:HasTag("ccs") then
-        can_spell = doer.components.ccs_magic.current >= 20
+        can_spell = doer.components.ccs_magic.current >= magic_cost
     elseif doer:HasTag("player") and doer.components.sanity then
         can_spell = doer.components.sanity.current >= 35
     else
@@ -573,7 +574,7 @@ CCS_PACK.fn = function(act)
                 return false
             end
             if doer:HasTag("ccs") then
-                doer.components.ccs_magic:DoDelta(-20)
+                doer.components.ccs_magic:DoDelta(-magic_cost)
             else
                 doer.components.sanity:DoDelta(-35)
             end

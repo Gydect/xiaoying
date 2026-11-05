@@ -1322,7 +1322,7 @@ AddMinimapAtlas("images/map_icons/ccs_skins_bronya.xml")
 
 AddModCharacter("ccs", "FEMALE")
 
-
+modimport("ccs_skin_offline_compat.lua")
 modimport("scripts/ccs_main/ccs_skin_ownership")
 GLOBAL.CCSAPI = env
 modimport("scripts/ccs_string")

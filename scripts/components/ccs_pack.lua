@@ -143,7 +143,7 @@ end
 
 function Ccs_pack:GetName() return self.item and self.item.name end
 
-function Ccs_pack:Unpack(pos)
+function Ccs_pack:Unpack(pos, rot)
     inGamePlay = false -- 骗过系统 告诉他我们还在读档
     if self.item and self.item.item then
         local v = self.item.item
@@ -154,6 +154,9 @@ function Ccs_pack:Unpack(pos)
                 item.Physics:Teleport(pos:Get())
             else
                 item.Transform:SetPosition(pos:Get())
+            end
+            if item.prefab == "ccs_mubanlu" and rot ~= nil then
+                item.Transform:SetRotation(rot) -- 使用本次部署预览的角度，替换打包前的旧朝向
             end
             if item.components.inventoryitem ~= nil then
                 item.components.inventoryitem:OnDropped(true, .5)

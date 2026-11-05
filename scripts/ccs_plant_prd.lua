@@ -9,6 +9,7 @@ local ccs_plant_prd = {
         des_string = "草莓树！？",
         time = 1440,
         prd = "ccs_strawberry_food",
+        numtoharvest = 5,
     },
 }
 

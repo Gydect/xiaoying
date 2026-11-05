@@ -65,7 +65,7 @@ local function fn(def, stage)
         inst:AddComponent("pickable")
         inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
 
-        inst.components.pickable:SetUp(def.prd, def.time)
+        inst.components.pickable:SetUp(def.prd, def.time, def.numtoharvest)
         inst.components.pickable.onregenfn = onregenfn           -- 生长
         inst.components.pickable.onpickedfn = onpickedfn         -- 采集触发的函数
         inst.components.pickable.ontransplantfn = ontransplantfn -- 种植触发的函数

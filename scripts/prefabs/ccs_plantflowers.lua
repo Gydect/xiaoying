@@ -23,6 +23,7 @@ local function MakeFlower(name)
         inst.AnimState:SetBank(name)
         inst.AnimState:SetBuild(name)
         inst.AnimState:PlayAnimation("idle", true)
+        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2) -- 间距 1 对应的占用半径
         inst:AddTag("ccs_flower")
         inst:AddTag("cattoy")
         inst.entity:SetPristine()

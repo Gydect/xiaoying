@@ -30,7 +30,8 @@ local function InitFn()
     anim:SetBank("brc_hotspring")
     anim:SetBuild("brc_hotspring")
     anim:PlayAnimation("idle", true)
-    anim:SetLayer(LAYER_BACKGROUND)
+    anim:SetLayer(LAYER_WORLD)
+    anim:SetFinalOffset(-1) -- 参考官方椅子，让同坐标的泡澡角色显示在温泉前面
 
     inst:AddTag("structure")
 

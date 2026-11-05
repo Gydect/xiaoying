@@ -62,6 +62,9 @@ local function fn()
     inst.components.workable:SetWorkLeft(3)
     inst.components.workable:SetOnFinishCallback(onhammered_regular)
 
+    inst:AddComponent("savedrotation")
+    inst.components.savedrotation.dodelayedpostpassapply = true
+
     -- MakeHauntableWork(inst)
     -- MakeLargeBurnable(inst, nil, nil, true)
     -- MakeMediumPropagator(inst)
@@ -73,4 +76,4 @@ end
 
 
 return Prefab("ccs_mubanlu", fn, assets),
-    MakePlacer("ccs_mubanlu_placer", "ccs_mubanlu", "ccs_mubanlu", "idle", true, nil, nil, nil, 15)
+    MakePlacer("ccs_mubanlu_placer", "ccs_mubanlu", "ccs_mubanlu", "idle", true, nil, nil, nil, 0)

@@ -102,7 +102,7 @@ local function makeccsmushroom(name, build, bank, prdouct)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("seed")
 
-        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.DEFAULT] / 2) -- plantables deployspacing/2
+        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2) -- plantables deployspacing/2
         MakeSmallObstaclePhysics(inst, .1)
 
         inst:AddTag("plant")
@@ -250,6 +250,7 @@ local function makeccsmushroomitem(name, build, bank, tree)
         -- inst.components.deployable:SetDeployMode(DEPLOYMODE.ANYWHERE)
         inst.components.deployable.ondeploy = ondeploy
         inst.components.deployable:SetDeployMode(DEPLOYMODE.PLANT)
+        inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.MEDIUM)
 
 
         inst:AddComponent("stackable")
@@ -284,7 +285,7 @@ local function makeccsmushroomstump(name, build, bank)
         inst.AnimState:SetBuild(build)
         inst.AnimState:PlayAnimation("idle")
         inst:SetPhysicsRadiusOverride(0) -- 物理碰撞半径
-        inst:SetDeploySmartRadius(0)     -- 与周围物体的最小间距
+        inst:SetDeploySmartRadius(DEPLOYSPACING_RADIUS[DEPLOYSPACING.MEDIUM] / 2) -- 间距 1 对应的占用半径
 
         inst:AddTag("structure")
 

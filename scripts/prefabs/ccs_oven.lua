@@ -46,6 +46,21 @@ local cooltab = {
     { item = "butterflywings", product = "butter" },
 }
 
+-- 与官方普通鸟笼换蛋条件一致：肉类食物，并排除鸟笼拒收的食物。
+local invalid_egg_foods = {
+    bird_egg = true,
+    bird_egg_cooked = true,
+    rottenegg = true,
+    woby_treat = true,
+}
+
+local function CanConvertToEgg(item)
+    local edible = item.components.edible
+    return edible ~= nil
+        and edible.foodtype == FOODTYPE.MEAT
+        and not invalid_egg_foods[item.prefab]
+end
+
 local function itemget(inst, data)
     inst:DoTaskInTime(0, function()
         if data and data.item then
@@ -86,7 +101,7 @@ local function itemget(inst, data)
                         inst.components.container:GiveItem(prd)
                     end
                 end
-                if data.item:HasTag("meat") then
+                if CanConvertToEgg(data.item) then
                     local num = data.item.components.stackable and data.item.components.stackable.stacksize or 1
                     data.item:Remove()
                     local prd = SpawnPrefab("bird_egg")
