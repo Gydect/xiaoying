@@ -588,6 +588,36 @@ function params.ccs_card_box_flxy2_ui.widget:OnOpenFn(inst)
     })
 end
 
+-- 定制：槿花蝶影，格子以界面框内框中心 (8, -19) 为中心排布
+params.ccs_card_box_jhdy_ui =
+{
+    widget =
+    {
+        slotpos = {},
+        animbank = "ui_chest_3x3",
+        animbuild = "ccs_card_box_jhdy_ui",
+        pos = Vector3(0, 200, 0),
+        side_align_tip = 160,
+    },
+    type = "ccs_card_box",
+}
+
+for y = 4, 0, -1 do
+    for x = 0, 4 do
+        table.insert(params.ccs_card_box_jhdy_ui.widget.slotpos,
+            Vector3(80 * x - 80 * 2 + 8, 80 * y - 80 * 2 - 19, 0))
+    end
+end
+function params.ccs_card_box_jhdy_ui.itemtestfn(container, item, slot)
+    return item:HasTag("ccs_card")
+end
+
+function params.ccs_card_box_jhdy_ui.widget:OnOpenFn(inst)
+    CcsMakeWidgetMovable(self, "ccs_card_box_jhdy_ui", Vector3(0, 100, 0), {
+        drag_offset = 0.6
+    })
+end
+
 -- 卡牌盒2
 params.ccs_bag2 =
 {

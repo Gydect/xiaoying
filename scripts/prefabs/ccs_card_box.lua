@@ -588,11 +588,17 @@ local function OnRemoveBox(inst)
     RemoveFengyueFx(inst)
 end
 
+-- 没有打开状态图标（图集里没有 _open 元素）的皮肤，打开时沿用原图标
+local NO_OPEN_IMAGE_SKINS = {
+    ccs_card_box_fengyue = true,
+    ccs_card_box_jhdy = true,
+}
+
 local function onopen(inst)
     local skin_build = inst:GetSkinBuild()
     if skin_build then
         if inst.components.inventoryitem then
-            inst.components.inventoryitem:ChangeImageName(skin_build == "ccs_card_box_fengyue" and skin_build or skin_build .. "_open")
+            inst.components.inventoryitem:ChangeImageName(NO_OPEN_IMAGE_SKINS[skin_build] and skin_build or skin_build .. "_open")
         end
     else
         if inst.components.inventoryitem then
@@ -637,6 +643,8 @@ local function oncontainer_change(inst)
         inst.replica.container:WidgetSetup("ccs_card_box_flxy_ui")
     elseif num == 5 then
         inst.replica.container:WidgetSetup("ccs_card_box_flxy2_ui")
+    elseif num == 6 then
+        inst.replica.container:WidgetSetup("ccs_card_box_jhdy_ui")
     elseif num == 1 then
         inst.replica.container:WidgetSetup("ccs_card_box")
     end

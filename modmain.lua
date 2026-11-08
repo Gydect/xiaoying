@@ -91,7 +91,8 @@ PrefabFiles = {
     "ccs_lizifx_yellowpetal",
     "ccs_magic_rocking_chair",
     "fx_ccs",
-    "bagskin_fx"
+    "bagskin_fx",
+    "ccs_skins_cxqd_paizi"
 }
 
 Assets = {
@@ -1338,6 +1339,7 @@ modimport("scripts/ccs_main/ccs_sg")
 modimport("scripts/ccs_main/ccs_containers")
 modimport("scripts/ccs_main/ccs_skin")
 modimport("scripts/ccs_main/ccs_skin_list")
+modimport("scripts/ccs_main/ccs_skin_cxqd")
 modimport("scripts/ccs_main/ccs_text")
 modimport("scripts/ccs_main/ccs_rpc")
 modimport("scripts/ccs_main/atk_speed_from_alt")

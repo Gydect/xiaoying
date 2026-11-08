@@ -4967,6 +4967,52 @@ CcsItemSkin("ccs_card_box", "ccs_card_box_fengyue", {
         end
     end,
 })
+-- 春夏秋冬的举牌：原版牌子 + 制作栏可选的牌子皮肤（只替换 paizi 图层，动作和星星特效来自原版牌子）
+CCSAPI.CcsItemAssets(Assets, "ccs_skins_cxqd_paizi", true, true)
+CCSAPI.CcsItemAssets(Assets, "ccs_skins_cxqd_paizi_skin1", true, true)
+CCSAPI.MakeItemSkinDefaultImage('ccs_skins_cxqd_paizi', 'images/inventoryimages/ccs_skins_cxqd_paizi.xml', 'ccs_skins_cxqd_paizi')
+CcsItemSkin2("ccs_skins_cxqd_paizi", "ccs_skins_cxqd_paizi_skin1", { -- TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+    name = "定制：我在饥荒很想你",
+    atlas = "images/inventoryimages/ccs_skins_cxqd_paizi_skin1.xml",
+    image = "ccs_skins_cxqd_paizi_skin1",
+    build = "ccs_skins_cxqd_paizi_skin1",
+    basebuild = "ccs_skins_cxqd_paizi",
+})
+CCSAPI.CcsItemAssets(Assets, "ccs_card_box_jhdy", true, true, {
+    Asset("ANIM", "anim/ccs_card_box_jhdy_ui.zip"),
+})
+CcsItemSkin("ccs_card_box", "ccs_card_box_jhdy", { -- TODO 测试用，无需解锁；测试完改回 CcsItemSkin
+    name = "定制：槿花蝶影",
+    atlas = "images/inventoryimages/ccs_card_box_jhdy.xml",
+    image = "ccs_card_box_jhdy",
+    build = "ccs_card_box_jhdy",
+    bank = "ccs_card_box_jhdy",
+    anim = "idle",
+    animloop = true,
+    basebuild = "ccs_card_box",
+    basebank = "ccs_card_box",
+    baseanim = "idle",
+    baseanimloop = false,
+    init_fn = function(inst)
+        if inst._state then
+            inst._state:set(6)
+            inst.components.container:WidgetSetup("ccs_card_box_jhdy_ui")
+            inst.components.container:Close()
+        end
+    end,
+    clear_fn = function(inst)
+        if inst.components.inventoryitem then
+            inst.components.inventoryitem.atlasname = "images/inventoryimages/ccs_card_box.xml"
+        end
+        if inst._state then
+            inst._state:set(1)
+        end
+        if inst.components.container then
+            inst.components.container:WidgetSetup("ccs_card_box")
+            inst.components.container:Close()
+        end
+    end,
+})
 CCSAPI.MakeItemSkinDefaultImage('ccs_lifestaff', 'images/inventoryimages/ccs_lifestaff.xml', 'ccs_lifestaff')
 CcsItemSkin("ccs_lifestaff", "ccs_lifestaff_skin1", {
     name = "绿萝",

@@ -482,6 +482,10 @@ AddRecipe2("ccs_bunny_fluorescen2", { Ingredient("moonglass", 3), Ingredient("pe
 AddRecipe2("reskin_tool_ccs", { Ingredient(CHARACTER_INGREDIENT.CCS_MAGIC, 20, "images/inventoryimages/ccs_magic.xml") },
     TECH.NONE, { builder_tag = "ccs", no_deconstruction = true, product = "reskin_tool" }, { ccs_tab1 })
 
+-- 举牌：不消耗材料，制作后播放举牌动作（春夏秋冬皮肤举牌 5 秒可换季，见 ccs_main/ccs_skin_cxqd.lua）
+AddRecipe2("ccs_skins_cxqd_paizi", {},
+    TECH.NONE, { builder_tag = "ccs", no_deconstruction = true, atlas = "images/inventoryimages/ccs_skins_cxqd_paizi.xml", image = "ccs_skins_cxqd_paizi.tex" }, { ccs_tab1 })
+
 AddRecipe2("ccs_magic_wand1", { Ingredient("golden_farm_hoe", 2), Ingredient("goldenshovel", 2), Ingredient("hammer", 2) },
     TECH.SCIENCE_ONE, { builder_tag = "ccs", no_deconstruction = true }, { ccs_tab1 })
 

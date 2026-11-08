@@ -1352,6 +1352,20 @@ MakeCcsSkin("ccs_skins_hqfa", {
     share_bigportrait_name = "ccs_none",
 })
 CCSAPI.CcsCharacterAssets(assets, "ccs_skins_dzm")
+-- 定制：春夏秋冬，一个皮肤四套季节材质，默认展示秋天；季节切换逻辑见 ccs_main/ccs_skin_cxqd.lua
+CCSAPI.CcsCharacterAssets(assets, "ccs_skins_cxqd_autumn", false, nil, {
+    Asset("ANIM", "anim/ccs_skins_cxqd_spring.zip"),
+    Asset("ANIM", "anim/ccs_skins_cxqd_summer.zip"),
+    Asset("ANIM", "anim/ccs_skins_cxqd_winter.zip"),
+})
+MakeCcsSkin("ccs_skins_cxqd", WithRainbowRarity({ -- TODO 测试用，无需解锁；测试完改回 MakeCcsSkin
+    name = "定制：春夏秋冬",
+    des = "定制：春夏秋冬",
+    quotes = "定制：春夏秋冬",
+    skins = { normal_skin = "ccs_skins_cxqd_autumn", ghost_skin = "ghost_ccs_build" },
+    build_name_override = "ccs_skins_cxqd_autumn",
+    share_bigportrait_name = "ccs_none",
+}))
 CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_dzm", WithRainbowRarity({
     name = "定制：蝶之梦",
     des = "定制：蝶之梦",
