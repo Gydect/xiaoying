@@ -472,6 +472,24 @@ local master_postinit = function(inst)
     inst.OnNewSpawn = onload
 end
 
+-- 彩虹底定制皮肤共用的品质：选人界面统一用彩虹底框，按品质排序时排在一起（排在所有定制皮肤之前）
+-- 品质的颜色、排序和底框只在第一次注册时生效，所以彩虹底皮肤都要通过 WithRainbowRarity 设置
+local RAINBOW_RARITY = {
+    rarity = "定制：彩虹",
+    rarityorder = 0,
+    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
+    rarityoverride_build = "ccs_framebg",
+    rarityoverride_symbol = "ccs_rainbow",
+    FrameSymbol = false, -- 有 FrameSymbol 时不会使用 rarityoverride 的底框
+}
+
+local function WithRainbowRarity(data)
+    for k, v in pairs(RAINBOW_RARITY) do
+        data[k] = v
+    end
+    return data
+end
+
 local function MakeCcsSkin(name, data, notemp)
     local d = {}
     d.rarity = "木之本樱"
@@ -894,15 +912,10 @@ MakeCcsSkin("ccs_skins_afu", {
     share_bigportrait_name = "ccs_none",
 })
 
-MakeCcsSkin("ccs_skins_xiyacha", {
+MakeCcsSkin("ccs_skins_xiyacha", WithRainbowRarity({
     name = "定制：希娅-茶会",
     des = "定制：希娅-茶会",
     quotes = "定制：希娅-茶会",
-    rarity = "定制：希娅-茶会",
-    -- rarityoverride_build = "ccs_framebg",
-    -- rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 1,
-    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
     skins = { normal_skin = "ccs_skins_xiyacha", ghost_skin = "ghost_ccsxiaoen_build" },
     build_name_override = "ccs_skins_xiyacha",
     share_bigportrait_name = "ccs_skins_xiyacha",
@@ -914,17 +927,12 @@ MakeCcsSkin("ccs_skins_xiyacha", {
     --     --return CCSAPI.CcsSkinCheckClientFn(inventory, userid, k)
     --     return true
     -- end,
-})
+}))
 
-MakeCcsSkin("ccs_skins_xiyadai", {
+MakeCcsSkin("ccs_skins_xiyadai", WithRainbowRarity({
     name = "定制：希娅·戴·阿尔杰·奥亚",
     des = "定制：希娅·戴·阿尔杰·奥亚",
     quotes = "定制：希娅·戴·阿尔杰·奥亚",
-    rarity = "定制：希娅·戴·阿尔杰·奥亚",
-    -- rarityoverride_build = "ccs_framebg",
-    -- rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 1,
-    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
     skins = { normal_skin = "ccs_skins_xiyadai", ghost_skin = "ghost_ccsxiaoen_build" },
     build_name_override = "ccs_skins_xiyadai",
     share_bigportrait_name = "ccs_skins_xiyacha",
@@ -936,7 +944,7 @@ MakeCcsSkin("ccs_skins_xiyadai", {
     --     --return CCSAPI.CcsSkinCheckClientFn(inventory, userid, k)
     --     return true
     -- end,
-})
+}))
 
 MakeCcsSkin("ccs_skins_white", {
     name = "透明翼",
@@ -1007,21 +1015,16 @@ MakeCcsSkin("ccs_skins_pinkcollege", {
     build_name_override = "ccs",
     share_bigportrait_name = "ccs_none",
 })
-CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_xhqj", {
+CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_xhqj", WithRainbowRarity({
     name = "定制：雪华绮晶",
     des = "定制：雪华绮晶",
     quotes = "定制：雪华绮晶",
-    rarity = "定制：雪华绮晶",
-    rarityoverride_build = "ccs_framebg",
-    rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 2,
-    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
     skins = { normal_skin = "ccs_skins_xhqj", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_xhqj",
     share_bigportrait_name = "ccs_skins_xhqj",
     checkfn = CCSAPI.CcsSkinCheckFn,
     checkclientfn = CCSAPI.CcsSkinCheckClientFn
-})
+}))
 MakeCcsSkin("ccs_skins_fhyya", {
     name = "定制：花铃",
     des = "定制：花铃",
@@ -1152,36 +1155,26 @@ MakeCcsSkin("ccs_skins_bsem", {
     build_name_override = "ccs_skins_bsem",
     share_bigportrait_name = "ccs_none",
 })
-CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_kioku", {
+CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_kioku", WithRainbowRarity({
     name = "定制：小小回忆",
     des = "定制：小小回忆",
     quotes = "定制：小小回忆",
-    rarity = "定制：小小回忆",
-    rarityoverride_build = "ccs_framebg",
-    rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 2,
-    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
     skins = { normal_skin = "ccs_skins_kioku", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_kioku",
     share_bigportrait_name = "ccs_none",
     checkfn = CCSAPI.CcsSkinCheckFn,
     checkclientfn = CCSAPI.CcsSkinCheckClientFn
-})
-CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_xgm", {
+}))
+CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_xgm", WithRainbowRarity({
     name = "定制：星宫莓",
     des = "定制：星宫莓",
     quotes = "定制：星宫莓",
-    rarity = "定制：星宫莓",
-    rarityoverride_build = "ccs_framebg",
-    rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 2,
-    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
     skins = { normal_skin = "ccs_skins_xgm", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_xgm",
     share_bigportrait_name = "ccs_none",
     checkfn = CCSAPI.CcsSkinCheckFn,
     checkclientfn = CCSAPI.CcsSkinCheckClientFn
-})
+}))
 MakeCcsSkin("ccs_skins_fbhl", {
     name = "定制：粉白狐莉",
     des = "定制：粉白狐莉",
@@ -1291,21 +1284,16 @@ MakeCcsSkin("ccs_skins_rb", {
     build_name_override = "ccs_skins_rb",
     share_bigportrait_name = "ccs_none",
 })
-CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_ylxm", {
+CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_ylxm", WithRainbowRarity({
     name = "定制：雨落星芒",
     des = "定制：雨落星芒",
     quotes = "定制：雨落星芒",
-    rarity = "定制：雨落星芒",
-    rarityoverride_build = "ccs_framebg",
-    rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 2,
-    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
     skins = { normal_skin = "ccs_skins_ylxm", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_ylxm",
     share_bigportrait_name = "ccs_none",
     checkfn = CCSAPI.CcsSkinCheckFn,
     checkclientfn = CCSAPI.CcsSkinCheckClientFn
-})
+}))
 MakeCcsSkin("ccs_skins_sdyy", {
     name = "圣诞游园",
     des = "圣诞游园",
@@ -1364,21 +1352,16 @@ MakeCcsSkin("ccs_skins_hqfa", {
     share_bigportrait_name = "ccs_none",
 })
 CCSAPI.CcsCharacterAssets(assets, "ccs_skins_dzm")
-CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_dzm", {
+CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_dzm", WithRainbowRarity({
     name = "定制：蝶之梦",
     des = "定制：蝶之梦",
     quotes = "定制：蝶之梦",
-    rarity = "定制：蝶之梦",
-    rarityoverride_build = "ccs_framebg",
-    rarityoverride_symbol = "ccs_rainbow",
-    rarityorder = 2,
-    raritycorlor = { 0 / 255, 255 / 255, 249 / 255, 1 },
     skins = { normal_skin = "ccs_skins_dzm", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_dzm",
     share_bigportrait_name = "ccs_none",
     checkfn = CCSAPI.CcsSkinCheckFn,
     checkclientfn = CCSAPI.CcsSkinCheckClientFn
-})
+}))
 CCSAPI.CcsCharacterAssets(assets, "ccs_skin_cgm")
 MakeCcsSkin("ccs_skin_cgm", {
     name = "定制：崇宫澪",

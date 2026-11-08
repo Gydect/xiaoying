@@ -546,11 +546,18 @@ local function MakeWall(name, anims, isdoor, klaussackkeyid, nophysics)
             inst.AnimState:SetBank(anims.anim)
             inst.AnimState:SetBuild(anims.wide)
             inst.AnimState:PlayAnimation("idle")
+            if anims.scale then
+                inst.AnimState:SetScale(anims.scale, anims.scale)
+            end
         end
 
         inst._pfpos = nil
         inst._ispathfinding = net_bool(inst.GUID, "_ispathfinding", "onispathfindingdirty")
-        makeobstacle(inst)
+        if nophysics then
+            inst._ispathfinding:set(false) -- 无碰撞体积时也不在寻路网格上占墙点，玩家和生物可以直接穿过
+        else
+            makeobstacle(inst)
+        end
         -- Delay this because makeobstacle sets pathfinding on by default
         -- but we don't to handle it until after our position is set
         inst:DoTaskInTime(0, InitializePathFinding)
@@ -812,6 +819,9 @@ local function MakeWallPlacer(placer, placement, anims, isdoor)
                 self.inst:StartWallUpdatingComponent(self)
             end
             inst.anims = anims
+            if anims.scale then
+                inst.AnimState:SetScale(anims.scale, anims.scale)
+            end
             if isdoor then
                 inst.isdoor = true
                 inst.isswingright = false
@@ -854,7 +864,8 @@ return
     MakeWallAnim("ccs_door1_anim", { wide = "ccs_door1", anim = "ccs_door1" }, true),
     MakeInvItem("ccs_door1_item", "ccs_door1", "ccs_door1", true, "ccs_door1"),
     MakeWallPlacer("ccs_door1_item_placer", "ccs_door1", { wide = "ccs_door1", narrow = "ccs_door1", anim = "ccs_door1" }, true),
-    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv = "ccs_archway1" }, false, true),
-    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1" }, false),
-    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv = "ccs_archway2" }, false, true),
-    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2" }, false)
+    -- 拱门：无碰撞体积，动画放大 1.2 倍
+    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv = "ccs_archway1", scale = 1.2 }, false, nil, true),
+    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", scale = 1.2 }, false),
+    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv = "ccs_archway2", scale = 1.2 }, false, nil, true),
+    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", scale = 1.2 }, false)

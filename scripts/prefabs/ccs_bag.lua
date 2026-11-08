@@ -63,31 +63,33 @@ local noshow = {
     ccs_skin_yxxc = true,
 }
 local function onequip(inst, owner)
+    -- 背部贴图必须在 onequip 内同步设置：额外装备栏类模组只在 onequip 执行期间拦截 swap_body，
+    -- 把背包重定向到 swap_body_tall；放进延迟任务会直接画在 swap_body 上，被护甲/护符/卡牌盒覆盖
+    local owner_skin_build = owner.components.skinner and owner.components.skinner.skin_name
+    local skin_build = inst:GetSkinBuild()
+    if not noshow[owner_skin_build] and skin_build ~= "ccs_bag_skin_hana" then
+        if skin_build == nil then
+            owner.AnimState:OverrideSymbol("swap_body", "ccs_bag", "swap_body")
+        elseif skin_build == "shiranui_fan" then
+            owner:PushEvent("equipskinneditem", inst:GetSkinName())
+            owner.AnimState:OverrideItemSkinSymbol("swap_body_tall", skin_build, "swap_body_tall", inst.GUID, "swap_body_tall")
+        else
+            owner:PushEvent("equipskinneditem", inst:GetSkinName())
+            owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_body")
+        end
+    end
+
     inst:DoTaskInTime(0, function()
         if inst.components.container ~= nil then
             inst.components.container:Open(owner)
         end
-        local owner_skin_build = owner.components.skinner and owner.components.skinner.skin_name
-        local skin_build = inst:GetSkinBuild()
-        if not noshow[owner_skin_build] and skin_build and skin_build ~= "ccs_bag_skin_hana" then
-            if skin_build ~= nil then
-                if skin_build == "shiranui_fan" then
-                    owner:PushEvent("equipskinneditem", inst:GetSkinName())
-                    owner.AnimState:OverrideItemSkinSymbol("swap_body_tall", skin_build, "swap_body_tall", inst.GUID, "swap_body_tall")
-                else
-                    owner:PushEvent("equipskinneditem", inst:GetSkinName())
-                    owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_body")
-                end
-                if dynamic[skin_build] then
-                    if inst.fx ~= nil then
-                        inst.fx:Remove()
-                    end
-                    inst.fx = SpawnPrefab(skin_build .. "_fx")
-                    inst.fx:AttachToOwner(owner)
-                end
-            else
-                owner.AnimState:OverrideSymbol("swap_body", "ccs_bag", "swap_body")
+
+        if not noshow[owner_skin_build] and dynamic[skin_build] and skin_build ~= "ccs_bag_skin_hana" then
+            if inst.fx ~= nil then
+                inst.fx:Remove()
             end
+            inst.fx = SpawnPrefab(skin_build .. "_fx")
+            inst.fx:AttachToOwner(owner)
         end
 
         if skin_build and skin_build == "ccs_bag_skin_hana" then
