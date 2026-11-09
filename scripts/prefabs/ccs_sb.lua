@@ -98,6 +98,33 @@ local skin = {
     { name = "ccs_sb_item_skinsbada",      skin = "ccs_sb_item_skinsbada",      anim = "animation", container = "ui_ccs_sb_item_bada",                         state = 10,                                              scale = 0.6 },
 
 }
+-- 斯比被召唤后如果被外部移除（例如圣殿房间卸载、其他模组清理），正常收回的 uninit 不会执行，
+-- 物品里留着的还是上次存档的旧内容，再召唤就会把已经取走的东西复制回来。
+-- 所以在移除时实时把容器内容回存到物品里，并清掉容器里的物品。
+local function OnFollowerRemoved(follower)
+    local item = follower.item
+    if item == nil or not item:IsValid() or item.ccs_sb ~= follower then
+        return -- 已经通过 uninit 正常收回，或物品已不在
+    end
+    local container = follower.components.container
+    if container ~= nil and container:IsOpen() then
+        container:Close()
+    end
+    local data, refs = follower:GetPersistData()
+    item.components.ccssavecmp:SetSave("ccs_sb", {
+        init = 0,
+        data = data,
+        refs = refs
+    })
+    if container ~= nil then
+        for _, v in pairs(container:RemoveAllItems()) do
+            v:Remove()
+        end
+    end
+    item.ccs_sb = nil
+    item.components.rechargeable:Discharge(0)
+end
+
 local function onuse(inst, doer)
     if inst.ccs_sb and inst.ccs_sb:IsValid() then
         uninit(inst)
@@ -162,6 +189,7 @@ local function onuse(inst, doer)
         end
 
         ccs_sb.item = inst
+        ccs_sb:ListenForEvent("onremove", OnFollowerRemoved)
         doer.ccs_sb = ccs_sb
         inst.ccs_sb = ccs_sb
         if doer and doer.components.talker then
@@ -396,6 +424,7 @@ local function makexk()
         inst:AddTag("NOBLOCK")
         inst:AddTag("soracantpack")
         inst:AddTag("companion")
+        inst:AddTag("followsthroughvirtualrooms") -- 圣殿（虚拟房间）切换时不被当作房间内的东西卸载
         inst:AddTag("nosteal")
         inst:AddTag("flying")
         inst:AddTag("ccscantsteal")

@@ -91,6 +91,33 @@ local skin = {
     { name = "ccs_xk_item_szn",            skin = "ccs_sb_item_szn",            anim = "animation", scale = 0.8 },
     { name = "ccs_xk_item_skin_rzym",      skin = "ccs_sb_item_skin_rzym",      anim = "animation", container = "ui_ccs_sb_item_skin_rzym",                    state = 8 },
 }
+-- 小可被召唤后如果被外部移除（例如圣殿房间卸载、其他模组清理），正常收回的 uninit 不会执行，
+-- 物品里留着的还是上次存档的旧内容，再召唤就会把已经取走的东西复制回来。
+-- 所以在移除时实时把容器内容回存到物品里，并清掉容器里的物品。
+local function OnFollowerRemoved(follower)
+    local item = follower.item
+    if item == nil or not item:IsValid() or item.ccs_xk ~= follower then
+        return -- 已经通过 uninit 正常收回，或物品已不在
+    end
+    local container = follower.components.container
+    if container ~= nil and container:IsOpen() then
+        container:Close()
+    end
+    local data, refs = follower:GetPersistData()
+    item.components.ccssavecmp:SetSave("ccs_xk", {
+        init = 0,
+        data = data,
+        refs = refs
+    })
+    if container ~= nil then
+        for _, v in pairs(container:RemoveAllItems()) do
+            v:Remove()
+        end
+    end
+    item.ccs_xk = nil
+    item.components.rechargeable:Discharge(0)
+end
+
 local function onuse(inst, doer)
     if not doer:HasTag("ccs") then
         doer.components.talker:Say("只有小樱才可以召唤小可")
@@ -153,6 +180,7 @@ local function onuse(inst, doer)
 
 
         ccs_xk.item = inst
+        ccs_xk:ListenForEvent("onremove", OnFollowerRemoved)
         doer.ccs_xk = ccs_xk
         inst.ccs_xk = ccs_xk
         if doer and doer.components.talker then
@@ -380,6 +408,7 @@ local function makexk()
         inst:AddTag("NOBLOCK")
         inst:AddTag("soracantpack")
         inst:AddTag("companion")
+        inst:AddTag("followsthroughvirtualrooms") -- 圣殿（虚拟房间）切换时不被当作房间内的东西卸载
         inst:AddTag("nosteal")
         inst:AddTag("flying")
         inst:AddTag("ccscantsteal")

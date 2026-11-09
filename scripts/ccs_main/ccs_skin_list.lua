@@ -5234,3 +5234,19 @@ CcsItemSkin("ccs_piano", "ccs_piano_skin_yueding", {
         inst.Transform:SetScale(1.5, 1.5, 1.5)
     end,
 })
+
+-- 皮肤排序兜底：本模组很多定制品质的 rarityorder 相同（例如都是 1），
+-- 官方 CompareRarities 遇到“品质不同但排序值相同”时两边都返回 false，比较结果前后矛盾，
+-- 会让选人界面按时间、按品质排序时顺序错乱（例如 release_group 更新的皮肤排不到前面）。
+-- 这里在排序值相同时按皮肤名比较，保证排序稳定；官方品质的排序值各不相同，不受影响。
+local old_CompareRarities = GLOBAL.CompareRarities
+if old_CompareRarities ~= nil then
+    GLOBAL.CompareRarities = function(item_key_a, item_key_b)
+        local order_a = RARITY_ORDER[GetRarityForItem(item_key_a)]
+        local order_b = RARITY_ORDER[GetRarityForItem(item_key_b)]
+        if order_a ~= nil and order_a == order_b then
+            return (GetSkinName(item_key_a) .. item_key_a) < (GetSkinName(item_key_b) .. item_key_b)
+        end
+        return old_CompareRarities(item_key_a, item_key_b)
+    end
+end

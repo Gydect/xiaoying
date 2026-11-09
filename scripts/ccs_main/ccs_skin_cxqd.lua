@@ -1,7 +1,7 @@
 -- 定制人物皮肤：春夏秋冬（ccs_skins_cxqd）
 -- 一个皮肤格子对应四套季节材质，默认（选人界面、新穿上时）为秋天。
--- 小樱都能在人物专属栏制作“举牌”，举牌时播放专属动作；
--- 只有穿着春夏秋冬皮肤、且当前材质与世界季节不符时，举牌 5 秒后面前出现旺达的传送门，
+-- 只有穿着春夏秋冬皮肤才能在人物栏制作“举牌”（ccs_cxqd 标签），举牌时播放专属动作；
+-- 当前材质与世界季节不符时，举牌 5 秒后面前出现旺达的传送门，
 -- 玩家自己点击跳进去（其他玩家不能跳），换成当前季节的材质后像旺达一样利索地落地。
 
 local CXQD_SKIN = "ccs_skins_cxqd"
@@ -14,9 +14,10 @@ local CXQD_SEASON_BUILDS = {
 }
 local PAIZI_BUILD = "ccs_skins_cxqd_paizi"
 local PAIZI_TIME = 5 -- 举牌多久后检查是否换季
+local CXQD_BUILDER_TAG = "ccs_cxqd" -- 举牌配方的 builder_tag，穿着春夏秋冬时才有
 
 STRINGS.NAMES.CCS_SKINS_CXQD_PAIZI = "举牌"
-STRINGS.RECIPE_DESC.CCS_SKINS_CXQD_PAIZI = "举起牌子。穿着春夏秋冬时举久一点，会换上当前季节的衣服。"
+STRINGS.RECIPE_DESC.CCS_SKINS_CXQD_PAIZI = "举起牌子。举久一点，会换上当前季节的衣服。"
 
 local function GetSeasonBuild(inst)
     return CXQD_SEASON_BUILDS[inst.ccs_cxqd_season] or CXQD_SEASON_BUILDS[CXQD_DEFAULT_SEASON]
@@ -27,11 +28,35 @@ local function IsWearingCxqd(inst)
     return skinner ~= nil and skinner.skin_name == CXQD_SKIN
 end
 
+-- 举牌配方靠 ccs_cxqd 标签开放。标签变化本身不会让制作栏刷新，
+-- 所以同时改一个网络变量：服务端（主机玩家）直接刷新，客户端收到同步后刷新。
+local function RefreshCrafting(inst)
+    if inst:IsValid() and inst.HUD ~= nil then
+        inst:PushEvent("refreshcrafting")
+    end
+end
+
+local function SetCxqdCrafting(inst, wearing)
+    if inst:HasTag(CXQD_BUILDER_TAG) == wearing then
+        return
+    end
+    if wearing then
+        inst:AddTag(CXQD_BUILDER_TAG)
+    else
+        inst:RemoveTag(CXQD_BUILDER_TAG)
+    end
+    if inst._ccs_cxqd_crafting ~= nil then
+        inst._ccs_cxqd_crafting:set(wearing)
+    end
+    RefreshCrafting(inst)
+end
+
 -- 春夏秋冬皮肤的基础材质按当前季节形态替换；其他皮肤不受影响
 AddComponentPostInit("skinner", function(self)
     local old_SetSkinName = self.SetSkinName
     function self:SetSkinName(skin_name, skip_beard_setup, skip_skins_set)
         old_SetSkinName(self, skin_name, skip_beard_setup, true)
+        SetCxqdCrafting(self.inst, self.skin_name == CXQD_SKIN)
         if self.skin_name == CXQD_SKIN and self.skin_data ~= nil then
             self.skin_data.normal_skin = GetSeasonBuild(self.inst)
         end
@@ -59,7 +84,12 @@ local function NeedsSeasonChange(inst)
 end
 
 AddPrefabPostInit("ccs", function(inst)
+    inst._ccs_cxqd_crafting = net_bool(inst.GUID, "ccs_cxqd.crafting", "ccs_cxqd_craftingdirty")
     if not TheWorld.ismastersim then
+        -- 等一帧，确保标签和网络变量都已同步到客户端再刷新
+        inst:ListenForEvent("ccs_cxqd_craftingdirty", function(inst)
+            inst:DoTaskInTime(0, RefreshCrafting)
+        end)
         return
     end
     local old_OnSave = inst.OnSave

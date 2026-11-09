@@ -1358,14 +1358,16 @@ CCSAPI.CcsCharacterAssets(assets, "ccs_skins_cxqd_autumn", false, nil, {
     Asset("ANIM", "anim/ccs_skins_cxqd_summer.zip"),
     Asset("ANIM", "anim/ccs_skins_cxqd_winter.zip"),
 })
-MakeCcsSkin("ccs_skins_cxqd", WithRainbowRarity({ -- TODO 测试用，无需解锁；测试完改回 MakeCcsSkin
+-- release_group 越大，选人界面按时间排序时越靠前；其他定制皮肤最大为 -486，这里给 -100 排第一
+MakeCcsSkin("ccs_skins_cxqd", {
     name = "定制：春夏秋冬",
+    release_group = -100,
     des = "定制：春夏秋冬",
     quotes = "定制：春夏秋冬",
     skins = { normal_skin = "ccs_skins_cxqd_autumn", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_cxqd_autumn",
     share_bigportrait_name = "ccs_none",
-}))
+})
 CCSAPI.MakeCharacterSkin("ccs", "ccs_skins_dzm", WithRainbowRarity({
     name = "定制：蝶之梦",
     des = "定制：蝶之梦",
