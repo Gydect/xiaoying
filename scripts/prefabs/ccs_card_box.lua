@@ -176,6 +176,8 @@ end
 
 local function ccs_cards_27_close(inst, owner, card)
     if inst == nil or card == nil then return end
+    -- 只撤销卡牌盒实际提供的踏水，避免1级浮牌扣掉果冻或主动浮牌的计数。
+    if not inst:HasTag("ccs_cards_27_enble") then return end
     inst:RemoveTag("ccs_cards_27_enble")
     owner:RemoveTag("css_nodrown_box")
     local ccm = CCSUTL.ccsgetcm(owner)

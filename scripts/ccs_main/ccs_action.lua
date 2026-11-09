@@ -7,11 +7,17 @@
 -- doshortaction 秒放
 -- dolongaction 起手式
 local CCSUTL = require("utils/ccs_wanly_utils")
-AddComponentAction("USEITEM", "tradable", function(inst, doer, target, actions, right)
-    if right and inst.prefab == "ccs_paper" and target:HasTag("ccs_card_box") then
-        -- An open container otherwise offers STORE before GIVE for magic paper.
-        for i = #actions, 1, -1 do
-            if actions[i] == ACTIONS.STORE then table.remove(actions, i) end
+AddComponentAction("USEITEM", "inventoryitem", function(inst, doer, target, actions, right)
+    if not target:HasTag("ccs_card_box") then return end
+
+    -- 官方动作收集完成后，卡牌走容器存放，魔法纸走交易吸收。
+    local is_paper = inst.prefab == "ccs_paper"
+    local is_card = inst:HasTag("ccs_card")
+    for i = #actions, 1, -1 do
+        local action = actions[i]
+        if (action == ACTIONS.GIVE and not is_paper)
+            or (action == ACTIONS.STORE and (is_paper or not is_card)) then
+            table.remove(actions, i)
         end
     end
 end)

@@ -415,6 +415,7 @@ local defs = {
         name = "草莓果冻踏水",
         tags = {},
         time = 480,
+        refresh_time = true,
         OnAttached = function(inst, target)
             if target and inst then
                 local ccm = CCSUTL.ccsgetcm(target)
@@ -438,7 +439,6 @@ local defs = {
                 inst:Remove()
             end
         end,
-        OnExtended = OnExtended_dp3,
     },
 
 

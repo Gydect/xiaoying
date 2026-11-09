@@ -136,8 +136,8 @@ Ccs_foods = {
                 -- 回复黑血
                 if eater.components.health then
                     eater.components.health:DoDelta(100)
+                    eater.components.health:DeltaPenalty(-0.25)
                 end
-                eater.components.health:DeltaPenalty(-0.25)
             end
         end,
     },
