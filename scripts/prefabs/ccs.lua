@@ -1,6 +1,7 @@
 local MakePlayerCharacter = require "prefabs/player_common"
 local CcsFlowerOver = require("widgets/ccsflowerover")
 local CARDSTATS = require("utils/ccs_card_stats")
+local EQUIPMENT_APPEARANCE = require("utils/ccs_equipment_appearance")
 
 local function RefreshCarriedCardTags(inst)
     local levels = CARDSTATS.GetCarriedCardLevels(inst)
@@ -93,7 +94,7 @@ local assets = {
     Asset("PKGREF", "anim/moyuxuanli_xjlw.dyn"),
 }
 
-local prefabs = {}
+local prefabs = { "cane_ancient_fx" }
 local start_inv = { "ccs_bag", "ccs_hat1", "ccs_magic_wand3" }
 
 if TUNING.GAMEMODE_STARTING_ITEMS then
@@ -375,6 +376,7 @@ end
 
 
 local master_postinit = function(inst)
+    EQUIPMENT_APPEARANCE.Init(inst)
     inst:ListenForEvent("ccs_carried_cards_changed", ScheduleCarriedCardTags)
     ScheduleCarriedCardTags(inst)
     inst:ListenForEvent("techtreechange", ontechtreechange)
@@ -1563,6 +1565,12 @@ MakeCcsSkin("ccs_skin_xuechuyin", {
     skins = { normal_skin = "ccs_skin_xuechuyin", ghost_skin = "ghost_ccs_skin_xuechuyin_build" },
     build_name_override = "ccs_skin_xuechuyin",
     share_bigportrait_name = "ccs_none",
+    init_fn = function(inst)
+        EQUIPMENT_APPEARANCE.SetHidden(inst, true)
+    end,
+    clear_fn = function(inst)
+        EQUIPMENT_APPEARANCE.SetHidden(inst, false)
+    end,
 })
 
 CCSAPI.CcsCharacterAssets(assets, "ccs_skin_glby")
@@ -1615,5 +1623,93 @@ MakeCcsSkin("ccs_skin_aiyfl", {
     skins = { normal_skin = "ccs_skin_aiyfl", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skin_aiyfl",
     share_bigportrait_name = "ccs_skin_aiyfl",
+})
+
+CCSAPI.CcsCharacterAssets(assets, "ccs_skin_xiluoyxc")
+MakeCcsSkin("ccs_skin_xiluoyxc", {
+    name = "因循村希罗",
+    des = "很乖的学生",
+    quotes = "木之本樱",
+    rarity = "因循村希罗",
+    rarityorder = 1,
+    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
+    skins = { normal_skin = "ccs_skin_xiluoyxc", ghost_skin = "ghost_ccs_build" },
+    build_name_override = "ccs_skin_xiluoyxc",
+    share_bigportrait_name = "ccs_none",
+})
+
+CCSAPI.CcsCharacterAssets(assets, "ccs_skin_xiluoejt")
+MakeCcsSkin("ccs_skin_xiluoejt", {
+    name = "二阶堂希罗",
+    des = "很乖的学生",
+    quotes = "木之本樱",
+    rarity = "二阶堂希罗",
+    rarityorder = 1,
+    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
+    skins = { normal_skin = "ccs_skin_xiluoejt", ghost_skin = "ghost_ccs_build" },
+    build_name_override = "ccs_skin_xiluoejt",
+    share_bigportrait_name = "ccs_none",
+})
+
+local LINGFENG_TRAIL_TAGS = { "shadowtrail", "canetrail" }
+
+local function SpawnLingfengTrail(inst)
+    if inst:HasTag("playerghost") or not inst.entity:IsVisible() then
+        return
+    end
+
+    -- 沿用官方暗影手杖的前移、随机散布和地形检查。
+    local x, y, z = inst.Transform:GetWorldPosition()
+    if inst.sg ~= nil and inst.sg:HasStateTag("moving") then
+        local theta = -inst.Transform:GetRotation() * DEGREES
+        local speed = inst.components.locomotor ~= nil and inst.components.locomotor:GetRunSpeed() * .1 or 0
+        x = x + speed * math.cos(theta)
+        z = z + speed * math.sin(theta)
+    end
+    local mounted = inst.components.rider ~= nil and inst.components.rider:IsRiding()
+    local offset = FindValidPositionByFan(
+        math.random() * TWOPI,
+        (mounted and 1 or .5) + math.random() * .5,
+        4,
+        function(offset)
+            local pt = Vector3(x + offset.x, 0, z + offset.z)
+            return TheWorld.Map:IsPassableAtPoint(pt:Get())
+                and not TheWorld.Map:IsPointNearHole(pt)
+                and #TheSim:FindEntities(pt.x, 0, pt.z, .7, nil, nil, LINGFENG_TRAIL_TAGS) <= 0
+        end
+    )
+    if offset ~= nil then
+        local fx = SpawnPrefab("cane_ancient_fx")
+        if fx ~= nil then
+            fx.Transform:SetPosition(x + offset.x, 0, z + offset.z)
+        end
+    end
+end
+
+local function ClearLingfengTrail(inst)
+    if inst._ccs_lingfeng_trailtask ~= nil then
+        inst._ccs_lingfeng_trailtask:Cancel()
+        inst._ccs_lingfeng_trailtask = nil
+    end
+end
+
+CCSAPI.CcsCharacterAssets(assets, "ccs_skin_lingfeng")
+MakeCcsSkin("ccs_skin_lingfeng", {
+    name = "凌风",
+    des = "摸鱼达人",
+    quotes = "青衣长袖舞轻纱 玉手反弹铁琵琶",
+    rarity = "定制：凌风",
+    rarityorder = 1,
+    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
+    skins = { normal_skin = "ccs_skin_lingfeng", ghost_skin = "ghost_ccs_build" },
+    build_name_override = "ccs_skin_lingfeng",
+    share_bigportrait_name = "ccs_none",
+    init_fn = function(inst)
+        if TheWorld.ismastersim then
+            ClearLingfengTrail(inst)
+            inst._ccs_lingfeng_trailtask = inst:DoPeriodicTask(6 * FRAMES, SpawnLingfengTrail, 2 * FRAMES)
+        end
+    end,
+    clear_fn = ClearLingfengTrail,
 })
 return MakePlayerCharacter("ccs", prefabs, assets, common_postinit, master_postinit, start_inv)

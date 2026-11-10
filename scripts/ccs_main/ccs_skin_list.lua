@@ -1564,6 +1564,39 @@ CCSAPI.MakeItemSkin(
         end
     }
 )
+CCSAPI.CcsItemAssets(Assets, "ccs_sb_xk_skin_sll", true, true)
+for _, pet in ipairs({
+    { prefab = "ccs_sb", skin = "ccs_sb_skin_sll", item = "ccs_sb_item", itemskin = "ccs_sb_item_skin_sll", itembuild = "ccs_sb_item" },
+    { prefab = "ccs_xk", skin = "ccs_xk_skin_sll", item = "ccs_xk_item", itemskin = "ccs_xk_item_skin_sll", itembuild = "ccs_pack_gift" },
+}) do
+    CcsItemSkin(pet.prefab, pet.skin, {
+        name = "水蓝蓝",
+        atlas = "images/inventoryimages/ccs_sb_xk_skin_sll.xml",
+        image = "ccs_sb_xk_skin_sll",
+        build = "ccs_sb_xk_skin_sll",
+        bank = "ccs_sb_xk_skin_sll",
+        anim = "animation",
+        animloop = true,
+        basebuild = pet.prefab,
+        basebank = pet.prefab,
+        baseanim = "idle",
+        baseanimloop = true,
+    })
+    CcsItemSkin(pet.item, pet.itemskin, {
+        name = "水蓝蓝",
+        atlas = "images/inventoryimages/ccs_sb_xk_skin_sll.xml",
+        image = "ccs_sb_xk_skin_sll",
+        build = "ccs_sb_xk_skin_sll",
+        bank = "ccs_sb_xk_skin_sll",
+        anim = "idle",
+        animloop = true,
+        basebuild = pet.itembuild,
+        basebank = pet.itembuild,
+        baseanim = "idle",
+        baseanimloop = true,
+    })
+end
+
 CCSAPI.MakeItemSkinDefaultImage('ccs_xk_item', 'images/inventoryimages/ccs_pack_gift.xml', 'ccs_pack_gift')
 CcsItemSkin("ccs_xk_item", "ccs_xk_item_skins1", {
     name = "甜品小可",
@@ -3345,6 +3378,19 @@ CcsItemSkin("ccs_xk_item", "ccs_xk_item_szn", {
     basebuild = "ccs_pack_gift",
     basebank = "ccs_pack_gift",
 })
+CCSAPI.CcsItemAssets(Assets, "ccs_skirt_skin_btlx", true, true)
+CcsItemSkin("ccs_skirt1", "ccs_skirt_skin_btlx", {
+    name = "冰糖梨雪",
+    atlas = "images/inventoryimages/ccs_skirt_skin_btlx.xml",
+    image = "ccs_skirt_skin_btlx",
+    build = "ccs_skirt_skin_btlx",
+    bank = "ccs_skirt_skin_btlx",
+    anim = "idle",
+    basebuild = "ccs_skirt1",
+    basebank = "ccs_skirt1",
+    baseanim = "idle",
+})
+
 CcsItemSkin("ccs_skirt1", "ccs_skirt_skins1", {
     name = "格格裙",
     atlas = "images/inventoryimages/ccs_skirt_skins1.xml",

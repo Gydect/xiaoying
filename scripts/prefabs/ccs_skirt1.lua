@@ -1,6 +1,8 @@
 local assets =
 {
     Asset("ANIM", "anim/ccs_skirt_skin_hlh_swap.zip"),
+    Asset("ANIM", "anim/ccs_skirt_skin_btlx_swap.zip"),
+    Asset("ANIM", "anim/ccs_skin_xuechuyin.zip"),
     Asset("ANIM", "anim/ccs_skirt1.zip"),
     Asset("ATLAS", "images/inventoryimages/ccs_skirt1.xml"),
     Asset("IMAGE", "images/inventoryimages/ccs_skirt1.tex"),
@@ -59,7 +61,12 @@ local function lunge(inst, target, owner)
                     skin = "ccs_skins_xgm"
                 end
             end
-            shadow:Ccs_InitAnim(skin)
+            if name == "ccs_skirt_skin_btlx" then
+                shadow:Ccs_InitAnim("ccs_skin_xuechuyin")
+                shadow.AnimState:OverrideSymbol("swap_object", "ccs_skirt_skin_btlx_swap", "swap_weapon")
+            else
+                shadow:Ccs_InitAnim(skin)
+            end
             Sleep(sleeptime)
         end
     end)
@@ -102,6 +109,9 @@ local function onequip(inst, owner) -- 装备
         if not inst:IsValid() or inst._ccsowner ~= owner or not inst.isequip or not owner:HasTag("ccs") then return end
         local owner_skin_build = owner.components.skinner and owner.components.skinner.skin_name
         local name = inst:GetSkinName()
+        if name == "ccs_skirt_skin_btlx" then
+            return -- 冰糖梨雪穿戴后保持人物外观，仅改变物品及攻击分身。
+        end
         if name == "ccs_skirt_skin_madoka" then
             if name then
                 owner.AnimState:AddOverrideBuild(name)

@@ -20,11 +20,24 @@ function IsDefaultCharacterSkin(item_key)
 end
 
 local test = false
+-- 宠物本体与召唤物品共用授权；斯比和小可分别判断。
+local shared_skin_codes = {
+    ccs_sb_skin_sll = "ccs_sb_item_skin_sll",
+    ccs_sb_item_skin_sll = "ccs_sb_skin_sll",
+    ccs_xk_skin_sll = "ccs_xk_item_skin_sll",
+    ccs_xk_item_skin_sll = "ccs_xk_skin_sll",
+}
+
+local function HasSkinPermission(owner, name)
+    local shared = shared_skin_codes[name]
+    return owner ~= nil and (owner[name] or (shared ~= nil and owner[shared])) and true or false
+end
+
 function CcsSkinCheckFn(inventory, name)
     if test then
         return true
     end
-    return IsDefaultCharacterSkin(name) or (selfowner[name] or selfowner_tmp[name]) and true or false
+    return IsDefaultCharacterSkin(name) or HasSkinPermission(selfowner, name) or HasSkinPermission(selfowner_tmp, name)
 end
 
 function CcsSkinCheckClientFn(inventory, userid, name)
@@ -33,10 +46,10 @@ function CcsSkinCheckClientFn(inventory, userid, name)
     end
 
     if userid and name then
-        if skinowner[userid] and skinowner[userid][name] then
+        if HasSkinPermission(skinowner[userid], name) then
             return true
         end
-        if skinowner_tmp[userid] and skinowner_tmp[userid][name] then
+        if HasSkinPermission(skinowner_tmp[userid], name) then
             return true
         end
     end

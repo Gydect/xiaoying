@@ -26,6 +26,7 @@ end
 
 
 local skin = {
+    { name = "ccs_xk_item_skin_sll", skin = "ccs_sb_xk_skin_sll", anim = "animation", skin_name = "ccs_xk_skin_sll" },
     { name = "ccs_xk_item_skins1",     skin = "ccs_xk_skins1" },
     { name = "ccs_xk_item_skins2",     skin = "skeletonxk",          anim = "animation", scale = 2 },
     { name = "ccs_xk_item_skins3",     skin = "skeletonxk2",         anim = "animation", scale = 2 },
@@ -140,9 +141,13 @@ local function onuse(inst, doer)
         inst.components.rechargeable:Discharge(99999999)
         local ccs_xk = SpawnAt("ccs_xk", doer)
 
+        local skinuserid = inst.components.ccsskinable._ccsuserid
+        local selectedskin
+
         if skinname then
             for k, v in pairs(skin) do
                 if skinname == v.name then
+                    selectedskin = v
                     ccs_xk.AnimState:SetBank(v.bank or v.skin)
                     ccs_xk.AnimState:SetBuild(v.skin)
                     if v.anim then
@@ -167,6 +172,18 @@ local function onuse(inst, doer)
         local save = inst.components.ccssavecmp:GetSave("ccs_xk")
         if save and save.data then
             ccs_xk:SetPersistData(save.data, save.refs)
+        end
+        -- 先按皮肤设置容器再恢复物品，最后用本次召唤的皮肤覆盖本体的旧皮肤。
+        if ccs_xk.components.ccsskinable._ccsskin ~= nil then
+            ccs_xk.components.ccsskinable:SetSkin(nil, skinuserid)
+            if selectedskin then
+                ccs_xk.AnimState:SetBank(selectedskin.bank or selectedskin.skin)
+                ccs_xk.AnimState:SetBuild(selectedskin.skin)
+                ccs_xk.AnimState:PlayAnimation(selectedskin.anim or "idle", true)
+            end
+        end
+        if selectedskin and selectedskin.skin_name then
+            ccs_xk.components.ccsskinable:SetSkin(selectedskin.skin_name, skinuserid)
         end
         ccs_xk.components.container.canbeopened = true
         ccs_xk.components.ccsfollewer:Init(doer)
@@ -438,6 +455,7 @@ local function makexk()
             return inst
         end
         inst._state:set(1)
+        CCSAPI.CcsItemInit(inst)
         inst:AddComponent("container")
         inst.components.container.openlimit = 1
         inst.components.container:WidgetSetup("chester")
