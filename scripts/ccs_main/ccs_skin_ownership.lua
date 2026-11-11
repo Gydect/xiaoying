@@ -273,7 +273,11 @@ local black = {
     ccs_skins_xiyadai   = 1,
     ccs_skin_bylf       = 1,
     ccs_skin_aiyfl      = 1,
-    ccs_skins_fhyya     = 1
+    ccs_skins_fhyya     = 1,
+    ccs_skins_cxqd      = 1, -- 定制：咖叽团团
+    ccs_skin_xiluoyxc   = 1, -- 因循村希罗
+    ccs_skin_xiluoejt   = 1, -- 二阶堂希罗
+    ccs_skin_lingfeng   = 1, -- 定制：凌风
 }
 
 AddSimPostInit(function()
