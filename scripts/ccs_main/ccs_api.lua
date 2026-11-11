@@ -396,7 +396,9 @@ AddStategraphPostInit("wilson", function(self)
             end
             if inst.components.ccs_flying then
                 if inst.components.ccs_flying.isfly then
-                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                    local skin = GetFlySkin(inst)
+                    CcsFlyApplySymbols(inst, skin)
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
                 end
             end
         end
@@ -411,7 +413,9 @@ AddStategraphPostInit("wilson", function(self)
             end
             if inst.components.ccs_flying then
                 if inst.components.ccs_flying.isfly then
-                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                    local skin = GetFlySkin(inst)
+                    CcsFlyApplySymbols(inst, skin)
+                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
                 end
             end
         end
@@ -476,7 +480,9 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
             end
         end
     end
@@ -489,7 +495,9 @@ AddStategraphPostInit("wilson_client", function(self)
                 old_enter(inst, ...)
             end
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(GetFlySkin(inst)).anim)
+                local skin = GetFlySkin(inst)
+                CcsFlyApplySymbols(inst, skin)
+                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
             end
         end
     end

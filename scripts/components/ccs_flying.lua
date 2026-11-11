@@ -51,6 +51,8 @@ end
 
 function Ccs_Flying:Fly(skin)
     self.skin = skin
+    -- 起飞可能发生在移动状态中，不能等下次进入 idle/run 才补上飞行承载物。
+    CCSAPI.CcsFlyApplySymbols(self.inst, skin)
     self.isfly = true
     self.inst.AnimState:Hide("ARM_carry")
     self.inst.AnimState:Show("ARM_normal")

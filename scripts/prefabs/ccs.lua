@@ -1354,7 +1354,7 @@ MakeCcsSkin("ccs_skins_hqfa", {
     share_bigportrait_name = "ccs_none",
 })
 CCSAPI.CcsCharacterAssets(assets, "ccs_skins_dzm")
--- 定制：春夏秋冬，一个皮肤四套季节材质，默认展示秋天；季节切换逻辑见 ccs_main/ccs_skin_cxqd.lua
+-- 定制：咖叽团团，一个皮肤四套季节材质，默认展示秋天；季节切换逻辑见 ccs_main/ccs_skin_cxqd.lua
 CCSAPI.CcsCharacterAssets(assets, "ccs_skins_cxqd_autumn", false, nil, {
     Asset("ANIM", "anim/ccs_skins_cxqd_spring.zip"),
     Asset("ANIM", "anim/ccs_skins_cxqd_summer.zip"),
@@ -1362,10 +1362,10 @@ CCSAPI.CcsCharacterAssets(assets, "ccs_skins_cxqd_autumn", false, nil, {
 })
 -- release_group 越大，选人界面按时间排序时越靠前；其他定制皮肤最大为 -486，这里给 -100 排第一
 MakeCcsSkin("ccs_skins_cxqd", {
-    name = "定制：春夏秋冬",
+    name = "定制：咖叽团团",
     release_group = -100,
-    des = "定制：春夏秋冬",
-    quotes = "定制：春夏秋冬",
+    des = "定制：咖叽团团",
+    quotes = "定制：咖叽团团",
     skins = { normal_skin = "ccs_skins_cxqd_autumn", ghost_skin = "ghost_ccs_build" },
     build_name_override = "ccs_skins_cxqd_autumn",
     share_bigportrait_name = "ccs_none",
@@ -1695,10 +1695,10 @@ end
 
 CCSAPI.CcsCharacterAssets(assets, "ccs_skin_lingfeng")
 MakeCcsSkin("ccs_skin_lingfeng", {
-    name = "凌风",
-    des = "摸鱼达人",
+    name = "定制：凌风",
+    des = "青衣长袖舞轻纱 玉手反弹铁琵琶",
     quotes = "青衣长袖舞轻纱 玉手反弹铁琵琶",
-    rarity = "定制：凌风",
+    rarity = "摸鱼达人",
     rarityorder = 1,
     raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
     skins = { normal_skin = "ccs_skin_lingfeng", ghost_skin = "ghost_ccs_build" },

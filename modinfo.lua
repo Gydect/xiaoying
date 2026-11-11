@@ -4,7 +4,7 @@ description = [[
 禁止上传本mod自用，及二次发布
 ]]
 author = "路Albert,欢"
-version = "2.31050"
+version = "2.31060"
 
 forumthread = ""
 
