@@ -278,6 +278,7 @@ local black = {
     ccs_skin_xiluoyxc   = 1, -- 因循村希罗
     ccs_skin_xiluoejt   = 1, -- 二阶堂希罗
     ccs_skin_lingfeng   = 1, -- 定制：凌风
+    ccs_skin_wymls      = 1, -- 定制：雾雨魔理沙
 }
 
 AddSimPostInit(function()

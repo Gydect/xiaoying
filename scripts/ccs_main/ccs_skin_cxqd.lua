@@ -1,7 +1,7 @@
 -- 定制人物皮肤：春夏秋冬（ccs_skins_cxqd）
 -- 一个皮肤格子对应四套季节材质，默认（选人界面、新穿上时）为秋天。
 -- 只有穿着春夏秋冬皮肤才能在人物栏制作“举牌”（ccs_cxqd 标签），举牌时播放专属动作；
--- 当前材质与世界季节不符时，举牌 5 秒后面前出现旺达的传送门，
+-- 当前材质与世界季节不符时，空手举牌 5 秒后面前出现旺达的传送门，
 -- 玩家自己点击跳进去（其他玩家不能跳），换成当前季节的材质后像旺达一样利索地落地。
 
 local CXQD_SKIN = "ccs_skins_cxqd"
@@ -17,7 +17,7 @@ local PAIZI_TIME = 5 -- 举牌多久后检查是否换季
 local CXQD_BUILDER_TAG = "ccs_cxqd" -- 举牌配方的 builder_tag，穿着春夏秋冬时才有
 
 STRINGS.NAMES.CCS_SKINS_CXQD_PAIZI = "举牌"
-STRINGS.RECIPE_DESC.CCS_SKINS_CXQD_PAIZI = "举起牌子。举久一点，会换上当前季节的衣服。"
+STRINGS.RECIPE_DESC.CCS_SKINS_CXQD_PAIZI = "举起牌子。空手举久一点，会换上当前季节的衣服。"
 
 local function GetSeasonBuild(inst)
     return CXQD_SEASON_BUILDS[inst.ccs_cxqd_season] or CXQD_SEASON_BUILDS[CXQD_DEFAULT_SEASON]
@@ -81,6 +81,13 @@ local function NeedsSeasonChange(inst)
     return IsWearingCxqd(inst)
         and CXQD_SEASON_BUILDS[TheWorld.state.season] ~= nil
         and (inst.ccs_cxqd_season or CXQD_DEFAULT_SEASON) ~= TheWorld.state.season
+end
+
+local function CanOpenSeasonPortal(inst)
+    local inventory = inst.components.inventory
+    return NeedsSeasonChange(inst)
+        and inventory ~= nil
+        and inventory:GetEquippedItem(EQUIPSLOTS.HANDS) == nil
 end
 
 AddPrefabPostInit("ccs", function(inst)
@@ -176,7 +183,7 @@ end
 
 local function OpenSeasonPortal(inst)
     inst.sg.statemem.portaltask = nil
-    if not NeedsSeasonChange(inst) or (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
+    if not CanOpenSeasonPortal(inst) or (inst.components.rider ~= nil and inst.components.rider:IsRiding()) then
         return
     end
     -- 同一个玩家同时只开一个换季传送门
@@ -226,7 +233,7 @@ AddStategraphState("wilson", State {
         inst.AnimState:PlayAnimation("paizi_pre")
         inst.AnimState:PushAnimation("paizi_loop", true)
 
-        if NeedsSeasonChange(inst) then
+        if CanOpenSeasonPortal(inst) then
             inst.sg.statemem.portaltask = inst:DoTaskInTime(PAIZI_TIME, OpenSeasonPortal)
         end
 

@@ -4399,7 +4399,7 @@ CCSAPI.CcsItemAssets(Assets, "ccs_cookpot2_skin_xingmian", true, true, {
     Asset("ATLAS", "images/inventoryimages/ccs_cookpot2_skin_xingmian_slot.xml"),
 })
 CcsItemSkin("ccs_cookpot2", "ccs_cookpot2_skin_xingmian", { -- TODO 测试用，无需解锁；测试完改回 CcsItemSkin
-    name = "定制：星冕",
+    name = "星冕",
     atlas = "images/inventoryimages/ccs_cookpot2_skin_xingmian.xml",
     image = "ccs_cookpot2_skin_xingmian",
     build = "ccs_cookpot2_skin_xingmian",

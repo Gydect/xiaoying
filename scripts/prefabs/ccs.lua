@@ -1712,4 +1712,17 @@ MakeCcsSkin("ccs_skin_lingfeng", {
     end,
     clear_fn = ClearLingfengTrail,
 })
+
+CCSAPI.CcsCharacterAssets(assets, "ccs_skin_wymls")
+MakeCcsSkin("ccs_skin_wymls", {
+    name = "定制：雾雨魔理沙",
+    des = "定制：雾雨魔理沙",
+    quotes = "定制：雾雨魔理沙",
+    rarity = "定制：雾雨魔理沙",
+    rarityorder = 1,
+    raritycorlor = { 255 / 255, 215 / 255, 0 / 255, 1 },
+    skins = { normal_skin = "ccs_skin_wymls", ghost_skin = "ghost_ccs_build" },
+    build_name_override = "ccs_skin_wymls",
+    share_bigportrait_name = "ccs_none",
+})
 return MakePlayerCharacter("ccs", prefabs, assets, common_postinit, master_postinit, start_inv)
