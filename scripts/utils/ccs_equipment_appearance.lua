@@ -98,8 +98,20 @@ local function HideEffect(state, fx)
     end
 end
 
+-- 棱镜等模组会用 UserDataHook 把 inst.AnimState 换成代理表，原生对象存放在 inst.userdatas.AnimState。
+-- 原生函数只接收引擎对象，所以这里统一取回原生 AnimState；取不到时跳过遮蔽，避免崩溃。
+local function GetAnim(inst)
+    local anim = inst.AnimState
+    if type(anim) == "userdata" then
+        return anim
+    end
+    anim = inst.userdatas ~= nil and inst.userdatas.AnimState or nil
+    return type(anim) == "userdata" and anim or nil
+end
+
 local function Refresh(inst)
-    local state = states[inst.AnimState]
+    local anim = GetAnim(inst)
+    local state = anim ~= nil and states[anim] or nil
     if state == nil then return end
     state.task = nil
     if not state.hidden then return end
@@ -107,7 +119,7 @@ local function Refresh(inst)
     -- 装备回调在 inventory 写入装备栏之前执行；事件后再检查一次覆盖贴图和附属特效。
     for build in pairs(state.builds) do
         if IsEquipmentBuild(state, build) then
-            original.ClearOverrideBuild(inst.AnimState, build)
+            original.ClearOverrideBuild(anim, build)
             state.hiddenbuilds[build] = true
         end
     end
@@ -134,19 +146,21 @@ local function Refresh(inst)
 end
 
 local function ScheduleRefresh(inst)
-    local state = states[inst.AnimState]
+    local anim = GetAnim(inst)
+    local state = anim ~= nil and states[anim] or nil
     if state ~= nil and state.hidden and state.task == nil then
         state.task = inst:DoTaskInTime(0, Refresh)
     end
 end
 
 local function Init(inst)
-    if not TheWorld.ismastersim or states[inst.AnimState] ~= nil then return end
+    local anim = GetAnim(inst)
+    if not TheWorld.ismastersim or anim == nil or states[anim] ~= nil then return end
     local state = {
         inst = inst, layers = {}, symbols = {}, headexchange = false,
         builds = {}, hiddenbuilds = {}, buildorder = 0, hiddenfx = {},
     }
-    states[inst.AnimState] = state
+    states[anim] = state
     for name, visible in pairs(layers) do
         state.layers[name] = visible
     end
@@ -158,16 +172,16 @@ local function Init(inst)
     inst:ListenForEvent("ms_respawnedfromghost", ScheduleRefresh)
     inst:ListenForEvent("onremove", function()
         if state.task ~= nil then state.task:Cancel() end
-        states[inst.AnimState] = nil
+        states[anim] = nil
     end)
 end
 
 local function SetHidden(inst, hidden)
     if not TheWorld.ismastersim then return end
     Init(inst)
-    local anim = inst.AnimState
-    local state = states[anim]
-    if state.hidden == hidden then return end
+    local anim = GetAnim(inst)
+    local state = anim ~= nil and states[anim] or nil
+    if state == nil or state.hidden == hidden then return end
     if state.task ~= nil then
         state.task:Cancel()
         state.task = nil
