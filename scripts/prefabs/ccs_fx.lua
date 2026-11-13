@@ -2072,7 +2072,34 @@ local function ccs_card_box_fengyue_fx_fn()
     return inst
 end
 
+-- 织梦飞牌的随身光源：参数与斯比、小可一致，随玩家同步移动。
+local function ccs_fly_zhimeng_light_fn()
+    local inst = CreateEntity()
+    inst.entity:AddTransform()
+    inst.entity:AddLight()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.Light:SetFalloff(0.8)
+    inst.Light:SetIntensity(0.6)
+    inst.Light:SetRadius(4.8)
+    inst.Light:SetColour(237 / 255, 237 / 255, 209 / 255)
+    inst.Light:Enable(true)
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+    return inst
+end
+
 return Prefab("ccs_fx1", fn, assets),
+    Prefab("ccs_fly_zhimeng_light", ccs_fly_zhimeng_light_fn),
     Prefab("ccs_fx2", fn2, assets),
     Prefab("ccs_fx3", fn3),
     Prefab("ccs_fx4", fn4, assets),

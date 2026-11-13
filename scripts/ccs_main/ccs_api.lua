@@ -317,7 +317,12 @@ end)
 -- 飞牌皮肤：卡牌皮肤名 -> 飞行动画、build、飞行时需要额外显示的图层
 CCS_FLY_SKINS = {
     default = { anim = "ccs_fly", build = "ccs_fly", symbols = { "hand2" } },
-    ccs_cards_26_skin_zhimeng = { anim = "ccs_fly_zhimeng", build = "ccs_fly_zhimeng", symbols = { "yue", "yun", "diao", "yy" } },
+    ccs_cards_26_skin_zhimeng = {
+        anim = "ccs_fly_zhimeng",
+        idle_anim = "ccs_fly_zhimeng_idle",
+        build = "ccs_fly_zhimeng",
+        symbols = { "yue", "yun", "diao", "yy", "diao_zhang" },
+    },
 }
 
 function GetCcsFlySkinData(skin)
@@ -347,7 +352,8 @@ function CcsFlyEndAnim(inst)
     end
     local playing = false
     for _, v in pairs(CCS_FLY_SKINS) do
-        if inst.AnimState:IsCurrentAnimation(v.anim) then
+        if inst.AnimState:IsCurrentAnimation(v.anim)
+            or (v.idle_anim ~= nil and inst.AnimState:IsCurrentAnimation(v.idle_anim)) then
             playing = true
             break
         end
@@ -366,6 +372,27 @@ end
 
 local function GetFlySkin(inst)
     return inst.replica.ccs_flying and inst.replica.ccs_flying:GetSkin() or nil
+end
+
+-- 起飞或皮肤同步时可能已经处于移动/待机状态，立即接上对应动画。
+function CcsFlyRefreshAnim(inst)
+    local flying = inst.replica.ccs_flying
+    if inst.sg == nil or flying == nil or not flying:IsFly() then
+        return
+    end
+    local state = inst.sg.currentstate.name
+    local idle = state == "idle" or state == "run_stop" or state == "doshortaction"
+    if not (idle or state == "run" or state == "run_start") then
+        return
+    end
+    local data = GetCcsFlySkinData(flying:GetSkin())
+    local anim = idle and data.idle_anim or data.anim
+    if not inst.AnimState:IsCurrentAnimation(anim) then
+        inst.AnimState:PlayAnimation(anim, state ~= "run_start" and state ~= "run_stop")
+        if state == "run" then
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength() + 0.01)
+        end
+    end
 end
 
 AddStategraphPostInit("wilson", function(self)
@@ -415,7 +442,8 @@ AddStategraphPostInit("wilson", function(self)
                 if inst.components.ccs_flying.isfly then
                     local skin = GetFlySkin(inst)
                     CcsFlyApplySymbols(inst, skin)
-                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
+                    local data = GetCcsFlySkinData(skin)
+                    inst.AnimState:PlayAnimation(data.idle_anim or data.anim)
                 end
             end
         end
@@ -432,7 +460,8 @@ AddStategraphPostInit("wilson", function(self)
                 if inst.components.ccs_flying.isfly then
                     local skin = GetFlySkin(inst)
                     CcsFlyApplySymbols(inst, skin)
-                    inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                    local data = GetCcsFlySkinData(skin)
+                    inst.AnimState:PlayAnimation(data.idle_anim or data.anim, true)
                 end
             end
         end
@@ -449,7 +478,8 @@ AddStategraphPostInit("wilson", function(self)
             if inst.components.ccs_flying and inst.components.ccs_flying.isfly then
                 local skin = GetFlySkin(inst)
                 CcsFlyApplySymbols(inst, skin)
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                local data = GetCcsFlySkinData(skin)
+                inst.AnimState:PlayAnimation(data.idle_anim or data.anim, true)
             end
         end
     end
@@ -497,7 +527,8 @@ AddStategraphPostInit("wilson_client", function(self)
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
                 local skin = GetFlySkin(inst)
                 CcsFlyApplySymbols(inst, skin)
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim)
+                local data = GetCcsFlySkinData(skin)
+                inst.AnimState:PlayAnimation(data.idle_anim or data.anim)
             end
         end
     end
@@ -512,7 +543,8 @@ AddStategraphPostInit("wilson_client", function(self)
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
                 local skin = GetFlySkin(inst)
                 CcsFlyApplySymbols(inst, skin)
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                local data = GetCcsFlySkinData(skin)
+                inst.AnimState:PlayAnimation(data.idle_anim or data.anim, true)
             end
         end
     end
@@ -528,7 +560,8 @@ AddStategraphPostInit("wilson_client", function(self)
             if inst.replica.ccs_flying and inst.replica.ccs_flying:IsFly() then
                 local skin = GetFlySkin(inst)
                 CcsFlyApplySymbols(inst, skin)
-                inst.AnimState:PlayAnimation(GetCcsFlySkinData(skin).anim, true)
+                local data = GetCcsFlySkinData(skin)
+                inst.AnimState:PlayAnimation(data.idle_anim or data.anim, true)
             end
         end
     end

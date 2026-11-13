@@ -94,7 +94,7 @@ local assets = {
     Asset("PKGREF", "anim/moyuxuanli_xjlw.dyn"),
 }
 
-local prefabs = { "cane_ancient_fx" }
+local prefabs = { "cane_ancient_fx", "ccs_fly_zhimeng_light" }
 local start_inv = { "ccs_bag", "ccs_hat1", "ccs_magic_wand3" }
 
 if TUNING.GAMEMODE_STARTING_ITEMS then

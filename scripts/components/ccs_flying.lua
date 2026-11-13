@@ -12,6 +12,27 @@ local function ccs_skin(self, skin)
     end
 end
 
+local function RemoveFlightLight(self)
+    if self._zhimenglight ~= nil then
+        if self._zhimenglight:IsValid() then
+            self._zhimenglight:Remove()
+        end
+        self._zhimenglight = nil
+    end
+end
+
+local function UpdateFlightLight(self, skin)
+    if skin ~= "ccs_cards_26_skin_zhimeng" then
+        RemoveFlightLight(self)
+    elseif self._zhimenglight == nil or not self._zhimenglight:IsValid() then
+        self._zhimenglight = SpawnPrefab("ccs_fly_zhimeng_light")
+        if self._zhimenglight ~= nil then
+            self._zhimenglight.entity:SetParent(self.inst.entity)
+            self._zhimenglight.Transform:SetPosition(0, 0, 0)
+        end
+    end
+end
+
 local Ccs_Flying = Class(function(self, inst)
         self.inst = inst
         self.isfly = false -- 是否正在飞行
@@ -54,6 +75,8 @@ function Ccs_Flying:Fly(skin)
     -- 起飞可能发生在移动状态中，不能等下次进入 idle/run 才补上飞行承载物。
     CCSAPI.CcsFlyApplySymbols(self.inst, skin)
     self.isfly = true
+    UpdateFlightLight(self, skin)
+    CCSAPI.CcsFlyRefreshAnim(self.inst)
     self.inst.AnimState:Hide("ARM_carry")
     self.inst.AnimState:Show("ARM_normal")
     if self.inst.Physics then
@@ -78,6 +101,7 @@ end
 
 function Ccs_Flying:Land()
     self.isfly = false
+    RemoveFlightLight(self)
     if self.inst.Physics then
         ChangeToCharacterPhysics(self.inst)
     end
@@ -110,6 +134,12 @@ function Ccs_Flying:Land()
         CCSUTL.ttlSetTreadWaterCollides(self.inst, true)
     end
 end
+
+function Ccs_Flying:OnRemoveFromEntity()
+    RemoveFlightLight(self)
+end
+
+Ccs_Flying.OnRemoveEntity = Ccs_Flying.OnRemoveFromEntity
 
 function Ccs_Flying:OnSave()
     return

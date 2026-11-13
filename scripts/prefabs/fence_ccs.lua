@@ -162,8 +162,8 @@ local function _calcdooroffset(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local rot = inst.Transform:GetRotation()
 
-    local search_x = -math.sin(rot / RADIANS) * 1.2
-    local search_y = math.cos(rot / RADIANS) * 1.2
+    local search_x = -math.sin(rot / RADIANS) * 1.5
+    local search_y = math.cos(rot / RADIANS) * 1.5
 
     local walls = TheSim:FindEntities(x + search_x, 0, z - search_y, 0.25, FINDWALL_MUST_TAGS, FINDWALL_CANT_TAGS)
     if #walls == 0 then
@@ -864,8 +864,8 @@ return
     MakeWallAnim("ccs_door1_anim", { wide = "ccs_door1", anim = "ccs_door1" }, true),
     MakeInvItem("ccs_door1_item", "ccs_door1", "ccs_door1", true, "ccs_door1"),
     MakeWallPlacer("ccs_door1_item_placer", "ccs_door1", { wide = "ccs_door1", narrow = "ccs_door1", anim = "ccs_door1" }, true),
-    -- 拱门：无碰撞体积，动画放大 1.2 倍
-    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv = "ccs_archway1", scale = 1.2 }, false, nil, true),
-    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", scale = 1.2 }, false),
-    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv = "ccs_archway2", scale = 1.2 }, false, nil, true),
-    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", scale = 1.2 }, false)
+    -- 拱门：无碰撞体积，动画放大 1.5 倍
+    MakeWall("ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", inv = "ccs_archway1", scale = 1.5 }, false, nil, true),
+    MakeWallPlacer("ccs_archway1_placer", "ccs_archway1", { wide = "ccs_archway1", narrow = "ccs_archway1", anim = "ccs_archway1", scale = 1.5 }, false),
+    MakeWall("ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", inv = "ccs_archway2", scale = 1.5 }, false, nil, true),
+    MakeWallPlacer("ccs_archway2_placer", "ccs_archway2", { wide = "ccs_archway2", narrow = "ccs_archway2", anim = "ccs_archway2", scale = 1.5 }, false)
